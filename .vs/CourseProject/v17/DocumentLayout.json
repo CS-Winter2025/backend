@@ -1,12 +1,381 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\Mike\\source\\repos\\CourseProject\\",
-  "Documents": [],
+  "WorkspaceRootPath": "C:\\BCIT\\Semester_4\\COMP4945_DistributedSoftwareArch\\GroupProject\\backend\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A9EA9CDC-9EE4-4736-B374-8C8AA539A84D}|CourseProject\\CourseProject.csproj|c:\\bcit\\semester_4\\comp4945_distributedsoftwarearch\\groupproject\\backend\\courseproject\\views\\residents\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A9EA9CDC-9EE4-4736-B374-8C8AA539A84D}|CourseProject\\CourseProject.csproj|solutionrelative:courseproject\\views\\residents\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A9EA9CDC-9EE4-4736-B374-8C8AA539A84D}|CourseProject\\CourseProject.csproj|c:\\bcit\\semester_4\\comp4945_distributedsoftwarearch\\groupproject\\backend\\courseproject\\views\\residents\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A9EA9CDC-9EE4-4736-B374-8C8AA539A84D}|CourseProject\\CourseProject.csproj|solutionrelative:courseproject\\views\\residents\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A9EA9CDC-9EE4-4736-B374-8C8AA539A84D}|CourseProject\\CourseProject.csproj|c:\\bcit\\semester_4\\comp4945_distributedsoftwarearch\\groupproject\\backend\\courseproject\\views\\residents\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A9EA9CDC-9EE4-4736-B374-8C8AA539A84D}|CourseProject\\CourseProject.csproj|solutionrelative:courseproject\\views\\residents\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A9EA9CDC-9EE4-4736-B374-8C8AA539A84D}|CourseProject\\CourseProject.csproj|c:\\bcit\\semester_4\\comp4945_distributedsoftwarearch\\groupproject\\backend\\courseproject\\models\\resident.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A9EA9CDC-9EE4-4736-B374-8C8AA539A84D}|CourseProject\\CourseProject.csproj|solutionrelative:courseproject\\models\\resident.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A9EA9CDC-9EE4-4736-B374-8C8AA539A84D}|CourseProject\\CourseProject.csproj|c:\\bcit\\semester_4\\comp4945_distributedsoftwarearch\\groupproject\\backend\\courseproject\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A9EA9CDC-9EE4-4736-B374-8C8AA539A84D}|CourseProject\\CourseProject.csproj|solutionrelative:courseproject\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A9EA9CDC-9EE4-4736-B374-8C8AA539A84D}|CourseProject\\CourseProject.csproj|c:\\bcit\\semester_4\\comp4945_distributedsoftwarearch\\groupproject\\backend\\courseproject\\views\\shared\\_validationscriptspartial.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A9EA9CDC-9EE4-4736-B374-8C8AA539A84D}|CourseProject\\CourseProject.csproj|solutionrelative:courseproject\\views\\shared\\_validationscriptspartial.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A9EA9CDC-9EE4-4736-B374-8C8AA539A84D}|CourseProject\\CourseProject.csproj|c:\\bcit\\semester_4\\comp4945_distributedsoftwarearch\\groupproject\\backend\\courseproject\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A9EA9CDC-9EE4-4736-B374-8C8AA539A84D}|CourseProject\\CourseProject.csproj|solutionrelative:courseproject\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A9EA9CDC-9EE4-4736-B374-8C8AA539A84D}|CourseProject\\CourseProject.csproj|c:\\bcit\\semester_4\\comp4945_distributedsoftwarearch\\groupproject\\backend\\courseproject\\views\\residents\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A9EA9CDC-9EE4-4736-B374-8C8AA539A84D}|CourseProject\\CourseProject.csproj|solutionrelative:courseproject\\views\\residents\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A9EA9CDC-9EE4-4736-B374-8C8AA539A84D}|CourseProject\\CourseProject.csproj|c:\\bcit\\semester_4\\comp4945_distributedsoftwarearch\\groupproject\\backend\\courseproject\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{A9EA9CDC-9EE4-4736-B374-8C8AA539A84D}|CourseProject\\CourseProject.csproj|solutionrelative:courseproject\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A9EA9CDC-9EE4-4736-B374-8C8AA539A84D}|CourseProject\\CourseProject.csproj|c:\\bcit\\semester_4\\comp4945_distributedsoftwarearch\\groupproject\\backend\\courseproject\\controllers\\residentscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A9EA9CDC-9EE4-4736-B374-8C8AA539A84D}|CourseProject\\CourseProject.csproj|solutionrelative:courseproject\\controllers\\residentscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A9EA9CDC-9EE4-4736-B374-8C8AA539A84D}|CourseProject\\CourseProject.csproj|c:\\bcit\\semester_4\\comp4945_distributedsoftwarearch\\groupproject\\backend\\courseproject\\applicationcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A9EA9CDC-9EE4-4736-B374-8C8AA539A84D}|CourseProject\\CourseProject.csproj|solutionrelative:courseproject\\applicationcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A9EA9CDC-9EE4-4736-B374-8C8AA539A84D}|CourseProject\\CourseProject.csproj|c:\\bcit\\semester_4\\comp4945_distributedsoftwarearch\\groupproject\\backend\\courseproject\\models\\organization.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A9EA9CDC-9EE4-4736-B374-8C8AA539A84D}|CourseProject\\CourseProject.csproj|solutionrelative:courseproject\\models\\organization.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A9EA9CDC-9EE4-4736-B374-8C8AA539A84D}|CourseProject\\CourseProject.csproj|c:\\bcit\\semester_4\\comp4945_distributedsoftwarearch\\groupproject\\backend\\courseproject\\models\\employee.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A9EA9CDC-9EE4-4736-B374-8C8AA539A84D}|CourseProject\\CourseProject.csproj|solutionrelative:courseproject\\models\\employee.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A9EA9CDC-9EE4-4736-B374-8C8AA539A84D}|CourseProject\\CourseProject.csproj|c:\\bcit\\semester_4\\comp4945_distributedsoftwarearch\\groupproject\\backend\\courseproject\\models\\service.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A9EA9CDC-9EE4-4736-B374-8C8AA539A84D}|CourseProject\\CourseProject.csproj|solutionrelative:courseproject\\models\\service.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A9EA9CDC-9EE4-4736-B374-8C8AA539A84D}|CourseProject\\CourseProject.csproj|c:\\bcit\\semester_4\\comp4945_distributedsoftwarearch\\groupproject\\backend\\courseproject\\models\\person.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A9EA9CDC-9EE4-4736-B374-8C8AA539A84D}|CourseProject\\CourseProject.csproj|solutionrelative:courseproject\\models\\person.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A9EA9CDC-9EE4-4736-B374-8C8AA539A84D}|CourseProject\\CourseProject.csproj|c:\\bcit\\semester_4\\comp4945_distributedsoftwarearch\\groupproject\\backend\\courseproject\\models\\rootobject.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A9EA9CDC-9EE4-4736-B374-8C8AA539A84D}|CourseProject\\CourseProject.csproj|solutionrelative:courseproject\\models\\rootobject.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A9EA9CDC-9EE4-4736-B374-8C8AA539A84D}|CourseProject\\CourseProject.csproj|c:\\bcit\\semester_4\\comp4945_distributedsoftwarearch\\groupproject\\backend\\courseproject\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A9EA9CDC-9EE4-4736-B374-8C8AA539A84D}|CourseProject\\CourseProject.csproj|solutionrelative:courseproject\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A9EA9CDC-9EE4-4736-B374-8C8AA539A84D}|CourseProject\\CourseProject.csproj|c:\\bcit\\semester_4\\comp4945_distributedsoftwarearch\\groupproject\\backend\\courseproject\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A9EA9CDC-9EE4-4736-B374-8C8AA539A84D}|CourseProject\\CourseProject.csproj|solutionrelative:courseproject\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A9EA9CDC-9EE4-4736-B374-8C8AA539A84D}|CourseProject\\CourseProject.csproj|c:\\bcit\\semester_4\\comp4945_distributedsoftwarearch\\groupproject\\backend\\courseproject\\models\\asset.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A9EA9CDC-9EE4-4736-B374-8C8AA539A84D}|CourseProject\\CourseProject.csproj|solutionrelative:courseproject\\models\\asset.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A9EA9CDC-9EE4-4736-B374-8C8AA539A84D}|CourseProject\\CourseProject.csproj|c:\\bcit\\semester_4\\comp4945_distributedsoftwarearch\\groupproject\\backend\\courseproject\\models\\invoice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A9EA9CDC-9EE4-4736-B374-8C8AA539A84D}|CourseProject\\CourseProject.csproj|solutionrelative:courseproject\\models\\invoice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A9EA9CDC-9EE4-4736-B374-8C8AA539A84D}|CourseProject\\CourseProject.csproj|c:\\bcit\\semester_4\\comp4945_distributedsoftwarearch\\groupproject\\backend\\courseproject\\courseproject.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{A9EA9CDC-9EE4-4736-B374-8C8AA539A84D}|CourseProject\\CourseProject.csproj|solutionrelative:courseproject\\courseproject.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": []
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 3,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "_ValidationScriptsPartial.cshtml",
+              "DocumentMoniker": "C:\\BCIT\\Semester_4\\COMP4945_DistributedSoftwareArch\\GroupProject\\backend\\CourseProject\\Views\\Shared\\_ValidationScriptsPartial.cshtml",
+              "RelativeDocumentMoniker": "CourseProject\\Views\\Shared\\_ValidationScriptsPartial.cshtml",
+              "ToolTip": "C:\\BCIT\\Semester_4\\COMP4945_DistributedSoftwareArch\\GroupProject\\backend\\CourseProject\\Views\\Shared\\_ValidationScriptsPartial.cshtml",
+              "RelativeToolTip": "CourseProject\\Views\\Shared\\_ValidationScriptsPartial.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-03-10T18:29:04.668Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Details.cshtml",
+              "DocumentMoniker": "C:\\BCIT\\Semester_4\\COMP4945_DistributedSoftwareArch\\GroupProject\\backend\\CourseProject\\Views\\Residents\\Details.cshtml",
+              "RelativeDocumentMoniker": "CourseProject\\Views\\Residents\\Details.cshtml",
+              "ToolTip": "C:\\BCIT\\Semester_4\\COMP4945_DistributedSoftwareArch\\GroupProject\\backend\\CourseProject\\Views\\Residents\\Details.cshtml",
+              "RelativeToolTip": "CourseProject\\Views\\Residents\\Details.cshtml",
+              "ViewState": "AgIAABIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-03-10T18:26:44.982Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Edit.cshtml",
+              "DocumentMoniker": "C:\\BCIT\\Semester_4\\COMP4945_DistributedSoftwareArch\\GroupProject\\backend\\CourseProject\\Views\\Residents\\Edit.cshtml",
+              "RelativeDocumentMoniker": "CourseProject\\Views\\Residents\\Edit.cshtml",
+              "ToolTip": "C:\\BCIT\\Semester_4\\COMP4945_DistributedSoftwareArch\\GroupProject\\backend\\CourseProject\\Views\\Residents\\Edit.cshtml",
+              "RelativeToolTip": "CourseProject\\Views\\Residents\\Edit.cshtml",
+              "ViewState": "AgIAABUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-03-10T18:26:39.957Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\BCIT\\Semester_4\\COMP4945_DistributedSoftwareArch\\GroupProject\\backend\\CourseProject\\Views\\Residents\\Index.cshtml",
+              "RelativeDocumentMoniker": "CourseProject\\Views\\Residents\\Index.cshtml",
+              "ToolTip": "C:\\BCIT\\Semester_4\\COMP4945_DistributedSoftwareArch\\GroupProject\\backend\\CourseProject\\Views\\Residents\\Index.cshtml*",
+              "RelativeToolTip": "CourseProject\\Views\\Residents\\Index.cshtml*",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-03-10T18:26:29.771Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Create.cshtml",
+              "DocumentMoniker": "C:\\BCIT\\Semester_4\\COMP4945_DistributedSoftwareArch\\GroupProject\\backend\\CourseProject\\Views\\Residents\\Create.cshtml",
+              "RelativeDocumentMoniker": "CourseProject\\Views\\Residents\\Create.cshtml",
+              "ToolTip": "C:\\BCIT\\Semester_4\\COMP4945_DistributedSoftwareArch\\GroupProject\\backend\\CourseProject\\Views\\Residents\\Create.cshtml",
+              "RelativeToolTip": "CourseProject\\Views\\Residents\\Create.cshtml",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAAwBgAAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-03-10T18:26:14.888Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "_Layout.cshtml",
+              "DocumentMoniker": "C:\\BCIT\\Semester_4\\COMP4945_DistributedSoftwareArch\\GroupProject\\backend\\CourseProject\\Views\\Shared\\_Layout.cshtml",
+              "RelativeDocumentMoniker": "CourseProject\\Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "C:\\BCIT\\Semester_4\\COMP4945_DistributedSoftwareArch\\GroupProject\\backend\\CourseProject\\Views\\Shared\\_Layout.cshtml",
+              "RelativeToolTip": "CourseProject\\Views\\Shared\\_Layout.cshtml",
+              "ViewState": "AgIAAAcAAAAAAAAAAAAAAAcAAABIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-03-10T18:22:08.812Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Resident.cs",
+              "DocumentMoniker": "C:\\BCIT\\Semester_4\\COMP4945_DistributedSoftwareArch\\GroupProject\\backend\\CourseProject\\Models\\Resident.cs",
+              "RelativeDocumentMoniker": "CourseProject\\Models\\Resident.cs",
+              "ToolTip": "C:\\BCIT\\Semester_4\\COMP4945_DistributedSoftwareArch\\GroupProject\\backend\\CourseProject\\Models\\Resident.cs",
+              "RelativeToolTip": "CourseProject\\Models\\Resident.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-07T21:20:01.676Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "ResidentsController.cs",
+              "DocumentMoniker": "C:\\BCIT\\Semester_4\\COMP4945_DistributedSoftwareArch\\GroupProject\\backend\\CourseProject\\Controllers\\ResidentsController.cs",
+              "RelativeDocumentMoniker": "CourseProject\\Controllers\\ResidentsController.cs",
+              "ToolTip": "C:\\BCIT\\Semester_4\\COMP4945_DistributedSoftwareArch\\GroupProject\\backend\\CourseProject\\Controllers\\ResidentsController.cs",
+              "RelativeToolTip": "CourseProject\\Controllers\\ResidentsController.cs",
+              "ViewState": "AgIAABMAAAAAAAAAAAAQwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-10T18:18:22.768Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\BCIT\\Semester_4\\COMP4945_DistributedSoftwareArch\\GroupProject\\backend\\CourseProject\\Program.cs",
+              "RelativeDocumentMoniker": "CourseProject\\Program.cs",
+              "ToolTip": "C:\\BCIT\\Semester_4\\COMP4945_DistributedSoftwareArch\\GroupProject\\backend\\CourseProject\\Program.cs",
+              "RelativeToolTip": "CourseProject\\Program.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAABwAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-07T21:48:51.512Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "Organization.cs",
+              "DocumentMoniker": "C:\\BCIT\\Semester_4\\COMP4945_DistributedSoftwareArch\\GroupProject\\backend\\CourseProject\\Models\\Organization.cs",
+              "RelativeDocumentMoniker": "CourseProject\\Models\\Organization.cs",
+              "ToolTip": "C:\\BCIT\\Semester_4\\COMP4945_DistributedSoftwareArch\\GroupProject\\backend\\CourseProject\\Models\\Organization.cs",
+              "RelativeToolTip": "CourseProject\\Models\\Organization.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-10T18:13:45.365Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "Employee.cs",
+              "DocumentMoniker": "C:\\BCIT\\Semester_4\\COMP4945_DistributedSoftwareArch\\GroupProject\\backend\\CourseProject\\Models\\Employee.cs",
+              "RelativeDocumentMoniker": "CourseProject\\Models\\Employee.cs",
+              "ToolTip": "C:\\BCIT\\Semester_4\\COMP4945_DistributedSoftwareArch\\GroupProject\\backend\\CourseProject\\Models\\Employee.cs",
+              "RelativeToolTip": "CourseProject\\Models\\Employee.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAgwBgAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-10T18:12:59.659Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "Person.cs",
+              "DocumentMoniker": "C:\\BCIT\\Semester_4\\COMP4945_DistributedSoftwareArch\\GroupProject\\backend\\CourseProject\\Models\\Person.cs",
+              "RelativeDocumentMoniker": "CourseProject\\Models\\Person.cs",
+              "ToolTip": "C:\\BCIT\\Semester_4\\COMP4945_DistributedSoftwareArch\\GroupProject\\backend\\CourseProject\\Models\\Person.cs",
+              "RelativeToolTip": "CourseProject\\Models\\Person.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-10T18:11:19.947Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "RootObject.cs",
+              "DocumentMoniker": "C:\\BCIT\\Semester_4\\COMP4945_DistributedSoftwareArch\\GroupProject\\backend\\CourseProject\\Models\\RootObject.cs",
+              "RelativeDocumentMoniker": "CourseProject\\Models\\RootObject.cs",
+              "ToolTip": "C:\\BCIT\\Semester_4\\COMP4945_DistributedSoftwareArch\\GroupProject\\backend\\CourseProject\\Models\\RootObject.cs",
+              "RelativeToolTip": "CourseProject\\Models\\RootObject.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAADAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-10T18:10:53.577Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "Service.cs",
+              "DocumentMoniker": "C:\\BCIT\\Semester_4\\COMP4945_DistributedSoftwareArch\\GroupProject\\backend\\CourseProject\\Models\\Service.cs",
+              "RelativeDocumentMoniker": "CourseProject\\Models\\Service.cs",
+              "ToolTip": "C:\\BCIT\\Semester_4\\COMP4945_DistributedSoftwareArch\\GroupProject\\backend\\CourseProject\\Models\\Service.cs",
+              "RelativeToolTip": "CourseProject\\Models\\Service.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-07T21:38:54.272Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\BCIT\\Semester_4\\COMP4945_DistributedSoftwareArch\\GroupProject\\backend\\CourseProject\\appsettings.json",
+              "RelativeDocumentMoniker": "CourseProject\\appsettings.json",
+              "ToolTip": "C:\\BCIT\\Semester_4\\COMP4945_DistributedSoftwareArch\\GroupProject\\backend\\CourseProject\\appsettings.json",
+              "RelativeToolTip": "CourseProject\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAABYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-03-07T21:51:10.332Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "ApplicationContext.cs",
+              "DocumentMoniker": "C:\\BCIT\\Semester_4\\COMP4945_DistributedSoftwareArch\\GroupProject\\backend\\CourseProject\\ApplicationContext.cs",
+              "RelativeDocumentMoniker": "CourseProject\\ApplicationContext.cs",
+              "ToolTip": "C:\\BCIT\\Semester_4\\COMP4945_DistributedSoftwareArch\\GroupProject\\backend\\CourseProject\\ApplicationContext.cs",
+              "RelativeToolTip": "CourseProject\\ApplicationContext.cs",
+              "ViewState": "AgIAAAIAAAAAAAAAAAAgwBAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-07T21:40:21.61Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\BCIT\\Semester_4\\COMP4945_DistributedSoftwareArch\\GroupProject\\backend\\CourseProject\\Views\\Home\\Index.cshtml",
+              "RelativeDocumentMoniker": "CourseProject\\Views\\Home\\Index.cshtml",
+              "ToolTip": "C:\\BCIT\\Semester_4\\COMP4945_DistributedSoftwareArch\\GroupProject\\backend\\CourseProject\\Views\\Home\\Index.cshtml",
+              "RelativeToolTip": "CourseProject\\Views\\Home\\Index.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-03-10T01:28:28.032Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "HomeController.cs",
+              "DocumentMoniker": "C:\\BCIT\\Semester_4\\COMP4945_DistributedSoftwareArch\\GroupProject\\backend\\CourseProject\\Controllers\\HomeController.cs",
+              "RelativeDocumentMoniker": "CourseProject\\Controllers\\HomeController.cs",
+              "ToolTip": "C:\\BCIT\\Semester_4\\COMP4945_DistributedSoftwareArch\\GroupProject\\backend\\CourseProject\\Controllers\\HomeController.cs",
+              "RelativeToolTip": "CourseProject\\Controllers\\HomeController.cs",
+              "ViewState": "AgIAABwAAAAAAAAAAAAkwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-10T01:28:22.345Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "CourseProject",
+              "DocumentMoniker": "C:\\BCIT\\Semester_4\\COMP4945_DistributedSoftwareArch\\GroupProject\\backend\\CourseProject\\CourseProject.csproj",
+              "RelativeDocumentMoniker": "CourseProject\\CourseProject.csproj",
+              "ToolTip": "C:\\BCIT\\Semester_4\\COMP4945_DistributedSoftwareArch\\GroupProject\\backend\\CourseProject\\CourseProject.csproj",
+              "RelativeToolTip": "CourseProject\\CourseProject.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-03-07T21:40:10.819Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "Invoice.cs",
+              "DocumentMoniker": "C:\\BCIT\\Semester_4\\COMP4945_DistributedSoftwareArch\\GroupProject\\backend\\CourseProject\\Models\\Invoice.cs",
+              "RelativeDocumentMoniker": "CourseProject\\Models\\Invoice.cs",
+              "ToolTip": "C:\\BCIT\\Semester_4\\COMP4945_DistributedSoftwareArch\\GroupProject\\backend\\CourseProject\\Models\\Invoice.cs",
+              "RelativeToolTip": "CourseProject\\Models\\Invoice.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-07T21:23:58.825Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "Asset.cs",
+              "DocumentMoniker": "C:\\BCIT\\Semester_4\\COMP4945_DistributedSoftwareArch\\GroupProject\\backend\\CourseProject\\Models\\Asset.cs",
+              "RelativeDocumentMoniker": "CourseProject\\Models\\Asset.cs",
+              "ToolTip": "C:\\BCIT\\Semester_4\\COMP4945_DistributedSoftwareArch\\GroupProject\\backend\\CourseProject\\Models\\Asset.cs",
+              "RelativeToolTip": "CourseProject\\Models\\Asset.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-07T21:39:27.351Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{e5c86464-96be-4d7c-9a8b-abcb3bbf5f92}"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

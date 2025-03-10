@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Mike\\source\\repos\\CourseProject\\CourseProject\\CourseProject.csproj": {}
+    "C:\\BCIT\\Semester_4\\COMP4945_DistributedSoftwareArch\\GroupProject\\backend\\CourseProject\\CourseProject.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Mike\\source\\repos\\CourseProject\\CourseProject\\CourseProject.csproj": {
+    "C:\\BCIT\\Semester_4\\COMP4945_DistributedSoftwareArch\\GroupProject\\backend\\CourseProject\\CourseProject.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Mike\\source\\repos\\CourseProject\\CourseProject\\CourseProject.csproj",
+        "projectUniqueName": "C:\\BCIT\\Semester_4\\COMP4945_DistributedSoftwareArch\\GroupProject\\backend\\CourseProject\\CourseProject.csproj",
         "projectName": "CourseProject",
-        "projectPath": "C:\\Users\\Mike\\source\\repos\\CourseProject\\CourseProject\\CourseProject.csproj",
-        "packagesPath": "C:\\Users\\Mike\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Mike\\source\\repos\\CourseProject\\CourseProject\\obj\\",
+        "projectPath": "C:\\BCIT\\Semester_4\\COMP4945_DistributedSoftwareArch\\GroupProject\\backend\\CourseProject\\CourseProject.csproj",
+        "packagesPath": "C:\\Users\\liamj\\.nuget\\packages\\",
+        "outputPath": "C:\\BCIT\\Semester_4\\COMP4945_DistributedSoftwareArch\\GroupProject\\backend\\CourseProject\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Mike\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\liamj\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -49,6 +49,26 @@
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[9.0.2, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[9.0.2, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
