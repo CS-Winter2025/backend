@@ -118,6 +118,13 @@ jobs:
       - name: Publish application (${{ inputs.configuration }})
         run: dotnet publish ${{ inputs.project_path }} -c ${{ inputs.configuration }} -o ./publish-${{ inputs.configuration }}
 
+      - name: Delete previous artifacts
+        run: |
+          gh api \
+            -X DELETE \
+            "repos/${{ github.repository }}/actions/artifacts" \
+            -F name=app-${{ inputs.configuration }}
+
       # Upload Artifact
       - name: Upload artifact (${{ inputs.configuration }})
         uses: actions/upload-artifact@v4
