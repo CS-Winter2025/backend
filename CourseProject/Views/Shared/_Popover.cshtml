@@ -1,0 +1,10 @@
+﻿@model CourseProject.Models.Popover
+
+<button type="button"
+        class="btn btn-sm btn-outline-secondary"
+        data-bs-toggle="popover"
+        data-bs-trigger="click"
+        data-bs-content="@Model.Content"
+        @(string.IsNullOrEmpty(Model.Title) ? "" : $"title=\"{Model.Title}\"")>
+	<i class="bi bi-question-circle"></i>
+</button>
