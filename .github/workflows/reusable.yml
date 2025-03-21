@@ -66,19 +66,30 @@ jobs:
         if: ${{ inputs.run_ui_tests && inputs.ui_test_project_path != '' }}
         run: |
           if [[ "$RUNNER_OS" == "Linux" ]]; then
+            # Install Google Chrome directly from the official source
+            wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+            echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
             sudo apt-get update
-            sudo apt-get install -y chromium-browser
-            CHROME_VERSION=$(chromium-browser --version | grep -oP '\d+')
-            CHROME_DRIVER_VERSION=$(curl -sS "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION")
+            sudo apt-get install -y google-chrome-stable
+            
+            # Get the installed Chrome version
+            CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
+            MAJOR_VERSION=$(echo $CHROME_VERSION | cut -d. -f1)
+            
+            # Get the matching ChromeDriver version
+            CHROME_DRIVER_VERSION=$(curl -sS "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$MAJOR_VERSION")
             if [ -z "$CHROME_DRIVER_VERSION" ]; then
               CHROME_DRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE)
             fi
             echo "Using ChromeDriver version: $CHROME_DRIVER_VERSION"
+            
+            # Download and install ChromeDriver
             wget -N "https://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip"
             unzip chromedriver_linux64.zip
             sudo mv chromedriver /usr/local/bin/chromedriver
             sudo chmod +x /usr/local/bin/chromedriver
             rm chromedriver_linux64.zip
+            
             echo "CHROME_DRIVER_PATH=/usr/local/bin" >> $GITHUB_ENV
           elif [[ "$RUNNER_OS" == "Windows" ]]; then
             choco install googlechrome -y
