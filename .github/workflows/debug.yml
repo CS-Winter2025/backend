@@ -1,0 +1,25 @@
+# Sample usage of reusable.yml in Debug build for backend team
+name: CI Debug Pipeline
+
+on:
+  push:
+    branches:
+      - dev
+      - feature_pipeline
+  pull_request:
+    branches:
+      - dev
+      - feature_pipeline
+
+jobs:
+  debug:
+    uses: ./.github/workflows/reusable.yml
+    with:
+      configuration: Debug
+      dotnet_version: "9.0.x"
+      project_path: CourseProject/CourseProject.csproj
+      unit_test_project_path: CourseProjectTest/CourseProjectTest.csproj
+      ui_test_project_path: CourseProjectTest/CourseProjectTest.csproj
+      run_unit_tests: false
+      run_ui_tests: true
+      run_static_analysis: true
