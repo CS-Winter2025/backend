@@ -84,14 +84,14 @@ namespace CourseProject
                 new Service { ServiceID = 2, Type = "Security", Rate = 100 }
             );
 
-            // Seed Invoices
-            modelBuilder.Entity<Invoice>().HasData(
-                new Invoice { InvoiceID = 1, ResidentID = 1, Date = DateTime.UtcNow, AmountDue = 200, AmountPaid = 100 }
-            );
+            //// Seed Invoices
+            //modelBuilder.Entity<Invoice>().HasData(
+            //    new Invoice { InvoiceID = 1, ResidentID = 1, Date = DateTime.UtcNow, AmountDue = 200, AmountPaid = 100 }
+            //);
 
             // Seed EventSchedules
             modelBuilder.Entity<EventSchedule>().HasData(
-                new EventSchedule { EventEventScheduleId = 1, EmployeeID = 1, ServiceID = 1, RangeOfHours = "9AM-5PM" }
+                new EventSchedule { EventScheduleId = 1, EmployeeID = 1, ServiceID = 1, RangeOfHours = "9AM-5PM" }
             );
         }
     }
