@@ -30,7 +30,7 @@ namespace CourseProject.TagHelpers
                 output.Attributes.SetAttribute("title", Title); // Optional title
             }
 
-            output.Content.SetHtmlContent("❔"); // Match the Unicode symbol used in your Razor
+            output.Content.SetHtmlContent("❔");
         }
     }
 }
