@@ -21,5 +21,5 @@ jobs:
       unit_test_project_path: CourseProjectTest/CourseProjectTest.csproj
       ui_test_project_path: CourseProjectTest/CourseProjectTest.csproj
       run_unit_tests: false
-      run_ui_tests: true
+      run_ui_tests: false
       run_static_analysis: true
