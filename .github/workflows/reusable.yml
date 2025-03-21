@@ -103,9 +103,21 @@ jobs:
       - name: Publish application (${{ inputs.configuration }})
         run: dotnet publish ${{ inputs.project_path }} -c ${{ inputs.configuration }} -o ./publish-${{ inputs.configuration }}
 
+      # Check if artifact folder exists
+      - name: Check if artifact folder exists
+        run: |
+          if [ ! -d "./publish-${{ inputs.configuration }}" ]; then
+            echo "Artifact folder not found!"
+            exit 1
+          fi
+
+      # List files to upload (for debugging)
+      - name: List files to upload
+        run: ls -al ./publish-${{ inputs.configuration }}
+
       # Upload Artifact
       - name: Upload artifact (${{ inputs.configuration }})
-        uses: actions/upload-artifact@v3.1.2
+        uses: actions/upload-artifact@v4
         with:
           name: app-${{ inputs.configuration }}
           path: ./publish-${{ inputs.configuration }}
