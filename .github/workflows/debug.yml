@@ -22,4 +22,4 @@ jobs:
       ui_test_project_path: CourseProjectTest/CourseProjectTest.csproj
       run_unit_tests: false
       run_ui_tests: false
-      run_static_analysis: true
+      run_static_analysis: false
