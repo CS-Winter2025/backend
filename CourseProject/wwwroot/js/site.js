@@ -9,4 +9,4 @@ const initPopovers = () => {
     });
 };
 
-initPopovers(); // Initializes popovers like HelpPopover 
+initPopovers();// Initializes popovers like HelpPopover 
