@@ -62,40 +62,27 @@ jobs:
       - name: Build application (${{ inputs.configuration }})
         run: dotnet build ${{ inputs.project_path }} -c ${{ inputs.configuration }} --no-restore
 
-      - name: Install Chrome and ChromeDriver
+      # Setup Chrome and ChromeDriver (cross-platform support)
+      - name: Setup Chrome and ChromeDriver
         if: ${{ inputs.run_ui_tests && inputs.ui_test_project_path != '' }}
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: latest
+          install-chromedriver: true
+          install-dependencies: true
+
+      # Run ChromeDriver in the background on Ubuntu
+      - name: Start ChromeDriver on Ubuntu
+        if: matrix.os == 'ubuntu-latest' && ${{ inputs.run_ui_tests && inputs.ui_test_project_path != '' }}
         run: |
-          if [[ "$RUNNER_OS" == "Linux" ]]; then
-            # Install Google Chrome directly from the official source
-            wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-            echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
-            sudo apt-get update
-            sudo apt-get install -y google-chrome-stable
-            
-            # Get the installed Chrome version
-            CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
-            MAJOR_VERSION=$(echo $CHROME_VERSION | cut -d. -f1)
-            
-            # Get the matching ChromeDriver version
-            CHROME_DRIVER_VERSION=$(curl -sS "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$MAJOR_VERSION")
-            if [ -z "$CHROME_DRIVER_VERSION" ]; then
-              CHROME_DRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE)
-            fi
-            echo "Using ChromeDriver version: $CHROME_DRIVER_VERSION"
-            
-            # Download and install ChromeDriver
-            wget -N "https://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip"
-            unzip chromedriver_linux64.zip
-            sudo mv chromedriver /usr/local/bin/chromedriver
-            sudo chmod +x /usr/local/bin/chromedriver
-            rm chromedriver_linux64.zip
-            
-            echo "CHROME_DRIVER_PATH=/usr/local/bin" >> $GITHUB_ENV
-          elif [[ "$RUNNER_OS" == "Windows" ]]; then
-            choco install googlechrome -y
-            choco install chromedriver -y --version latest
-            echo "CHROME_DRIVER_PATH=C:\\ProgramData\\chocolatey\\bin" >> $GITHUB_ENV
-          fi
+          export DISPLAY=:99
+          sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &
+          chromedriver --url-base=/wd/hub &
+
+      # Run ChromeDriver on Windows
+      - name: Start ChromeDriver on Windows
+        if: matrix.os == 'windows-latest' && ${{ inputs.run_ui_tests && inputs.ui_test_project_path != '' }}
+        run: chromedriver --url-base=/wd/hub &
 
       # Conditional Unit Tests
       - name: Run Unit Tests
@@ -105,8 +92,6 @@ jobs:
       # Conditional UI Tests
       - name: Run UI Tests
         if: ${{ inputs.run_ui_tests && inputs.ui_test_project_path != '' }}
-        env:
-          CHROME_DRIVER_PATH: ${{ env.CHROME_DRIVER_PATH }}
         run: dotnet test ${{ inputs.ui_test_project_path }} --configuration ${{ inputs.configuration }} --no-build --verbosity normal
 
       # Conditional Static Analysis
