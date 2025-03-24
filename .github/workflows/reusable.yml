@@ -79,7 +79,7 @@ jobs:
       # Conditional UI Tests
       - name: Run UI Tests
         if: ${{ inputs.run_ui_tests && inputs.ui_test_project_path != '' }}
-        run: dotnet test ${{ inputs.ui_test_project_path }} --configuration ${{ inputs.configuration }} --no-build --verbosity normal
+        run: dotnet test ${{ inputs.ui_test_project_path }} --configuration ${{ inputs.configuration }} --no-build --verbosity detailed
 
       # Conditional Static Analysis
       - name: Static Code Analysis (dotnet format)
