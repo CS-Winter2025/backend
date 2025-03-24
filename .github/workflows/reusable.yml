@@ -73,7 +73,7 @@ jobs:
 
       # Run ChromeDriver in the background on Ubuntu
       - name: Start ChromeDriver on Ubuntu
-        if: matrix.os == 'ubuntu-latest' && ${{ inputs.run_ui_tests && inputs.ui_test_project_path != '' }}
+        if: ${{ matrix.os == 'ubuntu-latest' && inputs.run_ui_tests && inputs.ui_test_project_path != '' }}
         run: |
           export DISPLAY=:99
           sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &
@@ -81,7 +81,7 @@ jobs:
 
       # Run ChromeDriver on Windows
       - name: Start ChromeDriver on Windows
-        if: matrix.os == 'windows-latest' && ${{ inputs.run_ui_tests && inputs.ui_test_project_path != '' }}
+        if: ${{ matrix.os == 'windows-latest' && inputs.run_ui_tests && inputs.ui_test_project_path != '' }}
         run: chromedriver --url-base=/wd/hub &
 
       # Conditional Unit Tests
