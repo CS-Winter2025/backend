@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using CourseProject.Data;
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddDbContext<DBContext>(options =>
+builder.Services.AddDbContext<CourseProject.DatabaseContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DBContext' not found.")));
 
 // Add services to the container.
@@ -11,7 +11,7 @@ builder.Services.AddControllersWithViews();
 var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
-    var dbContext = scope.ServiceProvider.GetRequiredService<CourseProject.Data.DBContext>();
+    var dbContext = scope.ServiceProvider.GetRequiredService<CourseProject.DatabaseContext>();
     dbContext.Database.EnsureCreated();
 }
 
@@ -34,6 +34,11 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
+
+app.MapAreaControllerRoute(
+    name: "Calendar",
+    areaName: "Calendar",
+    pattern: "Calendar/{controller=EventSchedules}/{action=Index}/{id?}");
 
 
 app.Run();
