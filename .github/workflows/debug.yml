@@ -18,8 +18,6 @@ jobs:
       configuration: Debug
       dotnet_version: "9.0.x"
       project_path: CourseProject/CourseProject.csproj
-      unit_test_project_path: CourseProjectTest/CourseProjectTest.csproj
       ui_test_project_path: CourseProjectTest/CourseProjectTest.csproj
-      run_unit_tests: true
-      run_ui_tests: false
+      run_ui_tests: true
       run_static_analysis: false

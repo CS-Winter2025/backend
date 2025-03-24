@@ -16,6 +16,5 @@ jobs:
       configuration: Release
       dotnet_version: "9.0.x"
       project_path: CourseProject/CourseProject.csproj # example csproj file path
-      run_unit_tests: false
       run_ui_tests: false
       run_static_analysis: false
