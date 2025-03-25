@@ -54,14 +54,31 @@ jobs:
       - name: Build application (${{ inputs.configuration }})
         run: dotnet build ${{ inputs.project_path }} -c ${{ inputs.configuration }} --no-restore
 
-      # Setup Chrome and ChromeDriver (cross-platform support)
-      - name: Setup Chrome and ChromeDriver
-        if: ${{ inputs.run_ui_tests && inputs.ui_test_project_path != '' }}
-        uses: browser-actions/setup-chrome@v1
-        with:
-          chrome-version: dev
-          install-chromedriver: true
-          install-dependencies: true
+      - name: Setup Chrome on Linux
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+          sudo apt install -y ./google-chrome-stable_current_amd64.deb
+          google-chrome --version
+
+      - name: Setup ChromeDriver on Linux
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          CHROMEDRIVER_VERSION=134.0.6998.88
+          wget -N "https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip"
+          unzip chromedriver_linux64.zip
+          sudo mv chromedriver /usr/local/bin/chromedriver
+          sudo chmod +x /usr/local/bin/chromedriver
+          chromedriver --version
+
+      - name: Setup Chrome and ChromeDriver on Windows
+        if: matrix.os == 'windows-latest'
+        run: |
+          choco install googlechrome -y
+          choco install chromedriver --version=134.0.6998.88 -y
+          google-chrome --version
+          chromedriver --version
 
       - name: Output Chrome Info
         run: |
