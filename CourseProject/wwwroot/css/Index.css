@@ -1,0 +1,92 @@
+﻿
+
+/* === Table container === */
+table.datatable {
+    background-color: #fff8f0 !important;
+    color: #5a2a1e !important;
+    font-size: 0.95rem;
+}
+
+/* === Table Borders === */
+table.datatable td,
+table.datatable th {
+    border: 1px solid #8b4513 !important;
+}
+
+/* === Table headers === */
+table.datatable thead th {
+    background-color: #ffd9a0 !important;
+    color: #5a2a1e !important;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* === Table body cells === */
+table.datatable tbody td {
+    background-color: #fff2e1 !important;
+    color: #6b2e1f !important;
+}
+
+/* === Row hover === */
+table.datatable tbody tr:hover {
+    background-color: #ffe5cc !important;
+}
+
+/* === Pagination buttons (default state) === */
+ul.pagination li.dt-paging-button.page-item .page-link {
+    background-color: #e589263b !important;
+    color: #5a2a1e !important;
+    border: 1px solid #f4a261 !important;
+    border-radius: 4px;
+}
+
+/* === Pagination buttons (hover) === */
+ul.pagination li.dt-paging-button.page-item .page-link:hover {
+    background-color: #f4a261 !important;
+    color: #fffef8 !important;
+}
+
+/* === Pagination button (active/selected) === */
+ul.pagination li.dt-paging-button.page-item.active .page-link {
+    background-color: #e76f51 !important;
+    color: #fffef8 !important;
+    border-color: #e76f51 !important;
+    font-weight: bold;
+    box-shadow: 0 0 4px rgba(231, 111, 81, 0.4);
+}
+
+/* === Entries Dropdown (length select) === */
+select.form-select.form-select-sm {
+    background-color: #fff2e1;
+    color: #5a2a1e;
+    border: 1px solid #f4a261;
+    border-radius: 4px;
+    font-size: 0.95rem;
+}
+
+/* === Search Input === */
+input.form-control.form-control-sm[type="search"] {
+    background-color: #fff2e1;
+    color: #5a2a1e;
+    border: 1px solid #f4a261;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    padding: 6px 10px;
+}
+
+/* === Focus State (optional) === */
+input.form-control.form-control-sm[type="search"]:focus,
+select.form-select.form-select-sm:focus {
+    outline: none;
+    border-color: #e76f51;
+    box-shadow: 0 0 4px rgba(231, 111, 81, 0.5);
+}
+
+/* === Label Text === */
+label[for^="dt-length"],
+label[for^="dt-search"],
+div.dt-info {
+    color: #5a2a1e;
+    font-weight: 500;
+    font-size: 0.95rem;
+}
