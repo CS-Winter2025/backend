@@ -3,7 +3,7 @@ namespace CourseProject.Models;
 public class EventSchedule : ScheduleBase
 {
     
-    public int EventEventScheduleId { get; set; }
+    public int EventScheduleId { get; set; }
     public int EmployeeID { get; set; } // Foreign Key (Stored in DB)
     public Employee Employee { get; set; } // Navigation Property (Not stored)
 
