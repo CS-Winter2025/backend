@@ -59,7 +59,7 @@ jobs:
         if: ${{ inputs.run_ui_tests && inputs.ui_test_project_path != '' }}
         uses: browser-actions/setup-chrome@v1
         with:
-          chrome-version: latest
+          chrome-version: dev
           install-chromedriver: true
           install-dependencies: true
 
