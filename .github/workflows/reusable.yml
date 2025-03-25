@@ -54,19 +54,19 @@ jobs:
       - name: Build application (${{ inputs.configuration }})
         run: dotnet build ${{ inputs.project_path }} -c ${{ inputs.configuration }} --no-restore
 
-      # Setup Chrome (cross-platform support)
-      - name: Setup Chrome
+      # Setup Chrome and ChromeDriver (cross-platform support)
+      - name: Setup Chrome and ChromeDriver
         if: ${{ inputs.run_ui_tests && inputs.ui_test_project_path != '' }}
         uses: browser-actions/setup-chrome@v1
         with:
+          chrome-version: canary
+          install-chromedriver: true
           install-dependencies: true
 
-        # Setup ChromeDriver (cross-platform support)
-      - name: Setup ChromeDriver
-        if: ${{ inputs.run_ui_tests && inputs.ui_test_project_path != '' }}
-        uses: nanasess/setup-chromedriver@v2
-        with:
-          chromeapp: chrome
+      - name: Output Chrome Info
+        run: |
+          google-chrome --version
+          chromedriver --version
 
       # Run ChromeDriver in the background on Ubuntu
       - name: Start ChromeDriver on Ubuntu
