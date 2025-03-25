@@ -23,10 +23,7 @@
                     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                @await Html.PartialAsync("_Popover", new Popover {
-                Content = "This is a helpful test message.",
-                                Title = "Need help?"
-                                })
+                <popover content='Helpful info.' title='Need help?' />
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
