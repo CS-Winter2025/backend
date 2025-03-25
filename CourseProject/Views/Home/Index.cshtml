@@ -1,8 +1,16 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
+
+    var mockData = new List<dynamic>
+    {
+        new { ID = 1, FirstName = "John", LastName = "Doe", Age = 30, Email = "john.doe@example.com" },
+        new { ID = 2, FirstName = "Jane", LastName = "Smith", Age = 28, Email = "jane.smith@example.com" },
+        new { ID = 3, FirstName = "Alice", LastName = "Johnson", Age = 35, Email = "alice.johnson@example.com" },
+        new { ID = 4, FirstName = "Bob", LastName = "Brown", Age = 40, Email = "bob.brown@example.com" }
+    };
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+
+<h2 class="text-center">Mock User Table</h2>
+
+<data-table items="@mockData"></data-table>
