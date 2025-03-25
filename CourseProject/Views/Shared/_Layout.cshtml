@@ -10,9 +10,10 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <!-- Site CSS -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/MVCSamCourseProjectpleApp.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/CourseProject.styles.css" asp-append-version="true" />
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.bootstrap5.min.css" />
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
     <header>
@@ -61,7 +62,7 @@
     <script src="https://cdn.datatables.net/2.2.2/js/dataTables.bootstrap5.min.js"></script>
     <!-- jQuery Validation -->
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
-    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    <script asp-src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
     <!-- App Scripts -->
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
