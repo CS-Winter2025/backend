@@ -7,6 +7,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Views\Employees\**" />
+    <Content Remove="Views\Employees\**" />
+    <EmbeddedResource Remove="Views\Employees\**" />
+    <None Remove="Views\Employees\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Controllers\EmployeeController.cs" />
+    <Compile Remove="Controllers\EmployeesController.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="EntityFramework" Version="6.5.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.0">
@@ -23,9 +35,7 @@
     <Folder Include="Areas\Charges\Controllers\" />
     <Folder Include="Areas\Charges\Data\" />
     <Folder Include="Areas\Charges\Views\" />
-    <Folder Include="Areas\Employees\Controllers\" />
     <Folder Include="Areas\Employees\Data\" />
-    <Folder Include="Areas\Employees\Views\" />
     <Folder Include="Areas\Housing\Data\" />
     <Folder Include="Areas\Services\Controllers\" />
     <Folder Include="Areas\Services\Data\" />
