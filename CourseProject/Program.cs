@@ -10,7 +10,6 @@ builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-app.UseStaticFiles();
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
@@ -44,7 +43,9 @@ app.MapControllerRoute(
 app.MapAreaControllerRoute(
     name: "Employees",
     areaName: "Employees",
-    pattern: "Employees/{controller=Employee}/{action=Index}/{id?}");
+    pattern: "Employees/{action=Index}/{id?}",
+    defaults: new { controller = "Employees" });
+
 
 
 app.Run();
