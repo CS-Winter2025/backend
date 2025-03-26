@@ -1,17 +1,19 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using CourseProject.Data;
+using CourseProject;
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddDbContext<DBContext>(options =>
+builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DBContext' not found.")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
+
+app.UseStaticFiles();
 using (var scope = app.Services.CreateScope())
 {
-    var dbContext = scope.ServiceProvider.GetRequiredService<CourseProject.Data.DBContext>();
+    var dbContext = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
     dbContext.Database.EnsureCreated();
 }
 
@@ -23,17 +25,26 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+
 app.UseHttpsRedirection();
 app.UseRouting();
+
 
 app.UseAuthorization();
 
 app.MapStaticAssets();
 
+
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
+
+app.MapAreaControllerRoute(
+    name: "Employees",
+    areaName: "Employees",
+    pattern: "Employees/{controller=Employee}/{action=Index}/{id?}");
 
 
 app.Run();
