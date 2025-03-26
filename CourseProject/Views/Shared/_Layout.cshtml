@@ -13,13 +13,15 @@
     <link rel="stylesheet" href="~/CourseProject.styles.css" asp-append-version="true" />
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.bootstrap5.min.css" />
+    <!-- Master CSS -->
+    <link rel="stylesheet" href="~/css/reset.css" asp-append-version="true" />
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">CourseProject</a>
+                <a class="navbar-brand titleFont navTitle" asp-area="" asp-controller="Home" asp-action="Index">CourseProject</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
                     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -28,18 +30,18 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark headerFont" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home"
+                            <a class="nav-link text-dark headerFont" asp-area="" asp-controller="Home"
                                 asp-action="Privacy">Privacy</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="Services" asp-controller="Services"
+                            <a class="nav-link text-dark headerFont" asp-area="Services" asp-controller="Services"
                                asp-action="Index">Services</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="Charges" asp-controller="Invoices"
+                            <a class="nav-link text-dark headerFont" asp-area="Charges" asp-controller="Invoices"
                                asp-action="Index">Charges</a>
                         </li>
                     </ul>
@@ -54,8 +56,8 @@
     </div>
 
     <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - CourseProject - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        <div class="container fs-6">
+            &copy; 2025 - CourseProject - <a class="fs-6" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
     <!-- Core Dependencies -->
