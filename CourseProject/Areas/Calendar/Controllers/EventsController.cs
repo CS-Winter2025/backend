@@ -23,11 +23,13 @@ namespace CourseProject.Areas.Calendar.Controllers
 
         // GET api/events
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult Get(int? employeeId)
         {
+            Console.WriteLine("IN GET: " +  employeeId);
             var data = _context.EventSchedules
             .Include(e => e.Employees) // Ensure Employees are included
             .Include(e => e.Service)
+            .Where(e => e.Employees.Any(emp => emp.EmployeeId == employeeId))
             .ToList()
             .Select(e => new WebAPIEvent
             {

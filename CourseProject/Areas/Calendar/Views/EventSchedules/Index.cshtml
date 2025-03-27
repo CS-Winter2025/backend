@@ -55,7 +55,7 @@
     })
 
     // load data from backend
-    scheduler.load("/api/events");
+    scheduler.load("/api/events?employeeId=" + @ViewData["EmployeeID"]);
     // connect backend to scheduler
     var dp = scheduler.createDataProcessor({
         url: "/api/events",
