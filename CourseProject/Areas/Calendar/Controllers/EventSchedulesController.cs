@@ -24,7 +24,7 @@ namespace CourseProject.Areas.Calendar.Controllers
         public async Task<IActionResult> Index()
         {
             Console.WriteLine("IN GET");
-            var databaseContext = _context.EventSchedules.Include(e => e.Employee).Include(e => e.Service);
+            var databaseContext = _context.EventSchedules.Include(e => e.Employees).Include(e => e.Service);
             return View(await databaseContext.ToListAsync());
         }
 
@@ -37,7 +37,7 @@ namespace CourseProject.Areas.Calendar.Controllers
             }
 
             var eventSchedule = await _context.EventSchedules
-                .Include(e => e.Employee)
+                .Include(e => e.Employees)
                 .Include(e => e.Service)
                 .FirstOrDefaultAsync(m => m.EventScheduleId == id);
             if (eventSchedule == null)
@@ -69,7 +69,7 @@ namespace CourseProject.Areas.Calendar.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EmployeeID"] = new SelectList(_context.Employees, "EmployeeId", "EmployeeId", eventSchedule.EmployeeID);
+            //ViewData["EmployeeID"] = new SelectList(_context.Employees, "EmployeeId", "EmployeeId", eventSchedule.EmployeeID);
             ViewData["ServiceID"] = new SelectList(_context.Services, "ServiceID", "ServiceID", eventSchedule.ServiceID);
             return View(eventSchedule);
         }
@@ -87,7 +87,7 @@ namespace CourseProject.Areas.Calendar.Controllers
             {
                 return NotFound();
             }
-            ViewData["EmployeeID"] = new SelectList(_context.Employees, "EmployeeId", "EmployeeId", eventSchedule.EmployeeID);
+            //ViewData["EmployeeID"] = new SelectList(_context.Employees, "EmployeeId", "EmployeeId", eventSchedule.EmployeeID);
             ViewData["ServiceID"] = new SelectList(_context.Services, "ServiceID", "ServiceID", eventSchedule.ServiceID);
             return View(eventSchedule);
         }
@@ -124,7 +124,7 @@ namespace CourseProject.Areas.Calendar.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EmployeeID"] = new SelectList(_context.Employees, "EmployeeId", "EmployeeId", eventSchedule.EmployeeID);
+            //ViewData["EmployeeID"] = new SelectList(_context.Employees, "EmployeeId", "EmployeeId", eventSchedule.EmployeeID);
             ViewData["ServiceID"] = new SelectList(_context.Services, "ServiceID", "ServiceID", eventSchedule.ServiceID);
             return View(eventSchedule);
         }
@@ -138,7 +138,7 @@ namespace CourseProject.Areas.Calendar.Controllers
             }
 
             var eventSchedule = await _context.EventSchedules
-                .Include(e => e.Employee)
+                .Include(e => e.Employees)
                 .Include(e => e.Service)
                 .FirstOrDefaultAsync(m => m.EventScheduleId == id);
             if (eventSchedule == null)
