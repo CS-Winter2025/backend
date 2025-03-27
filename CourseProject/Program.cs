@@ -1,18 +1,18 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using CourseProject.Data;
-using CourseProject.Areas.Calendar.Models;
+using CourseProject;
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddDbContext<CourseProject.DatabaseContext>(options =>
+builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DBContext' not found.")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
+
 using (var scope = app.Services.CreateScope())
 {
-    var dbContext = scope.ServiceProvider.GetRequiredService<CourseProject.DatabaseContext>();
+    var dbContext = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
     dbContext.Database.EnsureCreated();
 }
 
@@ -24,8 +24,11 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseStatusCodePagesWithReExecute("/error/{0}");
+
 app.UseHttpsRedirection();
 app.UseRouting();
+
 
 app.UseAuthorization();
 
@@ -43,5 +46,20 @@ app.MapAreaControllerRoute(
     areaName: "Calendar",
     pattern: "Calendar/{controller=EventSchedules}/{action=Index}/{id?}");
 
+app.MapAreaControllerRoute(
+    name: "Employees",
+    areaName: "Employees",
+    pattern: "Employees/{action=Index}/{id?}",
+    defaults: new { controller = "Employees" });
+app.MapAreaControllerRoute(
+    name: "Services",
+    areaName: "Services",
+    pattern: "{controller=Services}/{action=Index}/{id?}")
+    .WithStaticAssets();
+app.MapAreaControllerRoute(
+    name: "Charges",
+    areaName: "Charges",
+    pattern: "{controller=Invoices}/{action=Index}/{id?}")
+    .WithStaticAssets();
 
 app.Run();
