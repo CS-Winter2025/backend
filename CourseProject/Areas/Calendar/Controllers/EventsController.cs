@@ -23,13 +23,23 @@ namespace CourseProject.Areas.Calendar.Controllers
 
         // GET api/events
         [HttpGet]
-        public IEnumerable<WebAPIEvent> Get()
+        public IActionResult Get()
         {
-            return _context.EventSchedules
+            var data = _context.EventSchedules
                 .Include(e => e.Employee)
                 .Include(e => e.Service)
                 .ToList()
                 .Select(e => (WebAPIEvent)e);
+
+            var services = _context.Services
+                .Select(s => new
+                {
+                    value = s.ServiceID,
+                    label = s.Type
+                })
+                .ToList();
+
+            return Ok(new { data, collections = new { services } });
         }
 
         // GET api/events/5
@@ -45,7 +55,37 @@ namespace CourseProject.Areas.Calendar.Controllers
         [HttpPost]
         public ObjectResult Post([FromBody] WebAPIEvent apiEvent)
         {
+            if (apiEvent == null || string.IsNullOrEmpty(apiEvent.employee_ids))
+            {
+                return BadRequest("Invalid event data or missing employee IDs.");
+            }
+
+            // Parse employeeIds into a list of integers
+            var employeeIdList = apiEvent.employee_ids
+                .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                .Select(id => int.TryParse(id.Trim(), out var parsedId) ? parsedId : (int?)null)
+                .Where(id => id.HasValue)
+                .Select(id => id.Value)
+                .ToList();
+
+            if (!employeeIdList.Any())
+            {
+                return BadRequest("No valid employee IDs provided.");
+            }
+
+            // Find the first valid employee ID in the database
+            var validEmployeeId = _context.Employees
+                .Where(e => employeeIdList.Contains(e.EmployeeId))
+                .Select(e => e.EmployeeId)
+                .FirstOrDefault();
+
+            if (validEmployeeId == 0)
+            {
+                return BadRequest("No valid employee ID found in the database.");
+            }
+
             var newEvent = (EventSchedule)apiEvent;
+            newEvent.EmployeeID = validEmployeeId;
 
             _context.EventSchedules.Add(newEvent);
             _context.SaveChanges();

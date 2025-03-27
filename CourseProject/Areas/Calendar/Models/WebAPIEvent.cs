@@ -7,6 +7,8 @@
         public string? start_date { get; set; }
         public string? end_date { get; set; }
         public string? rrule { get; set; }
+        public int? service_id { get; set; }
+        public string? employee_ids { get; set; }
 
         public static explicit operator WebAPIEvent(EventSchedule ev)
         {
@@ -16,7 +18,9 @@
                 text = ev.Service.Type,
                 start_date = ev.StartDate.ToString("yyyy-MM-dd HH:mm"),
                 end_date = ev.EndDate.ToString("yyyy-MM-dd HH:mm"),
-                rrule = ev.RepeatPattern
+                rrule = ev.RepeatPattern,
+                employee_ids = ev.EmployeeID.ToString(),
+                service_id = ev.ServiceID
             };
         }
 
@@ -25,9 +29,9 @@
             return new EventSchedule
             {
                 EventScheduleId = ev.id,
-                ServiceID = 1,
+                ServiceID = ev.service_id,
                 //Service.Type = ev.text,
-                EmployeeID = 1,
+                //EmployeeID = 1,
                 StartDate = ev.start_date != null ? DateTime.Parse(ev.start_date,
                   System.Globalization.CultureInfo.InvariantCulture) : new DateTime(),
                 EndDate = ev.end_date != null ? DateTime.Parse(ev.end_date,
