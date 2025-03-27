@@ -24,6 +24,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseStatusCodePagesWithReExecute("/error/{0}");
 
 app.UseHttpsRedirection();
 app.UseRouting();
@@ -39,13 +40,20 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
-
 app.MapAreaControllerRoute(
     name: "Employees",
     areaName: "Employees",
     pattern: "Employees/{action=Index}/{id?}",
     defaults: new { controller = "Employees" });
-
-
+app.MapAreaControllerRoute(
+    name: "Services",
+    areaName: "Services",
+    pattern: "{controller=Services}/{action=Index}/{id?}")
+    .WithStaticAssets();
+app.MapAreaControllerRoute(
+    name: "Charges",
+    areaName: "Charges",
+    pattern: "{controller=Invoices}/{action=Index}/{id?}")
+    .WithStaticAssets();
 
 app.Run();

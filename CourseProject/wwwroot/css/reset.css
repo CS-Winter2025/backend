@@ -1,0 +1,48 @@
+@import url('https://fonts.googleapis.com/css2?family=Telex&family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700&family=Trochut:ital,wght@0,400;0,700;1,400&display=swap');
+
+.title {
+    font-size: 60px;
+}
+
+.titleFont {
+    font-family: "Trochut", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.header {
+    font-size: 40px;
+}
+
+.headerFont {
+    font-family: "Titillium Web", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+* {
+    margin: 0; padding: 0; box-sizing: border-box;
+    transition-duration: 0.3s;
+    font-family: "Telex", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 20px;
+}
+
+.dark {
+    background-color: #253031;
+    color: #F7F7FF;
+}
+
+.light {
+    background-color: #F7F7FF;
+    color: #253031;
+}
+
+.buttons {
+    padding: 15px 30px;
+}
+
+.navTitle {
+    font-size: 25px;
+}

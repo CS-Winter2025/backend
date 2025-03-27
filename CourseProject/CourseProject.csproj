@@ -20,6 +20,9 @@
 
   <ItemGroup>
     <PackageReference Include="EntityFramework" Version="6.5.1" />
+    <PackageReference Include="jQuery" Version="3.7.1" />
+    <PackageReference Include="jquery.datatables" Version="1.10.15" />
+    <PackageReference Include="jQuery.Validation" Version="1.21.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.0">
       <PrivateAssets>all</PrivateAssets>
@@ -32,14 +35,13 @@
     <Folder Include="Areas\Calendar\Controllers\" />
     <Folder Include="Areas\Calendar\Data\" />
     <Folder Include="Areas\Calendar\Views\" />
-    <Folder Include="Areas\Charges\Controllers\" />
     <Folder Include="Areas\Charges\Data\" />
     <Folder Include="Areas\Charges\Views\" />
+    <Folder Include="Areas\Employees\Controllers\" />
     <Folder Include="Areas\Employees\Data\" />
     <Folder Include="Areas\Housing\Data\" />
-    <Folder Include="Areas\Services\Controllers\" />
     <Folder Include="Areas\Services\Data\" />
-    <Folder Include="Areas\Services\Views\" />
+    <Folder Include="Data\" />
   </ItemGroup>
 
 </Project>
