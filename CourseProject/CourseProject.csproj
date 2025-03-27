@@ -7,9 +7,24 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Views\Employees\**" />
+    <Content Remove="Views\Employees\**" />
+    <EmbeddedResource Remove="Views\Employees\**" />
+    <None Remove="Views\Employees\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Controllers\EmployeeController.cs" />
+    <Compile Remove="Controllers\EmployeesController.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="EntityFramework" Version="6.5.1" />
     <PackageReference Include="Microsoft.AspNet.Identity.Core" Version="2.2.4" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.3" />
+    <PackageReference Include="jQuery" Version="3.7.1" />
+    <PackageReference Include="jquery.datatables" Version="1.10.15" />
+    <PackageReference Include="jQuery.Validation" Version="1.21.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.0">
       <PrivateAssets>all</PrivateAssets>
@@ -19,20 +34,19 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Calendar\Controllers\" />
     <Folder Include="Areas\Calendar\Data\" />
-    <Folder Include="Areas\Calendar\Views\" />
     <Folder Include="Areas\Charges\Controllers\" />
+    <Folder Include="Areas\Calendar\Views\" />
     <Folder Include="Areas\Charges\Data\" />
     <Folder Include="Areas\Charges\Views\" />
     <Folder Include="Areas\Employees\Controllers\" />
     <Folder Include="Areas\Employees\Data\" />
-    <Folder Include="Areas\Employees\Views\" />
     <Folder Include="Areas\Housing\Data\" />
     <Folder Include="Areas\Housing\Views\" />
+    <Folder Include="Areas\Housing\Controllers\" />
     <Folder Include="Areas\Services\Controllers\" />
     <Folder Include="Areas\Services\Data\" />
-    <Folder Include="Areas\Services\Views\" />
+    <Folder Include="Data\" />
   </ItemGroup>
 
 </Project>
