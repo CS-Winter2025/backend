@@ -281,6 +281,66 @@ namespace UnitTests.ControllerTests
             Assert.That(unchangedEmployee.Name, Is.EqualTo("Original Name"));
         }
 
-       
+        // ----- Delete Tests -----
+
+        [Test]
+        public async Task Delete_Get_ValidId_ReturnsViewResult_WithEmployee()
+        {
+            var organization = new Organization { OrganizationId = 1 };
+            _context.Organizations.Add(organization);
+            await _context.SaveChangesAsync();
+
+            var employee = new Employee
+            {
+                EmployeeId = 1,
+                Name = "Delete Employee",
+                JobTitle = "Tester",
+                EmploymentType = "Full-Time",
+                OrganizationId = 1
+            };
+            _context.Employees.Add(employee);
+            await _context.SaveChangesAsync();
+
+            var result = await _controller.Delete(1);
+
+            Assert.That(result, Is.InstanceOf<ViewResult>());
+            var viewResult = result as ViewResult;
+            var model = viewResult?.Model as Employee;
+            Assert.That(model, Is.Not.Null);
+            Assert.That(model.EmployeeId, Is.EqualTo(1));
+            Assert.That(model.Name, Is.EqualTo("Delete Employee"));
+        }
+
+        [Test]
+        public async Task Delete_Get_NullId_ReturnsNotFound()
+        {
+            var result = await _controller.Delete(null);
+
+            Assert.That(result, Is.InstanceOf<NotFoundResult>());
+        }
+
+        [Test]
+        public async Task Delete_Post_DeletesEmployee_AndRedirects()
+        {
+            var employee = new Employee
+            {
+                EmployeeId = 1,
+                Name = "Delete Employee",
+                JobTitle = "Tester",
+                EmploymentType = "Full-Time",
+                OrganizationId = 1
+            };
+            _context.Employees.Add(employee);
+            await _context.SaveChangesAsync();
+
+            var result = await _controller.DeleteConfirmed(1);
+
+            Assert.That(result, Is.InstanceOf<RedirectToActionResult>());
+            var redirectResult = result as RedirectToActionResult;
+            Assert.That(redirectResult?.ActionName, Is.EqualTo("Index"));
+
+            var deletedEmployee = await _context.Employees.FindAsync(1);
+            Assert.That(deletedEmployee, Is.Null);
+        }
     }
 }
