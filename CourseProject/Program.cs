@@ -35,7 +35,7 @@ app.UseAuthorization();
 
 app.MapStaticAssets();
 
-app.InitializeCalendarDatabase();
+//app.InitializeCalendarDatabase();
 
 app.MapControllerRoute(
     name: "default",
