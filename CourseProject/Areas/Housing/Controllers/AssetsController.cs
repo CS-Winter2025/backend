@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using CourseProject.Models;
 
-namespace CourseProject
+namespace CourseProject.Areas.Housing.Controllers
 {
+    [Area("Housing")]
     public class AssetsController : Controller
     {
         private readonly DatabaseContext _context;
@@ -120,7 +120,7 @@ namespace CourseProject
 
                     //Update asset status
                     var asset = await _context.Assets.FindAsync(assetId);
-                    
+
                 }
             }
 

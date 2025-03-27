@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CourseProject.Areas.Housing.Controllers
 {
+    [Area("Housing")]
     public class ResidentAssetsController : Controller
     {
         private readonly DatabaseContext _context;

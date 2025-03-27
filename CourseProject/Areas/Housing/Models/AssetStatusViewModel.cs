@@ -1,5 +1,4 @@
 ﻿
-using CourseProject.Models;
 
 public class AssetStatusViewModel
 {

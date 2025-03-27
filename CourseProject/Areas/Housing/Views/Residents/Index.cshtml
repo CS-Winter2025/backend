@@ -1,9 +1,9 @@
 ﻿@{
-    var currentResidents = ViewBag.CurrentResidents as List<CourseProject.Models.Resident>;
-    var pastResidents = ViewBag.PastResidents as List<CourseProject.Models.Resident>;
+    var currentResidents = ViewBag.CurrentResidents as List<Resident>;
+    var pastResidents = ViewBag.PastResidents as List<Resident>;
 }
 
-<a asp-area="Housing" asp-controller="Residents" asp-action="Create">Create New</a>
+<a asp-area="Housing"  asp-action="Create">Create New</a>
 
 <h2>Current Residents</h2>
 <table class="table">
@@ -67,7 +67,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var resident in (ViewBag.UnassignedResidents as List<CourseProject.Models.Resident>))
+        @foreach (var resident in (ViewBag.UnassignedResidents as List<Resident>))
         {
             <tr>
                 <td>@resident.Name</td>
