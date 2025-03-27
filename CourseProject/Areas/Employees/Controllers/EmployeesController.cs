@@ -50,28 +50,35 @@ namespace CourseProject.Areas.Employees.Controllers
         // GET: Employees/Employees/Create
         public IActionResult Create()
         {
-            ViewData["ManagerId"] = new SelectList(_context.Employees, "EmployeeId", "EmployeeId");
-            ViewData["OrganizationId"] = new SelectList(_context.Organizations, "OrganizationId", "OrganizationId");
+            ViewBag.ManagerId = new SelectList(_context.Employees, "EmployeeId", "EmployeeId");
+            ViewBag.OrganizationId = new SelectList(_context.Organizations, "OrganizationId", "OrganizationId");
             return View();
         }
+
 
         // POST: Employees/Employees/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("EmployeeId,ManagerId,JobTitle,EmploymentType,PayRate,Availability,HoursWorked,Certifications,OrganizationId,Name,DetailsJson")] Employee employee)
+        public async Task<IActionResult> Create([Bind("EmployeeId,ManagerId,JobTitle,EmploymentType,PayRate,Availability,HoursWorked,Certifications,OrganizationId,Name,DetailsJson")] Employee employee, string Certifications)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
+                // Convert the string input into a list
+                employee.Certifications = Certifications?.Split(',').Select(c => c.Trim()).ToList() ?? new List<string>();
+
                 _context.Add(employee);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["ManagerId"] = new SelectList(_context.Employees, "EmployeeId", "EmployeeId", employee.ManagerId);
             ViewData["OrganizationId"] = new SelectList(_context.Organizations, "OrganizationId", "OrganizationId", employee.OrganizationId);
+
             return View(employee);
         }
+
 
         // GET: Employees/Employees/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -86,8 +93,16 @@ namespace CourseProject.Areas.Employees.Controllers
             {
                 return NotFound();
             }
+
+            
+
+            // Pass the data to the view
             ViewData["ManagerId"] = new SelectList(_context.Employees, "EmployeeId", "EmployeeId", employee.ManagerId);
             ViewData["OrganizationId"] = new SelectList(_context.Organizations, "OrganizationId", "OrganizationId", employee.OrganizationId);
+
+            ViewBag.Availability = string.Join(", ", employee.Availability);
+            ViewBag.Certifications = string.Join(", ", employee.Certifications);
+            ViewBag.HoursWorked = string.Join(", ", employee.HoursWorked);
             return View(employee);
         }
 
@@ -98,12 +113,12 @@ namespace CourseProject.Areas.Employees.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("EmployeeId,ManagerId,JobTitle,EmploymentType,PayRate,Availability,HoursWorked,Certifications,OrganizationId,Name,DetailsJson")] Employee employee)
         {
-            if (id != employee.EmployeeId)
-            {
-                return NotFound();
-            }
+            //if (id != employee.EmployeeId)
+            //{
+            //    return NotFound();
+            //}
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 try
                 {
@@ -148,20 +163,25 @@ namespace CourseProject.Areas.Employees.Controllers
             return View(employee);
         }
 
-        // POST: Employees/Employees/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var employee = await _context.Employees.FindAsync(id);
-            if (employee != null)
+            if (employee == null)
             {
-                _context.Employees.Remove(employee);
+                Console.WriteLine($"Employee with ID {id} not found!");
+                return RedirectToAction(nameof(Index)); // Ensure you're not just silently failing
             }
 
+            Console.WriteLine($"Deleting Employee: {employee.EmployeeId} - {employee.Name}");
+
+            _context.Employees.Remove(employee);
             await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
+
 
         private bool EmployeeExists(int id)
         {
