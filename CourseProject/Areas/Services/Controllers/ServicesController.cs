@@ -87,7 +87,7 @@ namespace CourseProject.Areas.Services.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ServiceID,Type,Rate,Requirements")] Service service)
+        public async Task<IActionResult> Edit([Bind(Prefix = "ServiceID")] int id, [Bind("ServiceID,Type,Rate,Requirements")] Service service)
         {
             if (id != service.ServiceID)
             {
@@ -138,12 +138,12 @@ namespace CourseProject.Areas.Services.Controllers
         // POST: Services/Services/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed([Bind(Prefix = "ServiceID")] int id)
         {
             var service = await _context.Services.FindAsync(id);
             if (service != null)
             {
-                _context.Services.Remove(service);
+                _context.Services.Remove(service);                
             }
 
             await _context.SaveChangesAsync();
