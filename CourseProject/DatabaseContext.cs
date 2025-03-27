@@ -72,7 +72,7 @@ namespace CourseProject
                 new Employee { EmployeeId = 2, Name = "Bob", JobTitle = "Developer", EmploymentType = "Full-Time", PayRate = 50000, OrganizationId = 1, ManagerId = 1 }
             );
 
-            // Seed Residents
+            //// Seed Residents
             modelBuilder.Entity<Resident>().HasData(
                 new Resident { ResidentId = 1, Name = "Charlie" },
                 new Resident { ResidentId = 2, Name = "Diana" }

@@ -5,6 +5,7 @@ namespace CourseProject.Models;
 
 public class Employee : Person
 {
+
     public int EmployeeId { get; set; } // Primary Key
 
     public int? ManagerId { get; set; }  // Foreign Key (Stored in DB)

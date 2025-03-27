@@ -9,6 +9,7 @@ builder.Services.AddDbContext<DatabaseContext>(options =>
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
+
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
@@ -25,18 +26,25 @@ if (!app.Environment.IsDevelopment())
 
 app.UseStatusCodePagesWithReExecute("/error/{0}");
 
-
 app.UseHttpsRedirection();
 app.UseRouting();
+
 
 app.UseAuthorization();
 
 app.MapStaticAssets();
 
+
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
+app.MapAreaControllerRoute(
+    name: "Employees",
+    areaName: "Employees",
+    pattern: "Employees/{action=Index}/{id?}",
+    defaults: new { controller = "Employees" });
 app.MapAreaControllerRoute(
     name: "Services",
     areaName: "Services",
