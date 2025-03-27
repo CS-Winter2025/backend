@@ -60,6 +60,12 @@ namespace CourseProject.Areas.Charges.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("InvoiceID,ResidentID,Date,AmountDue,AmountPaid")] Invoice invoice)
         {
+            Resident? resident = await _context.Residents.FindAsync(invoice.ResidentID);
+            if (resident == null) return View(invoice);
+            else ModelState.SetModelValue("Resident", resident, null);
+
+            ModelState.Remove(nameof(invoice.Resident));
+
             if (ModelState.IsValid)
             {
                 _context.Add(invoice);
@@ -92,12 +98,18 @@ namespace CourseProject.Areas.Charges.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("InvoiceID,ResidentID,Date,AmountDue,AmountPaid")] Invoice invoice)
+        public async Task<IActionResult> Edit([Bind(Prefix = "InvoiceID")] int id, [Bind("InvoiceID,ResidentID,Date,AmountDue,AmountPaid")] Invoice invoice)
         {
             if (id != invoice.InvoiceID)
             {
                 return NotFound();
             }
+
+            Resident? resident = await _context.Residents.FindAsync(invoice.ResidentID);
+            if (resident == null) return View(invoice);
+            else ModelState.SetModelValue("Resident", resident, null);
+
+            ModelState.Remove(nameof(invoice.Resident));
 
             if (ModelState.IsValid)
             {
@@ -145,8 +157,9 @@ namespace CourseProject.Areas.Charges.Controllers
         // POST: Charges/Invoices/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed([Bind(Prefix = "InvoiceID")] int id)
         {
+            Console.WriteLine(id);
             var invoice = await _context.Invoices.FindAsync(id);
             if (invoice != null)
             {
