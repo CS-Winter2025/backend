@@ -20,6 +20,9 @@ namespace CourseProject
         public DbSet<ResidentAssetRequest> ResidentAssetRequests { get; set; }
 
 
+        public DbSet<User> Users { get; set; }
+
+
         public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
         {
         }

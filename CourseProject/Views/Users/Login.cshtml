@@ -1,0 +1,17 @@
+﻿@model CourseProject.Models.User
+
+<h2>Login</h2>
+<form asp-action="Login" method="post">
+    <label>Username:</label>
+    <input asp-for="Username" required />
+
+    <label>Password:</label>
+    <input asp-for="Password" type="password" required />
+
+    <button type="submit">Login</button>
+</form>
+
+@if (ViewBag.Error != null)
+{
+    <p style="color:red">@ViewBag.Error</p>
+}

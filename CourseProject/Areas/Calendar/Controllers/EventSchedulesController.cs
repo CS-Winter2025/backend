@@ -23,6 +23,10 @@ namespace CourseProject.Areas.Calendar.Controllers
         // GET: Calendar/EventSchedules
         public async Task<IActionResult> Index(int? employeeId)
         {
+            if (HttpContext.Session.GetString("Username") == null)
+            {
+                return RedirectToAction("Login", "Users"); // Redirect to login if not logged in
+            }
             string employeeName = string.Empty;
 
             if (employeeId.HasValue)
