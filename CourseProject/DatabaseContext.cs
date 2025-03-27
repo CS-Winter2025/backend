@@ -40,11 +40,17 @@ namespace CourseProject
                 .HasMany(es => es.Employees)
                 .WithMany(e => e.EventSchedules)
                 .UsingEntity<Dictionary<string, object>>(
-                    "EventScheduleEmployee",
-                    e => e.HasData(
-                        new { EventScheduleId = 1, EmployeeId = 1 },
-                        new { EventScheduleId = 1, EmployeeId = 2 }
-                    )
+                    "EventScheduleEmployee", // Junction table name
+                    r => r.HasOne<Employee>().WithMany().HasForeignKey("EmployeeId"), // Foreign key for Employee
+                    r => r.HasOne<EventSchedule>().WithMany().HasForeignKey("EventScheduleId"), // Foreign key for EventSchedule
+                    r =>
+                    {
+                        // Seed data for the junction table
+                        r.HasData(
+                            new { EventScheduleId = 1, EmployeeId = 1 },
+                            new { EventScheduleId = 1, EmployeeId = 2 }
+                        );
+                    }
                 );
 
             modelBuilder.Entity<EventSchedule>()
@@ -91,7 +97,7 @@ namespace CourseProject
             //);
 
             modelBuilder.Entity<EventSchedule>().HasData(
-                new EventSchedule { EventScheduleId = 1, EmployeeID = 1, ServiceID = 1 }
+                new EventSchedule { EventScheduleId = 1, ServiceID = 1 }
             );
         }
 
