@@ -3,7 +3,7 @@
 namespace CourseProject.TagHelpers
 {
     [HtmlTargetElement("popover")]
-    public class PopoverTagHelper : TagHelper
+    public class Popover : TagHelper
     {
         public string Content { get; set; } = "";
         public string? Title { get; set; }
