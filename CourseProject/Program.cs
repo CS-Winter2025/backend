@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using CourseProject;
+using CourseProject.Areas.Calendar.Models;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DBContext' not found.")));
@@ -34,12 +35,18 @@ app.UseAuthorization();
 
 app.MapStaticAssets();
 
-
+app.InitializeCalendarDatabase();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
+
+app.MapAreaControllerRoute(
+    name: "Calendar",
+    areaName: "Calendar",
+    pattern: "Calendar/{controller=EventSchedules}/{action=Index}/{id?}");
+
 app.MapAreaControllerRoute(
     name: "Employees",
     areaName: "Employees",
