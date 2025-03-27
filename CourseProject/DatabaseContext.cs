@@ -1,9 +1,13 @@
 using CourseProject.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace CourseProject
 {
-    public class DatabaseContext : DbContext
+
+    public class DatabaseContext : IdentityDbContext<IdentityUser>
+
     {
         public DbSet<Organization> Organizations { get; set; }
         public DbSet<Employee> Employees { get; set; }
@@ -12,6 +16,9 @@ namespace CourseProject
         public DbSet<Service> Services { get; set; }
         public DbSet<EventSchedule> EventSchedules { get; set; }
         public DbSet<Asset> Assets { get; set; }
+        public DbSet<ResidentAsset> ResidentAssets { get; set; }
+        public DbSet<ResidentAssetRequest> ResidentAssetRequests { get; set; }
+
 
         public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
         {
@@ -58,7 +65,31 @@ namespace CourseProject
                 .WithMany()
                 .HasForeignKey(es => es.ServiceID);
 
-            modelBuilder.Entity<Resident>()
+            modelBuilder.Entity<ResidentAsset>()
+    .HasOne(ra => ra.Resident)
+    .WithMany()
+    .HasForeignKey(ra => ra.ResidentId);
+
+            modelBuilder.Entity<ResidentAsset>()
+                .HasOne(ra => ra.Asset)
+                .WithMany()
+                .HasForeignKey(ra => ra.AssetID);
+
+            modelBuilder.Entity<ResidentAssetRequest>()
+    .HasOne(r => r.Resident)
+    .WithMany()
+    .HasForeignKey(r => r.ResidentId);
+
+            modelBuilder.Entity<ResidentAssetRequest>()
+                .HasOne(r => r.Asset)
+                .WithMany()
+                .HasForeignKey(r => r.AssetID);
+
+
+
+
+            // Resident-Service many-to-many relationship
+            modelBuilder.Entity<Resident>().ToTable("Resident")
                 .HasMany(r => r.Services)
                 .WithMany(s => s.Residents) 
                 .UsingEntity(j => j.HasData(
@@ -66,13 +97,17 @@ namespace CourseProject
                     new { ResidentsResidentId = 2, ServicesServiceID = 2 }
                 ));
 
-            modelBuilder.Entity<Invoice>()
+            modelBuilder.Entity<Asset>().ToTable("Asset");
+
+
+            // Invoice-Resident relationship
+            modelBuilder.Entity<Invoice>().ToTable("Invoice")
                 .HasOne(i => i.Resident)
                 .WithMany()
                 .HasForeignKey(i => i.ResidentID)
                 .IsRequired();
 
-            modelBuilder.Entity<Organization>().HasData(
+            modelBuilder.Entity<Organization>().ToTable("Organization").HasData(
                 new Organization { OrganizationId = 1 },
                 new Organization { OrganizationId = 2 }
             );

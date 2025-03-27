@@ -20,6 +20,8 @@
 
   <ItemGroup>
     <PackageReference Include="EntityFramework" Version="6.5.1" />
+    <PackageReference Include="Microsoft.AspNet.Identity.Core" Version="2.2.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.3" />
     <PackageReference Include="jQuery" Version="3.7.1" />
     <PackageReference Include="jquery.datatables" Version="1.10.15" />
     <PackageReference Include="jQuery.Validation" Version="1.21.0" />
@@ -40,6 +42,7 @@
     <Folder Include="Areas\Employees\Controllers\" />
     <Folder Include="Areas\Employees\Data\" />
     <Folder Include="Areas\Housing\Data\" />
+    <Folder Include="Areas\Housing\Views\" />
     <Folder Include="Areas\Housing\Controllers\" />
     <Folder Include="Areas\Services\Controllers\" />
     <Folder Include="Areas\Services\Data\" />

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using CourseProject;
 using CourseProject.Areas.Calendar.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DBContext' not found.")));
@@ -40,6 +41,26 @@ app.MapStaticAssets();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
+    .WithStaticAssets();
+app.MapAreaControllerRoute(
+    name: "Employees",
+    areaName: "Employees",
+    pattern: "Employees/{action=Index}/{id?}",
+    defaults: new { controller = "Employees" });
+app.MapAreaControllerRoute(
+    name: "Services",
+    areaName: "Services",
+    pattern: "{controller=Services}/{action=Index}/{id?}")
+    .WithStaticAssets();
+app.MapAreaControllerRoute(
+    name: "Housing",
+    areaName: "Housing",
+    pattern: "{controller=Housing}/{action=Index}/{id?}")
+    .WithStaticAssets();
+app.MapAreaControllerRoute(
+    name: "Charges",
+    areaName: "Charges",
+    pattern: "{controller=Invoices}/{action=Index}/{id?}")
     .WithStaticAssets();
 
 app.MapAreaControllerRoute(

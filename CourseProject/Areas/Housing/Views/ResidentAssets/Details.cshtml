@@ -1,0 +1,12 @@
+﻿@model Asset
+
+<h2>Asset Details</h2>
+<div>
+    <strong>Type:</strong> @Model.Type
+</div>
+
+<form asp-action="Request" asp-route-id="@Model.AssetID" method="post">
+    <button type="submit" >Request This Asset</button>
+</form>
+
+<a asp-action="Index">Back to List</a>
