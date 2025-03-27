@@ -34,6 +34,7 @@ namespace CourseProject.Areas.Calendar.Controllers
                 }
             }
 
+            ViewData["EmployeeID"] = employeeId;
             ViewData["EmployeeName"] = employeeName;
 
 
