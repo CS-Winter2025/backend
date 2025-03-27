@@ -3,7 +3,7 @@
     var pastResidents = ViewBag.PastResidents as List<CourseProject.Models.Resident>;
 }
 
-<a asp-action="Create">Create New</a>
+<a asp-area="Housing" asp-controller="Residents" asp-action="Create">Create New</a>
 
 <h2>Current Residents</h2>
 <table class="table">
