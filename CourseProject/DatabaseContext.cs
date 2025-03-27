@@ -69,7 +69,8 @@ namespace CourseProject
             modelBuilder.Entity<Invoice>()
                 .HasOne(i => i.Resident)
                 .WithMany()
-                .HasForeignKey(i => i.ResidentID);
+                .HasForeignKey(i => i.ResidentID)
+                .IsRequired();
 
             modelBuilder.Entity<Organization>().HasData(
                 new Organization { OrganizationId = 1 },
@@ -91,10 +92,9 @@ namespace CourseProject
                 new Service { ServiceID = 2, Type = "Security", Rate = 100 }
             );
 
-            //// Seed Invoices
-            //modelBuilder.Entity<Invoice>().HasData(
-            //    new Invoice { InvoiceID = 1, ResidentID = 1, Date = DateTime.UtcNow, AmountDue = 200, AmountPaid = 100 }
-            //);
+            modelBuilder.Entity<Invoice>().HasData(
+                new Invoice { InvoiceID = 1, ResidentID = 1, Date = DateTime.UtcNow, AmountDue = 200, AmountPaid = 100 }
+            );
 
             modelBuilder.Entity<EventSchedule>().HasData(
                 new EventSchedule { EventScheduleId = 1, ServiceID = 1 }
