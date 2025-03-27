@@ -12,7 +12,7 @@ html {
 
 /* Controls DataTable horizontal alignment */
 .container {
-    margin-left: 0 !important;
+    margin-left: 0;
 }
 
 body {
