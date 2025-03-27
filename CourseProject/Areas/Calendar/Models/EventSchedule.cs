@@ -9,5 +9,5 @@ public class EventSchedule : ScheduleBase
 
     public int? ServiceID { get; set; } // Foreign Key (Stored in DB)
     public Service Service { get; set; } // Navigation Property (Not stored)
-    public string RangeOfHours { get; set; }
+    //public string RangeOfHours { get; set; }
 }
