@@ -21,9 +21,23 @@ namespace CourseProject.Areas.Calendar.Controllers
         }
 
         // GET: Calendar/EventSchedules
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? employeeId)
         {
-            Console.WriteLine("IN GET");
+            string employeeName = string.Empty;
+
+            if (employeeId.HasValue)
+            {
+                var employee = _context.Employees.FirstOrDefault(e => e.EmployeeId == employeeId.Value);
+                if (employee != null)
+                {
+                    employeeName = employee.Name;  // or whatever property you want to display
+                }
+            }
+
+            ViewData["EmployeeID"] = employeeId;
+            ViewData["EmployeeName"] = employeeName;
+
+
             var databaseContext = _context.EventSchedules.Include(e => e.Employees).Include(e => e.Service);
             return View(await databaseContext.ToListAsync());
         }
