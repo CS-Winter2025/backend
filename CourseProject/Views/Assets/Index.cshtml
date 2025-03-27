@@ -1,0 +1,96 @@
+﻿
+<a asp-action="Create">Create New</a>
+
+@model dynamic
+@{
+    var availableAssets = ViewBag.AvailableAssets as List<AssetStatusViewModel>;
+    var inUseAssets = ViewBag.InUseAssets as List<AssetStatusViewModel>;
+}
+<h2>Pending Asset Requests</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Asset</th>
+            <th>Requested By</th>
+            <th>Date</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var request in ViewBag.PendingRequests as List<ResidentAssetRequest>)
+        {
+            <tr>
+                <td>@request.Asset.Type (#@request.Asset.AssetID)</td>
+                <td>@request.Resident.Name</td>
+                <td>@request.RequestDate.ToShortDateString()</td>
+                <td>
+                    <form asp-action="ApproveRequest" method="post">
+                        <input type="hidden" name="requestId" value="@request.Id" />
+                        <button>Approve</button>
+                    </form>
+                    <form asp-action="DeclineRequest" method="post">
+                        <input type="hidden" name="requestId" value="@request.Id" />
+                        <button>Decline</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h2>Available Assets</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in availableAssets)
+        {
+            <tr>
+                <td>@item.Asset.AssetID</td>
+                <td>@item.Asset.Type</td>
+                <td>@item.Status</td>
+                <td>
+                    <a asp-action="Assign" asp-route-id="@item.Asset.AssetID" >Assign</a> |
+                    <a asp-action="Edit" asp-route-id="@item.Asset.AssetID">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Asset.AssetID">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Asset.AssetID">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+<h2>In Use Assets</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in inUseAssets)
+        {
+            <tr>
+                <td>@item.Asset.AssetID</td>
+                <td>@item.Asset.Type</td>
+                <td>@item.Status</td>
+                <td>
+                    <a asp-action="Assign" asp-route-id="@item.Asset.AssetID" >Assign</a> |
+                    <a asp-action="Edit" asp-route-id="@item.Asset.AssetID">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Asset.AssetID">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Asset.AssetID">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

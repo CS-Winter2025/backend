@@ -1,0 +1,25 @@
+﻿@model List<Asset>
+
+<h2>Available Assets</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Type</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var asset in Model)
+        {
+            <tr>
+                <td>@asset.Type</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@asset.AssetID">Details</a> |
+                    <form asp-action="Request" asp-route-id="@asset.AssetID" method="post" style="display:inline;">
+                        <button type="submit" >Request</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

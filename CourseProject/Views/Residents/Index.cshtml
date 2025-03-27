@@ -1,0 +1,84 @@
+﻿@{
+    var currentResidents = ViewBag.CurrentResidents as List<CourseProject.Models.Resident>;
+    var pastResidents = ViewBag.PastResidents as List<CourseProject.Models.Resident>;
+}
+
+<a asp-action="Create">Create New</a>
+
+<h2>Current Residents</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Is Currently Living</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var resident in currentResidents)
+        {
+            <tr>
+                <td>@resident.Name</td>
+                <td>@resident.IsCurrentlyLiving</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@resident.ResidentId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@resident.ResidentId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@resident.ResidentId">Delete</a> |
+                    <a asp-action="AssignedAssets" asp-route-id="@resident.ResidentId">See Assigned Assets</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h2>Past Residents</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Was Living</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var resident in pastResidents)
+        {
+            <tr>
+                <td>@resident.Name</td>
+                <td>@resident.IsCurrentlyLiving</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@resident.ResidentId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@resident.ResidentId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@resident.ResidentId">Delete</a> |
+                    <a asp-action="AssignedAssets" asp-route-id="@resident.ResidentId">See Assigned Assets</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h2>Unassigned Residents</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Is Currently Living</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var resident in (ViewBag.UnassignedResidents as List<CourseProject.Models.Resident>))
+        {
+            <tr>
+                <td>@resident.Name</td>
+                <td>@resident.IsCurrentlyLiving</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@resident.ResidentId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@resident.ResidentId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@resident.ResidentId">Delete</a> |
+                    <a asp-action="AssignedAssets" asp-route-id="@resident.ResidentId">See Assigned Assets</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

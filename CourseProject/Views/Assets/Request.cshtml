@@ -1,0 +1,9 @@
+﻿@model CourseProject.Models.Asset
+
+<h2>Request Asset: @Model.Type</h2>
+
+<form asp-action="Request" method="post">
+    <input type="hidden" name="id" value="@Model.AssetID" />
+    <p>Are you sure you want to request this asset?</p>
+    <button type="submit">Confirm Request</button>
+</form>

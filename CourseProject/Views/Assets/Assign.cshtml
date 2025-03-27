@@ -1,0 +1,38 @@
+﻿@model List<CourseProject.Models.Resident>
+@{
+    ViewData["Title"] = "Assign Residents";
+    var assetId = ViewBag.AssetId;
+}
+
+<h2>Assign Residents to Asset</h2>
+
+<form asp-action="Assign" method="post">
+    <input type="hidden" name="assetId" value="@assetId" />
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Select</th>
+                <th>Name</th>
+                <th>From</th>
+                <th>To</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Count; i++)
+            {
+                <tr>
+                    <td>
+                        <input type="checkbox" name="selectedResidents[@i].IsSelected" value="true" />
+                        <input type="hidden" name="selectedResidents[@i].ResidentId" value="@Model[i].ResidentId" />
+                    </td>
+                    <td>@Model[i].Name</td>
+                    <td><input type="date" name="selectedResidents[@i].FromDate" class="form-control" /></td>
+                    <td><input type="date" name="selectedResidents[@i].ToDate" class="form-control" /></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <button type="submit" class="btn btn-success">Assign</button>
+</form>
