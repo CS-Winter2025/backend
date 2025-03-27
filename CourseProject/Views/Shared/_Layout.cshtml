@@ -49,7 +49,9 @@
                             <a class="nav-link text-dark headerFont" asp-area="Employees" asp-controller="Employees"
                                asp-action="Index">Employees</a>
                         </li>
-                        
+                            <a class="nav-link text-dark headerFont" asp-area="" asp-controller="Residents"
+                               asp-action="Index">Residents</a>
+                        </li>
                     </ul>
                     <!-- Login/Logout Section -->
                     <ul class="navbar-nav">
@@ -81,7 +83,6 @@
             @RenderBody()
         </main>
     </div>
-
     <footer class="border-top footer text-muted">
         <div class="container fs-6">
             &copy; 2025 - CourseProject - <a class="fs-6" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>

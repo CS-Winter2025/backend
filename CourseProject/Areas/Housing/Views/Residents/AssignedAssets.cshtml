@@ -1,0 +1,39 @@
+﻿@model List<ResidentAsset>
+@{
+    ViewData["Title"] = "Assigned Assets";
+    var residentName = ViewBag.ResidentName;
+}
+
+<h2>Assets Assigned to @residentName</h2>
+
+@if (Model.Count == 0)
+{
+    <p><em>No assets assigned.</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Asset ID</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>From Date</th>
+                <th>To Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var assignment in Model)
+            {
+                <tr>
+                    <td>@assignment.Asset.AssetID</td>
+                    <td>@assignment.Asset.Type</td>
+                    <td>@assignment.Asset.Status</td>
+                    <td>@assignment.FromDate.ToShortDateString()</td>
+                    <td>@assignment.ToDate.ToShortDateString()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+<a asp-action="Index" class="btn btn-secondary">Back to Residents</a>
