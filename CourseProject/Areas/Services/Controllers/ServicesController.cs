@@ -23,6 +23,10 @@ namespace CourseProject.Areas.Services.Controllers
         // GET: Services/Services
         public async Task<IActionResult> Index()
         {
+            if (HttpContext.Session.GetString("Username") == null)
+            {
+                return RedirectToAction("Login", "Users"); // Redirect to login if not logged in
+            }
             return View(await _context.Services.ToListAsync());
         }
 

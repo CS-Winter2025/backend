@@ -23,6 +23,10 @@ namespace CourseProject.Areas.Calendar.Controllers
         // GET: Calendar/EventSchedules
         public async Task<IActionResult> Index()
         {
+            if (HttpContext.Session.GetString("Username") == null)
+            {
+                return RedirectToAction("Login", "Users"); // Redirect to login if not logged in
+            }
             Console.WriteLine("IN GET");
             var databaseContext = _context.EventSchedules.Include(e => e.Employees).Include(e => e.Service);
             return View(await databaseContext.ToListAsync());

@@ -23,6 +23,10 @@ namespace CourseProject.Areas.Employees.Controllers
         // GET: Employees/Employees
         public async Task<IActionResult> Index()
         {
+            if (HttpContext.Session.GetString("Username") == null)
+            {
+                return RedirectToAction("Login", "Users"); // Redirect to login if not logged in
+            }
             var databaseContext = _context.Employees.Include(e => e.Manager).Include(e => e.Organization);
             return View(await databaseContext.ToListAsync());
         }

@@ -13,6 +13,9 @@ namespace CourseProject
         public DbSet<EventSchedule> EventSchedules { get; set; }
         public DbSet<Asset> Assets { get; set; }
 
+        public DbSet<User> Users { get; set; }
+
+
         public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
         {
         }

@@ -23,6 +23,10 @@ namespace CourseProject.Areas.Charges.Controllers
         // GET: Charges/Invoices
         public async Task<IActionResult> Index()
         {
+            if (HttpContext.Session.GetString("Username") == null)
+            {
+                return RedirectToAction("Login", "Users"); // Redirect to login if not logged in
+            }
             var databaseContext = _context.Invoices.Include(i => i.Resident);
             return View(await databaseContext.ToListAsync());
         }
