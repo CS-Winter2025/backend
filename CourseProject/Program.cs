@@ -1,20 +1,18 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using CourseProject;
-using Microsoft.AspNetCore.Identity;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DBContext' not found.")));
 
 // Add services to the container.
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-    .AddEntityFrameworkStores<DatabaseContext>();
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
+
 using (var scope = app.Services.CreateScope())
 {
-    var dbContext = scope.ServiceProvider.GetRequiredService<CourseProject.DatabaseContext>();
+    var dbContext = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
     dbContext.Database.EnsureCreated();
 }
 
@@ -26,19 +24,41 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseStatusCodePagesWithReExecute("/error/{0}");
+
 app.UseHttpsRedirection();
 app.UseRouting();
 
-app.UseAuthentication();
 
 app.UseAuthorization();
 
 app.MapStaticAssets();
 
+
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
-
+app.MapAreaControllerRoute(
+    name: "Employees",
+    areaName: "Employees",
+    pattern: "Employees/{action=Index}/{id?}",
+    defaults: new { controller = "Employees" });
+app.MapAreaControllerRoute(
+    name: "Services",
+    areaName: "Services",
+    pattern: "{controller=Services}/{action=Index}/{id?}")
+    .WithStaticAssets();
+app.MapAreaControllerRoute(
+    name: "Housing",
+    areaName: "Housing",
+    pattern: "{controller=Housing}/{action=Index}/{id?}")
+    .WithStaticAssets();
+app.MapAreaControllerRoute(
+    name: "Charges",
+    areaName: "Charges",
+    pattern: "{controller=Invoices}/{action=Index}/{id?}")
+    .WithStaticAssets();
 
 app.Run();
