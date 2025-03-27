@@ -192,6 +192,95 @@ namespace UnitTests.ControllerTests
             Assert.That(savedEmployee.Certifications, Contains.Item("Cert2"));
         }
 
-        
+        // ----- Edit Tests -----
+
+        [Test]
+        public async Task Edit_Get_ValidId_ReturnsViewResult_WithEmployee()
+        {
+            var employee = new Employee
+            {
+                EmployeeId = 1,
+                Name = "Edit Employee",
+                JobTitle = "Tester",
+                EmploymentType = "Full-Time",
+                OrganizationId = 1
+            };
+            _context.Employees.Add(employee);
+            await _context.SaveChangesAsync();
+
+            var result = await _controller.Edit(1);
+
+            Assert.That(result, Is.InstanceOf<ViewResult>());
+            var viewResult = result as ViewResult;
+            var model = viewResult?.Model as Employee;
+            Assert.That(model, Is.Not.Null);
+            Assert.That(model.EmployeeId, Is.EqualTo(1));
+            Assert.That(model.Name, Is.EqualTo("Edit Employee"));
+        }
+
+        [Test]
+        public async Task Edit_Get_NullId_ReturnsNotFound()
+        {
+            var result = await _controller.Edit(null);
+
+            Assert.That(result, Is.InstanceOf<NotFoundResult>());
+        }
+
+        [Test]
+        public async Task Edit_Post_ValidModel_UpdatesEmployee_AndReturnsViewResult()
+        {
+            var employee = new Employee
+            {
+                EmployeeId = 1,
+                Name = "Original Name",
+                JobTitle = "Tester",
+                EmploymentType = "Full-Time",
+                OrganizationId = 1
+            };
+            _context.Employees.Add(employee);
+            await _context.SaveChangesAsync();
+
+            employee.Name = "Updated Name";
+
+            var result = await _controller.Edit(employee.EmployeeId, employee);
+
+            Assert.That(result, Is.InstanceOf<ViewResult>());
+            var viewResult = result as ViewResult;
+            var model = viewResult?.Model as Employee;
+            Assert.That(model, Is.Not.Null);
+            Assert.That(model.EmployeeId, Is.EqualTo(1));
+            Assert.That(model.Name, Is.EqualTo("Updated Name"));
+
+            var updatedEmployee = await _context.Employees.FindAsync(1);
+            Assert.That(updatedEmployee.Name, Is.EqualTo("Updated Name"));
+        }
+
+        [Test]
+        public async Task Edit_Post_InvalidModel_RedirectsToIndex_AndDoesNotUpdateEmployee()
+        {
+            var employee = new Employee
+            {
+                EmployeeId = 1,
+                Name = "Original Name",
+                JobTitle = "Tester",
+                EmploymentType = "Full-Time",
+                OrganizationId = 1
+            };
+            _context.Employees.Add(employee);
+            await _context.SaveChangesAsync();
+
+            _controller.ModelState.AddModelError("Name", "Name error");
+
+            var result = await _controller.Edit(employee.EmployeeId, employee);
+
+            Assert.That(result, Is.InstanceOf<RedirectToActionResult>());
+            var redirectResult = result as RedirectToActionResult;
+            Assert.That(redirectResult?.ActionName, Is.EqualTo("Index"));
+
+            var unchangedEmployee = await _context.Employees.FindAsync(1);
+            Assert.That(unchangedEmployee.Name, Is.EqualTo("Original Name"));
+        }
+
+       
     }
 }
