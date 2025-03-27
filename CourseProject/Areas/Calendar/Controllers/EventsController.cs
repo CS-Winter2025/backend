@@ -37,6 +37,7 @@ namespace CourseProject.Areas.Calendar.Controllers
                 text = e.Service.Type,
                 start_date = e.StartDate.ToString("yyyy-MM-dd HH:mm"),
                 end_date = e.EndDate.ToString("yyyy-MM-dd HH:mm"),
+                service_id = e.ServiceID,
                 // Convert the list of Employee IDs to a comma-separated string
                 employee_ids = string.Join(",", e.Employees.Select(emp => emp.EmployeeId.ToString()))
             });
