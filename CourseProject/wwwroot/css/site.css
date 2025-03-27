@@ -10,6 +10,11 @@ html {
   }
 }
 
+/* Controls DataTable horizontal alignment */
+.container {
+    margin-left: 0 !important;
+}
+
 body {
     margin-bottom: 60px;
 }

@@ -1,13 +1,8 @@
-﻿/* === Base Table Layout === */
-table.datatable {
-    font-size: 0.95rem;
-    width: 100%;
-    table-layout: auto;
-}
-
-/* === Borders === */
+﻿
+/* === Table Cells === */
 table.datatable td,
 table.datatable th {
+    text-align: center !important;
     border: 1px solid;
 }
 
@@ -15,6 +10,14 @@ table.datatable th {
 table.datatable thead th {
     font-weight: bold;
     text-transform: uppercase;
+}
+
+/* === Action Headers === */
+table td:last-child,
+table th:last-child {
+    min-width: 120px;
+    white-space: nowrap;
+    text-align: left;
 }
 
 /* === Table Body Hover === */
