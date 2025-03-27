@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using CourseProject.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 
 namespace CourseProject.Controllers
 {
@@ -12,6 +13,46 @@ namespace CourseProject.Controllers
         {
             _logger = logger;
         }
+
+
+        [HttpGet]
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Login(string username, string password)
+        {
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+            {
+                ModelState.AddModelError("", "Username and password are required.");
+                return View();
+            }
+
+            //var result = await _signInManager.PasswordSignInAsync(username, password, isPersistent: false, lockoutOnFailure: false);
+
+            //if (result.Succeeded)
+            //{
+            //    var user = await _userManager.FindByNameAsync(username);
+            //    var roles = await _userManager.GetRolesAsync(user);
+
+            //    if (roles.Contains("User"))
+            //        return RedirectToAction("Index", "Assets");
+
+            return RedirectToAction("Index", "Home"); // or redirect based on role
+            //}
+
+            //ModelState.AddModelError("", "Invalid login attempt.");
+            //return View();
+        }
+
+        //[HttpPost]
+        //public async Task<IActionResult> Logout()
+        //{
+        //    //await _signInManager.SignOutAsync();
+        //    //return RedirectToAction("Login");
+        //}
 
         public IActionResult Index()
         {
