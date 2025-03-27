@@ -52,4 +52,29 @@ namespace UnitTests.ModelTests
         }
     }
 
+    [TestFixture]
+    public class OrganizationModelTests
+    {
+        [Test]
+        public void Organization_InitializesCollectionsProperly()
+        {
+            var organization = new Organization();
+
+            Assert.That(organization.Employees, Is.Not.Null);
+            Assert.That(organization.Services, Is.Not.Null);
+            Assert.That(organization.Employees, Is.Empty);
+            Assert.That(organization.Services, Is.Empty);
+        }
+
+        [Test]
+        public void Organization_CanSetOrganizationId()
+        {
+            var organization = new Organization
+            {
+                OrganizationId = 1
+            };
+
+            Assert.That(organization.OrganizationId, Is.EqualTo(1));
+        }
+    }
 }
