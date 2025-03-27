@@ -1,5 +1,4 @@
-﻿
-/* === Table Cells === */
+﻿/* === Table Cells === */
 table.datatable td,
 table.datatable th {
     text-align: center !important;
@@ -29,6 +28,12 @@ table.datatable tbody tr:hover {
 ul.pagination li.dt-paging-button.page-item .page-link {
     border-radius: 4px;
     border: 1px solid;
+}
+
+/* === Pagination Button Gap === */
+ul.pagination {
+    display: flex;
+    gap: 0.25rem;
 }
 
 /* === Pagination Active State === */
