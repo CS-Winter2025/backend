@@ -91,7 +91,7 @@ namespace CourseProject
             //);
 
             modelBuilder.Entity<EventSchedule>().HasData(
-                new EventSchedule { EventScheduleId = 1, ServiceID = 1, RangeOfHours = "9AM-5PM" }
+                new EventSchedule { EventScheduleId = 1, EmployeeID = 1, ServiceID = 1 }
             );
         }
 
