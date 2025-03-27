@@ -1,3 +1,4 @@
+
 namespace CourseProject.Models;
 
 public class History : ScheduleBase
