@@ -29,7 +29,6 @@
     <Folder Include="Areas\Employees\Data\" />
     <Folder Include="Areas\Employees\Views\" />
     <Folder Include="Areas\Housing\Data\" />
-    <Folder Include="Areas\Housing\Views\" />
     <Folder Include="Areas\Services\Controllers\" />
     <Folder Include="Areas\Services\Data\" />
     <Folder Include="Areas\Services\Views\" />

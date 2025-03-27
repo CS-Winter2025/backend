@@ -1,4 +1,4 @@
-namespace CourseProject.Models;
+using CourseProject.Models;
 
 public class Resident : Person
 {

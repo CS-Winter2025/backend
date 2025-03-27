@@ -1,4 +1,4 @@
-﻿using CourseProject.Models;
+﻿
 
 public class ResidentAsset
 {
