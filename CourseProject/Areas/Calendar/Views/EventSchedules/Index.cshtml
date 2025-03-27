@@ -1,14 +1,14 @@
 ﻿@model IEnumerable<CourseProject.Models.EventSchedule>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Calendar - " + (ViewData["EmployeeName"] ?? "All Events");
 }
 
 <script src="https://cdn.dhtmlx.com/scheduler/edge/dhtmlxscheduler.js"></script>
 <link href="https://cdn.dhtmlx.com/scheduler/edge/dhtmlxscheduler.css"
       rel="stylesheet" type="text/css" charset="utf-8">
 
-<h2>Calendar for:</h2>
+<h2>Calendar for: @ViewData["EmployeeName"]</h2>
 
 <div id="scheduler_here" class="dhx_cal_container" style='width:100%; height:100vh;'>
     <div class="dhx_cal_navline">
