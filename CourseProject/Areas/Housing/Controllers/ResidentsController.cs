@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using CourseProject.Models;
 
 namespace CourseProject.Areas.Housing.Controllers
 {
+    [Area("Housing")]
     public class ResidentsController : Controller
     {
         private readonly DatabaseContext _context;
