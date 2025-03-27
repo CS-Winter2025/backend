@@ -28,29 +28,37 @@ namespace CourseProject
         {
             base.OnModelCreating(modelBuilder);
 
-            // Employee self-referencing relationship
             modelBuilder.Entity<Employee>()
                 .HasOne(e => e.Manager)
                 .WithMany(e => e.Subordinates)
                 .HasForeignKey(e => e.ManagerId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Organization-Employee relationship
             modelBuilder.Entity<Employee>()
                 .HasOne(e => e.Organization)
                 .WithMany(o => o.Employees)
                 .HasForeignKey(e => e.OrganizationId);
 
-            // Employee-Service many-to-many relationship
             modelBuilder.Entity<Employee>()
                 .HasMany(e => e.Services)
                 .WithMany(s => s.Employees);
 
-            // EventSchedule relationships
             modelBuilder.Entity<EventSchedule>()
-                .HasOne(es => es.Employee)
-                .WithMany()
-                .HasForeignKey(es => es.EmployeeID);
+                .HasMany(es => es.Employees)
+                .WithMany(e => e.EventSchedules)
+                .UsingEntity<Dictionary<string, object>>(
+                    "EventScheduleEmployee", // Junction table name
+                    r => r.HasOne<Employee>().WithMany().HasForeignKey("EmployeeId"), // Foreign key for Employee
+                    r => r.HasOne<EventSchedule>().WithMany().HasForeignKey("EventScheduleId"), // Foreign key for EventSchedule
+                    r =>
+                    {
+                        // Seed data for the junction table
+                        r.HasData(
+                            new { EventScheduleId = 1, EmployeeId = 1 },
+                            new { EventScheduleId = 1, EmployeeId = 2 }
+                        );
+                    }
+                );
 
             modelBuilder.Entity<EventSchedule>()
                 .HasOne(es => es.Service)
@@ -83,7 +91,11 @@ namespace CourseProject
             // Resident-Service many-to-many relationship
             modelBuilder.Entity<Resident>().ToTable("Resident")
                 .HasMany(r => r.Services)
-                .WithMany();
+                .WithMany(s => s.Residents) 
+                .UsingEntity(j => j.HasData(
+                    new { ResidentsResidentId = 1, ServicesServiceID = 1 },
+                    new { ResidentsResidentId = 2, ServicesServiceID = 2 }
+                ));
 
             modelBuilder.Entity<Asset>().ToTable("Asset");
 
@@ -92,40 +104,37 @@ namespace CourseProject
             modelBuilder.Entity<Invoice>().ToTable("Invoice")
                 .HasOne(i => i.Resident)
                 .WithMany()
-                .HasForeignKey(i => i.ResidentID);
+                .HasForeignKey(i => i.ResidentID)
+                .IsRequired();
 
             modelBuilder.Entity<Organization>().ToTable("Organization").HasData(
                 new Organization { OrganizationId = 1 },
                 new Organization { OrganizationId = 2 }
             );
 
-            // Seed Employees
             modelBuilder.Entity<Employee>().HasData(
                 new Employee { EmployeeId = 1, Name = "Alice", JobTitle = "Manager", EmploymentType = "Full-Time", PayRate = 60000, OrganizationId = 1 },
                 new Employee { EmployeeId = 2, Name = "Bob", JobTitle = "Developer", EmploymentType = "Full-Time", PayRate = 50000, OrganizationId = 1, ManagerId = 1 }
             );
 
-            // Seed Residents
             modelBuilder.Entity<Resident>().HasData(
                 new Resident { ResidentId = 1, Name = "Charlie" },
                 new Resident { ResidentId = 2, Name = "Diana" }
             );
 
-            // Seed Services
             modelBuilder.Entity<Service>().HasData(
                 new Service { ServiceID = 1, Type = "Cleaning", Rate = 50 },
                 new Service { ServiceID = 2, Type = "Security", Rate = 100 }
             );
 
-            //// Seed Invoices
-            //modelBuilder.Entity<Invoice>().HasData(
-            //    new Invoice { InvoiceID = 1, ResidentID = 1, Date = DateTime.UtcNow, AmountDue = 200, AmountPaid = 100 }
-            //);
+            modelBuilder.Entity<Invoice>().HasData(
+                new Invoice { InvoiceID = 1, ResidentID = 1, Date = DateTime.UtcNow, AmountDue = 200, AmountPaid = 100 }
+            );
 
-            // Seed EventSchedules
             modelBuilder.Entity<EventSchedule>().HasData(
-                new EventSchedule { EventScheduleId = 1, EmployeeID = 1, ServiceID = 1, RangeOfHours = "9AM-5PM" }
+                new EventSchedule { EventScheduleId = 1, ServiceID = 1 }
             );
         }
+
     }
 }
