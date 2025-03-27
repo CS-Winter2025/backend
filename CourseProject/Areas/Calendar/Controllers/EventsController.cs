@@ -26,7 +26,7 @@ namespace CourseProject.Areas.Calendar.Controllers
         public IActionResult Get()
         {
             var data = _context.EventSchedules
-                .Include(e => e.Employee)
+                .Include(e => e.Employees)
                 .Include(e => e.Service)
                 .ToList()
                 .Select(e => (WebAPIEvent)e);
@@ -85,7 +85,7 @@ namespace CourseProject.Areas.Calendar.Controllers
             }
 
             var newEvent = (EventSchedule)apiEvent;
-            newEvent.EmployeeID = validEmployeeId;
+            //newEvent.EmployeeID = validEmployeeId;
 
             _context.EventSchedules.Add(newEvent);
             _context.SaveChanges();
@@ -131,7 +131,7 @@ namespace CourseProject.Areas.Calendar.Controllers
             }
 
             var updatedEvent = (EventSchedule)apiEvent;
-            updatedEvent.EmployeeID = validEmployeeId;
+            //updatedEvent.EmployeeID = validEmployeeId;
             var dbEvent = _context.EventSchedules.Find(id);
             if (dbEvent == null)
             {
@@ -140,7 +140,7 @@ namespace CourseProject.Areas.Calendar.Controllers
             updatedEvent.Service = _context.Services.Find(apiEvent.service_id);
             dbEvent.Service = _context.Services.Find(dbEvent.ServiceID);
             dbEvent.Service.Type = updatedEvent.Service.Type;
-            dbEvent.EmployeeID = updatedEvent.EmployeeID;
+            //dbEvent.EmployeeID = updatedEvent.EmployeeID;
             dbEvent.StartDate = updatedEvent.StartDate;
             dbEvent.EndDate = updatedEvent.EndDate;
             _context.SaveChanges();

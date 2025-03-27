@@ -19,7 +19,7 @@
                 start_date = ev.StartDate.ToString("yyyy-MM-dd HH:mm"),
                 end_date = ev.EndDate.ToString("yyyy-MM-dd HH:mm"),
                 rrule = ev.RepeatPattern,
-                employee_ids = ev.EmployeeID.ToString(),
+                //employee_ids = ev.EmployeeID.ToString(),
                 service_id = ev.ServiceID
             };
         }
