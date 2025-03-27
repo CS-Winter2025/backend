@@ -128,5 +128,70 @@ namespace UnitTests.ControllerTests
             Assert.That(result, Is.InstanceOf<NotFoundResult>());
         }
 
+        // ----- Create Tests -----
+
+        [Test]
+        public async Task Create_ValidModel_ReturnsViewResult()
+        {
+            var employee = new Employee
+            {
+                EmployeeId = 1,
+                Name = "New Employee",
+                JobTitle = "Developer", 
+                EmploymentType = "Full-Time", 
+                PayRate = 50.00m,
+                Availability = new List<int> { 1, 2 },
+                HoursWorked = new List<int> { 40 },
+                Certifications = new List<string>(), 
+                OrganizationId = 1
+            };
+            string certificationsInput = "Cert1, Cert2";
+
+            var result = await _controller.Create(employee, certificationsInput);
+
+            Assert.That(result, Is.InstanceOf<ViewResult>());
+            var viewResult = result as ViewResult;
+            var model = viewResult?.Model as Employee;
+            Assert.That(model, Is.Not.Null);
+            Assert.That(model.Name, Is.EqualTo("New Employee"));
+            Assert.That(model.Certifications.Count, Is.EqualTo(0));
+
+            var savedEmployee = await _context.Employees.FindAsync(1);
+            Assert.That(savedEmployee, Is.Null);
+        }
+
+        [Test]
+        public async Task Create_InvalidModel_RedirectsToIndex()
+        {
+            var employee = new Employee
+            {
+                EmployeeId = 1,
+                Name = "New Employee",
+                JobTitle = "Developer",
+                EmploymentType = "Full-Time",
+                PayRate = 50.00m,
+                Availability = new List<int> { 1, 2 },
+                HoursWorked = new List<int> { 40 },
+                Certifications = new List<string>(),
+                OrganizationId = 1
+            };
+            _controller.ModelState.AddModelError("JobTitle", "The JobTitle field is required.");
+            string certificationsInput = "Cert1, Cert2";
+
+            var result = await _controller.Create(employee, certificationsInput);
+
+            Assert.That(result, Is.InstanceOf<RedirectToActionResult>());
+            var redirectResult = result as RedirectToActionResult;
+            Assert.That(redirectResult?.ActionName, Is.EqualTo("Index"));
+
+            var savedEmployee = await _context.Employees.FindAsync(1);
+            Assert.That(savedEmployee, Is.Not.Null);
+            Assert.That(savedEmployee.Name, Is.EqualTo("New Employee"));
+            Assert.That(savedEmployee.Certifications.Count, Is.EqualTo(2));
+            Assert.That(savedEmployee.Certifications, Contains.Item("Cert1"));
+            Assert.That(savedEmployee.Certifications, Contains.Item("Cert2"));
+        }
+
+        
     }
 }
