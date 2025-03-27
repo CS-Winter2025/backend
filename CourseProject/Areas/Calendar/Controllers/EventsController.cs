@@ -101,13 +101,46 @@ namespace CourseProject.Areas.Calendar.Controllers
         [HttpPut("{id}")]
         public ObjectResult? Put(int id, [FromBody] WebAPIEvent apiEvent)
         {
+            if (apiEvent == null || string.IsNullOrEmpty(apiEvent.employee_ids))
+            {
+                return BadRequest("Invalid event data or missing employee IDs.");
+            }
+
+            // Parse employeeIds into a list of integers
+            var employeeIdList = apiEvent.employee_ids
+                .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                .Select(id => int.TryParse(id.Trim(), out var parsedId) ? parsedId : (int?)null)
+                .Where(id => id.HasValue)
+                .Select(id => id.Value)
+                .ToList();
+
+            if (!employeeIdList.Any())
+            {
+                return BadRequest("No valid employee IDs provided.");
+            }
+
+            // Find the first valid employee ID in the database
+            var validEmployeeId = _context.Employees
+                .Where(e => employeeIdList.Contains(e.EmployeeId))
+                .Select(e => e.EmployeeId)
+                .FirstOrDefault();
+
+            if (validEmployeeId == 0)
+            {
+                return BadRequest("No valid employee ID found in the database.");
+            }
+
             var updatedEvent = (EventSchedule)apiEvent;
+            updatedEvent.EmployeeID = validEmployeeId;
             var dbEvent = _context.EventSchedules.Find(id);
             if (dbEvent == null)
             {
                 return null;
             }
+            updatedEvent.Service = _context.Services.Find(apiEvent.service_id);
+            dbEvent.Service = _context.Services.Find(dbEvent.ServiceID);
             dbEvent.Service.Type = updatedEvent.Service.Type;
+            dbEvent.EmployeeID = updatedEvent.EmployeeID;
             dbEvent.StartDate = updatedEvent.StartDate;
             dbEvent.EndDate = updatedEvent.EndDate;
             _context.SaveChanges();
