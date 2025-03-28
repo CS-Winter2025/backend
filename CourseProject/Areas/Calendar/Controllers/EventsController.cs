@@ -56,6 +56,11 @@ namespace CourseProject.Areas.Calendar.Controllers
                 text = e.Service.Type,
                 start_date = e.StartDate.ToString("yyyy-MM-dd HH:mm"),
                 end_date = e.EndDate.ToString("yyyy-MM-dd HH:mm"),
+                rrule = e.RepeatPattern,
+                duration = e.Duration,
+                recurring_event_id = e.RecurringEventId,
+                original_start = e.OriginalStart.ToString("yyyy-MM-dd HH:mm"),
+                deleted = e.Deleted,
                 service_id = e.ServiceID,
                 resident_id = e.ResidentId,
                 // Convert the list of Employee IDs to a comma-separated string
