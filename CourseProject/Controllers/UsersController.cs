@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CourseProject;
 using CourseProject.Models;
+using Microsoft.AspNet.Identity;
 
 namespace MVCSampleApp.Controllers
 {
@@ -24,10 +25,13 @@ namespace MVCSampleApp.Controllers
         {
             if (ModelState.IsValid)
             {
+                user.Password = new PasswordHasher().HashPassword(user.Password);
+                user.Role = UserRole.NONE;
                 _context.Users.Add(user);
                 await _context.SaveChangesAsync();
 
                 HttpContext.Session.SetString("Username", user.Username);
+                HttpContext.Session.SetString("Role", user.Role.ToString());
 
                 return RedirectToAction("Index", "Home");
             }
@@ -38,10 +42,23 @@ namespace MVCSampleApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(string username, string password)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username && u.Password == password);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);            
             if (user != null)
             {
+                PasswordHasher hasher = new PasswordHasher();
+                PasswordVerificationResult result = hasher.VerifyHashedPassword(user.Password, password);
+                if (result == PasswordVerificationResult.Failed)
+                {
+                    ViewBag.Error = "Invalid login";
+                    return View();
+                }
+                if (result == PasswordVerificationResult.SuccessRehashNeeded)
+                {
+                    user.Password = hasher.HashPassword(user.Password);
+                    await _context.SaveChangesAsync();
+                }
                 HttpContext.Session.SetString("Username", user.Username);
+                HttpContext.Session.SetString("Role", user.Role.ToString());
                 return RedirectToAction("Index", "Home");
             }
             ViewBag.Error = "Invalid login";
@@ -70,6 +87,10 @@ namespace MVCSampleApp.Controllers
         // GET: Users
         public async Task<IActionResult> Index()
         {
+            if (HttpContext.Session.GetString("Role") != "ADMIN")
+            {
+                return RedirectToAction("Index", "Home");
+            }
             return View(await _context.Users.ToListAsync());
         }
 
