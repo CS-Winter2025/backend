@@ -1,0 +1,71 @@
+﻿/* === Table Cells === */
+table.datatable td,
+table.datatable th {
+    text-align: center !important;
+    border: 1px solid;
+}
+
+/* === Table Headers === */
+table.datatable thead th {
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* === Action Headers === */
+table td:last-child,
+table th:last-child {
+    min-width: 120px;
+    white-space: nowrap;
+    text-align: left;
+}
+
+/* === Table Body Hover === */
+table.datatable tbody tr:hover {
+    background-color: inherit;
+}
+
+/* === Pagination Buttons === */
+ul.pagination li.dt-paging-button.page-item .page-link {
+    border-radius: 4px;
+    border: 1px solid;
+}
+
+/* === Pagination Button Gap === */
+ul.pagination {
+    display: flex;
+    gap: 0.25rem;
+}
+
+/* === Pagination Active State === */
+ul.pagination li.dt-paging-button.page-item.active .page-link {
+    font-weight: bold;
+    box-shadow: 0 0 4px;
+}
+
+/* === Entries Dropdown === */
+select.form-select.form-select-sm {
+    border-radius: 4px;
+    font-size: 0.95rem;
+}
+
+/* === Search Input === */
+input.form-control.form-control-sm[type="search"] {
+    border-radius: 4px;
+    font-size: 0.95rem;
+    padding: 6px 10px;
+}
+
+/* === Focus State === */
+input[type="search"]:focus,
+select:focus {
+    outline: none;
+    box-shadow: 0 0 4px;
+}
+
+/* === Labels & Info === */
+label[for^="dt-length"],
+label[for^="dt-search"],
+div.dt-info {
+    font-weight: 500;
+    font-size: 0.95rem;
+}
