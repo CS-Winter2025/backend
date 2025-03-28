@@ -105,7 +105,7 @@ jobs:
       # Conditional Unit Tests
       - name: Run Unit Tests
         if: ${{ inputs.run_unit_tests && inputs.unit_tests_project_path != '' }}
-        run: dotnet test ${{ inputs.ui_tests_project_path }} --configuration ${{ inputs.configuration }} --verbosity normal
+        run: dotnet test ${{ inputs.unit_tests_project_path }} --configuration ${{ inputs.configuration }} --verbosity normal
 
       # Conditional Black Box Tests
       - name: Run Black Box Tests
