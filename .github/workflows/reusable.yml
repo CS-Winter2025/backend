@@ -1,0 +1,133 @@
+name: Reusable CI/CD Pipeline
+
+on:
+  workflow_call:
+    inputs:
+      configuration:
+        required: true
+        type: string
+      dotnet_version:
+        required: true
+        type: string
+      project_path:
+        required: true
+        type: string
+
+      unit_tests_project_path:
+        required: false
+        type: string
+        default: ""
+      run_unit_tests:
+        required: false
+        type: boolean
+        default: false
+
+      black_box_tests_project_path:
+        required: false
+        type: string
+        default: ""
+      run_black_box_tests:
+        required: false
+        type: boolean
+        default: false
+
+      reliability_tests_project_path:
+        required: false
+        type: string
+        default: ""
+      run_reliability_tests:
+        required: false
+        type: boolean
+        default: false
+
+      run_static_analysis:
+        required: false
+        type: boolean
+        default: false
+    secrets: {} # Encrypted variables (e.g. API keys, Database credentials)
+
+jobs:
+  build-and-publish:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest] # To accommodate both Linux and Windows environment
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ inputs.dotnet_version }}
+
+      - name: Display OS Info
+        run: |
+          echo "Operating System: ${{ runner.os }}"
+          dotnet --info
+
+      - name: Restore dependencies
+        run: dotnet restore ${{ inputs.project_path }}
+
+      - name: Build application (${{ inputs.configuration }})
+        run: dotnet build ${{ inputs.project_path }} -c ${{ inputs.configuration }} --no-restore
+
+      # Setup Chrome (cross-platform support)
+      - name: Setup Chrome
+        uses: browser-actions/setup-chrome@v1
+        with:
+          install-dependencies: true
+
+      # Setup ChromeDriver (cross-platform support)
+      - name: Setup ChromeDriver
+        uses: nanasess/setup-chromedriver@v2
+        with:
+          chromeapp: google-chrome
+
+      # Run ChromeDriver in the background on Ubuntu
+      - name: Start ChromeDriver on Ubuntu
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        run: |
+          export DISPLAY=:99
+          sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &
+          chromedriver --url-base=/wd/hub &
+
+      # Run ChromeDriver on Windows
+      - name: Start ChromeDriver on Windows
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: chromedriver --url-base=/wd/hub &
+
+      # Conditional Unit Tests
+      - name: Run Unit Tests
+        if: ${{ inputs.run_unit_tests && inputs.unit_tests_project_path != '' }}
+        run: dotnet test ${{ inputs.ui_tests_project_path }} --configuration ${{ inputs.configuration }} --verbosity normal
+
+      # Conditional Black Box Tests
+      - name: Run Black Box Tests
+        if: ${{ inputs.run_black_box_tests && inputs.black_box_tests_project_path != '' }}
+        run: dotnet test ${{ inputs.black_box_tests_project_path }} --configuration ${{ inputs.configuration }} --verbosity normal
+
+      # Conditional Reliability Tests
+      - name: Run Black Box Tests
+        if: ${{ inputs.run_reliability_tests && inputs.reliability_tests_project_path != '' }}
+        run: dotnet test ${{ inputs.reliability_tests_project_path }} --configuration ${{ inputs.configuration }} --verbosity normal
+
+      # Conditional Static Analysis
+      - name: Static Code Analysis (using dotnet format)
+        if: ${{ inputs.run_static_analysis }}
+        run: dotnet format ${{ inputs.project_path }} --verify-no-changes
+
+      # Publish Application
+      - name: Publish application (${{ inputs.configuration }})
+        if: ${{ inputs.configuration == 'release' }}
+        run: dotnet publish ${{ inputs.project_path }} -c ${{ inputs.configuration }} -o ./publish-${{ inputs.configuration }}
+
+      # Upload Artifact
+      - name: Upload artifact (${{ inputs.configuration }} on ${{ matrix.os }})
+        if: ${{ inputs.configuration == 'release' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-${{ inputs.configuration }}-${{ matrix.os }}
+          path: ./publish-${{ inputs.configuration }}
