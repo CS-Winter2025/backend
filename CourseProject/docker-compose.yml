@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  webapp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+# Change this for local testing
+    depends_on:
+      - sqlserver
+    environment:
+      ConnectionStrings__DefaultConnection: "Server=sqlserver;Database=GroupProject;User Id=sa;Password=GroupProject0!"
+
+# Change this for local testing
+  sqlserver:
+    image: mcr.microsoft.com/azure-sql-edge
+    container_name: sqlserver_container
+    ports:
+      - "1433:1433"
+    environment:
+      SA_PASSWORD: "GroupProject0!"
+      ACCEPT_EULA: "1"
+    volumes:
+      - sql_data:/var/opt/mssql
+    restart: always
+
+volumes:
+  sql_data:

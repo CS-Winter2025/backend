@@ -2,16 +2,38 @@
 using Microsoft.Extensions.DependencyInjection;
 using CourseProject;
 using CourseProject.Areas.Calendar.Models;
+using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args);
+DotNetEnv.Env.Load();
+
+var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+builder.WebHost.UseUrls($"http://*:{port}");
+
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30); // Set session timeout
     options.Cookie.HttpOnly = true; // Ensures the session cookie is accessible only by the server
     options.Cookie.IsEssential = true; // Required for GDPR compliance
 });
-builder.Services.AddDbContext<DatabaseContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DBContext' not found.")));
+var connectionUrl = Environment.GetEnvironmentVariable("JAWSDB_URL");
+
+if (!string.IsNullOrEmpty(connectionUrl))
+{
+    var uri = new Uri(connectionUrl.Replace("mysql://", "http://"));
+    var userInfo = uri.UserInfo.Split(':');
+    var mysqlConnectionString = $"Server={uri.Host};Port={uri.Port};Database={uri.AbsolutePath.TrimStart('/')};Uid={userInfo[0]};Pwd={userInfo[1]};";
+
+    builder.Services.AddDbContext<DatabaseContext>(options =>
+        options.UseMySql(mysqlConnectionString, ServerVersion.AutoDetect(mysqlConnectionString)));
+}
+else
+{
+    builder.Services.AddDbContext<DatabaseContext>(options =>
+        options.UseSqlServer(
+            builder.Configuration.GetConnectionString("DefaultConnection")
+            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")));
+}
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
