@@ -23,32 +23,36 @@ namespace CourseProject.Areas.Calendar.Controllers
 
         // GET api/events
         [HttpGet]
-        public IActionResult Get(int? employeeId)
+        public IActionResult Get(int? personId, bool? isEmployee)
         {
-            //var residentEvents = _context.Residents
-            //    .Include(e => e.EventSchedules)
-            //    .ThenInclude(e => e.Employees)
-            //    .Include(e => e.EventSchedules)
-            //    .ThenInclude(e => e.Service)
-            //    .Where(e => e.Employees.Any(emp => emp.EmployeeId == employeeId))
-            //    .ToList()
-            //    .Select(e => new WebAPIEvent
-            //    {
-            //        id = e.EventScheduleId,
-            //        text = e.Service.Type,
-            //        start_date = e.StartDate.ToString("yyyy-MM-dd HH:mm"),
-            //        end_date = e.EndDate.ToString("yyyy-MM-dd HH:mm"),
-            //        service_id = e.ServiceID,
-            //        // Convert the list of Employee IDs to a comma-separated string
-            //        employee_ids = string.Join(",", e.Employees.Select(emp => emp.EmployeeId.ToString()))
-            //    });
 
             //Console.WriteLine("IN GET: " + employeeId);
-            var data = _context.EventSchedules
+            var fullTable = _context.EventSchedules
             .Include(e => e.Employees) // Ensure Employees are included
             .Include(e => e.Service)
-            .Include(e => e.Resident)
-            .Where(e => e.Employees.Any(emp => emp.EmployeeId == employeeId))
+            .Include(e => e.Resident);
+
+            IQueryable<EventSchedule> userTable;
+            if (personId == null || isEmployee == null)
+            {
+                userTable = fullTable;
+            } 
+            else
+            {
+                if ((bool)isEmployee)
+                {
+                    userTable = fullTable
+                        .Where(e => e.Employees.Any(emp => emp.EmployeeId == personId));
+                }
+                else
+                {
+                    userTable = fullTable
+                        .Where(e => e.ResidentId == personId);
+                }
+            }
+            
+
+            var data = userTable
             .ToList()
             .Select(e => new WebAPIEvent
             {
@@ -99,35 +103,6 @@ namespace CourseProject.Areas.Calendar.Controllers
         [HttpPost]
         public ObjectResult Post([FromBody] WebAPIEvent apiEvent)
         {
-            //if (apiEvent == null || string.IsNullOrEmpty(apiEvent.employee_ids))
-            //{
-            //    return BadRequest("Invalid event data or missing employee IDs.");
-            //}
-
-            //// Parse employeeIds into a list of integers
-            //var employeeIdList = apiEvent.employee_ids
-            //    .Split(',', StringSplitOptions.RemoveEmptyEntries)
-            //    .Select(id => int.TryParse(id.Trim(), out var parsedId) ? parsedId : (int?)null)
-            //    .Where(id => id.HasValue)
-            //    .Select(id => id.Value)
-            //    .ToList();
-
-            //if (!employeeIdList.Any())
-            //{
-            //    return BadRequest("No valid employee IDs provided.");
-            //}
-
-            //// Find the first valid employee ID in the database
-            //var validEmployeeId = _context.Employees
-            //    .Where(e => employeeIdList.Contains(e.EmployeeId))
-            //    .Select(e => e.EmployeeId)
-            //    .FirstOrDefault();
-
-            //if (validEmployeeId == 0)
-            //{
-            //    return BadRequest("No valid employee ID found in the database.");
-            //}
-
             // Parse employeeIds into a list of integers
             var employeeIdList = apiEvent.employee_ids
                 .Split(',', StringSplitOptions.RemoveEmptyEntries)
@@ -158,35 +133,6 @@ namespace CourseProject.Areas.Calendar.Controllers
         [HttpPut("{id}")]
         public ObjectResult? Put(int id, [FromBody] WebAPIEvent apiEvent)
         {
-            //if (apiEvent == null || string.IsNullOrEmpty(apiEvent.employee_ids))
-            //{
-            //    return BadRequest("Invalid event data or missing employee IDs.");
-            //}
-
-            //// Parse employeeIds into a list of integers
-            //var employeeIdList = apiEvent.employee_ids
-            //    .Split(',', StringSplitOptions.RemoveEmptyEntries)
-            //    .Select(id => int.TryParse(id.Trim(), out var parsedId) ? parsedId : (int?)null)
-            //    .Where(id => id.HasValue)
-            //    .Select(id => id.Value)
-            //    .ToList();
-
-            //if (!employeeIdList.Any())
-            //{
-            //    return BadRequest("No valid employee IDs provided.");
-            //}
-
-            //// Find the first valid employee ID in the database
-            //var validEmployeeId = _context.Employees
-            //    .Where(e => employeeIdList.Contains(e.EmployeeId))
-            //    .Select(e => e.EmployeeId)
-            //    .FirstOrDefault();
-
-            //if (validEmployeeId == 0)
-            //{
-            //    return BadRequest("No valid employee ID found in the database.");
-            //}
-
             // Parse employeeIds into a list of integers
             var employeeIdList = apiEvent.employee_ids
                 .Split(',', StringSplitOptions.RemoveEmptyEntries)
