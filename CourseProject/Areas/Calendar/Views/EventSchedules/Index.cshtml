@@ -45,27 +45,24 @@
     })
 
     scheduler.attachEvent("onEventChanged", (id, ev, is_new) => {
+        console.log("event changed: ", ev)
         updateEventName(ev)
     })
 
     function updateEventName(ev) {
-        let selectedServiceId = ev.service_id; // Adjust the field name based on your API
+        let selectedServiceId = ev.service_id;
 
         // Find the corresponding service label from scheduler's server list
         let serviceList = scheduler.serverList("services");
         let selectedService = serviceList.find(service => service.key == selectedServiceId);
-
-        console.log(selectedService)
 
         // Update the description with the service label
         if (selectedService) {
             ev.text = selectedService.label; // Setting the event text
         }
 
-        return true; // Allow event to be saved
+        return true;
     }
-    
-    // scheduler.setLoadMode("day");
 
     // load data from backend
     scheduler.load("/api/events?personId=" + @ViewData["PersonID"] +'&isEmployee='+ @ViewData["IsEmployee"].ToString().ToLower());
@@ -77,9 +74,8 @@
     dp.init(scheduler);
 
     dp.attachEvent("onBeforeDataSending", function (id, state, data) {
+        console.log("Data being sent:", state);
         console.log("Data being sent:", data);
         return true;
     });
-    // set data exchange mode
-    // dp.setTransactionMode("REST");
 </script>
