@@ -60,6 +60,16 @@ jobs:
       - name: Create appsettings.json from secret
         run: echo "${{ secrets.APPSETTINGS_JSON }}" > ./CourseProject/appsettings.json
 
+      - name: Verify appsettings.json content
+        run: |
+          if [ -s ./CourseProject/appsettings.json ]; then
+            echo "appsettings.json created and has content."
+          else
+            echo "appsettings.json is empty or not created!"
+            exit 1
+          fi
+        shell: bash
+
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4
         with:
