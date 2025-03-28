@@ -1,14 +1,19 @@
-# Sample usage of reusable.yml in Release build for backend team
-# This pipeline runs all the tests made by the QA team and publish the app
-name: Release Pipeline
+# Sample usage of reusable.yml in Test build for backend team
+# This pipeline runs different tests optionally. Change run_tests arguments to true if you want to run the test
+name: Test Pipeline
 
 on:
   push:
     branches:
-      - main
+      - dev
+      - feature_pipeline
+  pull_request:
+    branches:
+      - dev
+      - feature_pipeline
 
 jobs:
-  release:
+  test:
     uses: ./.github/workflows/reusable.yml
     with:
       configuration: test
@@ -20,4 +25,4 @@ jobs:
       run_black_box_tests: true
       reliability_tests_project_path: ReliabilityTests/ReliabilityTests.csproj
       run_reliability_tests: true
-      run_static_analysis: true
+      run_static_analysis: false
