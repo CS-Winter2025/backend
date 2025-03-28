@@ -133,17 +133,21 @@ namespace MVCSampleApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Username,Role")] User user)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Username,Role")] UserView userView)
         {
-            if (id != user.Id)
+            if (id != userView.Id)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            User user = await _context.Users.FindAsync(id);          
+
+            if (user != null)
             {
                 try
                 {
+                    user.Username = userView.Username;
+                    user.Role = userView.Role;
                     _context.Update(user);
                     await _context.SaveChangesAsync();
                 }
@@ -160,7 +164,7 @@ namespace MVCSampleApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(user);
+            return View(userView);
         }
 
         // GET: Users/Delete/5
