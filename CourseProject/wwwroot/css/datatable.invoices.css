@@ -3,39 +3,39 @@ table.datatable th,
 table.datatable td {
     background-color: white !important;
     color: black !important;
-    border: 1px solid black !important;
+    border: 1px solid #496DDB !important;
 }
 
 /* === Header Colors === */
 table.datatable thead th {
-    background-color: #816E94 !important;
+    background-color: #496DDB !important;
     color: #F7F7FF !important;
 }
 
 /* === Pagination (default) === */
 ul.pagination .page-link {
-    background-color: #E6D6EC;
-    color: #5a2a1e;
-    border-color: #BA7BA1;
+    background-color: #717EC3;
+    color: #253031;
+    border-color: #5C6D9C;
 }
 
-/* === Pagination (hover) === */
-ul.pagination .page-link:hover {
-    background-color: #816E94;
-    color: #fff;
-}
+    /* === Pagination (hover) === */
+    ul.pagination .page-link:hover {
+        background-color: #3E59A6;
+        color: #fff;
+    }
 
 /* === Pagination (active) === */
 ul.pagination .active .page-link {
-    background-color: #816E94;
+    background-color: #3E59A6;
     color: #fff;
-    border-color: #816E94;
+    border-color: #3E59A6;
 }
 
 /* === Select & Search Input Color === */
 select.form-select.form-select-sm,
 input.form-control.form-control-sm[type="search"] {
-    background-color: #f7f7ff;
+    background-color: #F7F7FF;
     color: black;
-    border-color: #816E94;
+    border-color: #496DDB;
 }
