@@ -34,6 +34,7 @@
         // { name: "description", height: 50, map_to: "text", type: "textarea", focus: true },
         // { name: "Service ID", height: 30, map_to: "service_id", type: "textarea" },
         { name: "Service", map_to: "service_id", type: "select", options: scheduler.serverList("services") },
+        { name: "Resident", map_to: "resident_id", type: "select", options: scheduler.serverList("residents") },
         { name: "Employee IDs", height: 30, map_to: "employee_ids", type: "textarea" },
         { name: "recurring", type: "recurring", map_to: "rrule" },
         { name: "time", height: 72, type: "time", map_to: "auto" }
@@ -53,6 +54,8 @@
 
         return true; // Allow event to be saved
     })
+    
+    // scheduler.setLoadMode("day");
 
     // load data from backend
     scheduler.load("/api/events?employeeId=" + @ViewData["EmployeeID"]);

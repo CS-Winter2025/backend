@@ -68,6 +68,12 @@ namespace CourseProject
                 .WithMany()
                 .HasForeignKey(es => es.ServiceID);
 
+            modelBuilder.Entity<EventSchedule>()
+                .HasOne(es => es.Resident)
+                .WithMany(r => r.EventSchedules)
+                .HasForeignKey(es => es.ResidentId)
+                .OnDelete(DeleteBehavior.SetNull);
+
             modelBuilder.Entity<ResidentAsset>()
     .HasOne(ra => ra.Resident)
     .WithMany()

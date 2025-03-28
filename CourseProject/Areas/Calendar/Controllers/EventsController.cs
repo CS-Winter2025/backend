@@ -25,10 +25,29 @@ namespace CourseProject.Areas.Calendar.Controllers
         [HttpGet]
         public IActionResult Get(int? employeeId)
         {
-            Console.WriteLine("IN GET: " +  employeeId);
+            //var residentEvents = _context.Residents
+            //    .Include(e => e.EventSchedules)
+            //    .ThenInclude(e => e.Employees)
+            //    .Include(e => e.EventSchedules)
+            //    .ThenInclude(e => e.Service)
+            //    .Where(e => e.Employees.Any(emp => emp.EmployeeId == employeeId))
+            //    .ToList()
+            //    .Select(e => new WebAPIEvent
+            //    {
+            //        id = e.EventScheduleId,
+            //        text = e.Service.Type,
+            //        start_date = e.StartDate.ToString("yyyy-MM-dd HH:mm"),
+            //        end_date = e.EndDate.ToString("yyyy-MM-dd HH:mm"),
+            //        service_id = e.ServiceID,
+            //        // Convert the list of Employee IDs to a comma-separated string
+            //        employee_ids = string.Join(",", e.Employees.Select(emp => emp.EmployeeId.ToString()))
+            //    });
+
+            //Console.WriteLine("IN GET: " + employeeId);
             var data = _context.EventSchedules
             .Include(e => e.Employees) // Ensure Employees are included
             .Include(e => e.Service)
+            .Include(e => e.Resident)
             .Where(e => e.Employees.Any(emp => emp.EmployeeId == employeeId))
             .ToList()
             .Select(e => new WebAPIEvent
@@ -38,6 +57,7 @@ namespace CourseProject.Areas.Calendar.Controllers
                 start_date = e.StartDate.ToString("yyyy-MM-dd HH:mm"),
                 end_date = e.EndDate.ToString("yyyy-MM-dd HH:mm"),
                 service_id = e.ServiceID,
+                resident_id = e.ResidentId,
                 // Convert the list of Employee IDs to a comma-separated string
                 employee_ids = string.Join(",", e.Employees.Select(emp => emp.EmployeeId.ToString()))
             });
@@ -50,7 +70,15 @@ namespace CourseProject.Areas.Calendar.Controllers
                 })
                 .ToList();
 
-            return Ok(new { data, collections = new { services } });
+            var residents = _context.Residents
+                .Select(r => new
+                {
+                    value = r.ResidentId,
+                    label = r.Name
+                })
+                .ToList();
+
+            return Ok(new { data, collections = new { services, residents } });
         }
 
         // GET api/events/5
