@@ -124,12 +124,12 @@ jobs:
 
       # Publish Application
       - name: Publish application (${{ inputs.configuration }})
-        if: ${{ inputs.configuration == 'release' }}
+        if: ${{ inputs.configuration == 'Release' }}
         run: dotnet publish ${{ inputs.project_path }} -c ${{ inputs.configuration }} -o ./publish-${{ inputs.configuration }}
 
       # Upload Artifact
       - name: Upload artifact (${{ inputs.configuration }} on ${{ matrix.os }})
-        if: ${{ inputs.configuration == 'release' }}
+        if: ${{ inputs.configuration == 'Release' }}
         uses: actions/upload-artifact@v4
         with:
           name: app-${{ inputs.configuration }}-${{ matrix.os }}

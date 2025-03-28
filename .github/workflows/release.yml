@@ -11,7 +11,7 @@ jobs:
   release:
     uses: ./.github/workflows/reusable.yml
     with:
-      configuration: test
+      configuration: Release
       dotnet_version: "9.0.x"
       project_path: CourseProject/CourseProject.csproj
       unit_tests_project_path: UnitTests/UnitTests.csproj
