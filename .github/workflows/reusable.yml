@@ -44,7 +44,6 @@ on:
         required: false
         type: boolean
         default: false
-    secrets: {} # Encrypted variables (e.g. API keys, Database credentials)
 
 jobs:
   build-and-publish:
@@ -107,15 +106,15 @@ jobs:
         if: ${{ inputs.run_unit_tests && inputs.unit_tests_project_path != '' }}
         run: dotnet test ${{ inputs.unit_tests_project_path }} --configuration ${{ inputs.configuration }} --verbosity normal
 
+      # Conditional Reliability Tests
+      - name: Run Reliability Tests
+        if: ${{ inputs.run_reliability_tests && inputs.reliability_tests_project_path != '' }}
+        run: dotnet test ${{ inputs.reliability_tests_project_path }} --configuration ${{ inputs.configuration }} --verbosity normal
+
       # Conditional Black Box Tests
       - name: Run Black Box Tests
         if: ${{ inputs.run_black_box_tests && inputs.black_box_tests_project_path != '' }}
         run: dotnet test ${{ inputs.black_box_tests_project_path }} --configuration ${{ inputs.configuration }} --verbosity normal
-
-      # Conditional Reliability Tests
-      - name: Run Black Box Tests
-        if: ${{ inputs.run_reliability_tests && inputs.reliability_tests_project_path != '' }}
-        run: dotnet test ${{ inputs.reliability_tests_project_path }} --configuration ${{ inputs.configuration }} --verbosity normal
 
       # Conditional Static Analysis
       - name: Static Code Analysis (using dotnet format)
