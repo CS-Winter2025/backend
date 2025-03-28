@@ -1,17 +1,29 @@
 ﻿@model CourseProject.Models.User
 
-<h2>Login</h2>
-<form asp-action="Login" method="post">
-    <label>Username:</label>
-    <input asp-for="Username" required />
+<h2 class="title titleFont text-dark text-center">Login</h2>
 
-    <label>Password:</label>
-    <input asp-for="Password" type="password" required />
+<div class="container-sm container-fluid">
 
-    <button type="submit">Login</button>
+
+<form asp-action="Login" method="post" class="form-container ml-5">
+    <div class="form-group mb-3">
+        <label class="text-dark">Username:</label>
+        <input asp-for="Username" required class="form-control" />
+    </div>
+
+    <div class="form-group mb-3">
+        <label class="text-dark">Password:</label>
+        <input asp-for="Password" type="password" required class="form-control" />
+    </div>
+
+    <div class="form-group justify-content-end d-flex">
+        <button type="submit" class="btn secondaryCare btn-lg">Login</button>
+    </div>
 </form>
 
 @if (ViewBag.Error != null)
 {
-    <p style="color:red">@ViewBag.Error</p>
+    <p class="text-danger">@ViewBag.Error</p>
 }
+
+</div>
