@@ -2,6 +2,7 @@ using CourseProject.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNet.Identity;
 
 namespace CourseProject
 {
@@ -88,8 +89,12 @@ namespace CourseProject
                 .WithMany()
                 .HasForeignKey(r => r.AssetID);
 
-
-
+            modelBuilder.Entity<User>()
+                .Property(u => u.Role)
+                .HasConversion(
+                    r => r.ToString(),
+                    r => Enum.Parse<UserRole>(r)
+                );
 
             // Resident-Service many-to-many relationship
             modelBuilder.Entity<Resident>().ToTable("Resident")
@@ -132,6 +137,11 @@ namespace CourseProject
 
             modelBuilder.Entity<Invoice>().HasData(
                 new Invoice { InvoiceID = 1, ResidentID = 1, Date = DateTime.UtcNow, AmountDue = 200, AmountPaid = 100 }
+            );
+                                              
+            modelBuilder.Entity<User>().HasData(
+                new User { Id = 1, Username = "admin", Role = UserRole.ADMIN, Password = new PasswordHasher().HashPassword("123") },
+                new User { Id = 2, Username = "resident", Role = UserRole.RESIDENT, Password = new PasswordHasher().HashPassword("123") }
             );
 
             modelBuilder.Entity<EventSchedule>().HasData(
