@@ -41,11 +41,21 @@
     ];
 
     scheduler.attachEvent("onEventAdded", (id, ev, is_new) => {
+        updateEventName(ev)
+    })
+
+    scheduler.attachEvent("onEventChanged", (id, ev, is_new) => {
+        updateEventName(ev)
+    })
+
+    function updateEventName(ev) {
         let selectedServiceId = ev.service_id; // Adjust the field name based on your API
 
         // Find the corresponding service label from scheduler's server list
         let serviceList = scheduler.serverList("services");
         let selectedService = serviceList.find(service => service.key == selectedServiceId);
+
+        console.log(selectedService)
 
         // Update the description with the service label
         if (selectedService) {
@@ -53,7 +63,7 @@
         }
 
         return true; // Allow event to be saved
-    })
+    }
     
     // scheduler.setLoadMode("day");
 

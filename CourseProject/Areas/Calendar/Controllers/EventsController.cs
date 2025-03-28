@@ -112,8 +112,8 @@ namespace CourseProject.Areas.Calendar.Controllers
                 .ToList();
 
             var employees = _context.Employees
-            .Where(e => employeeIdList.Contains(e.EmployeeId)) // Find employees with the given IDs
-            .ToList();
+                .Where(e => employeeIdList.Contains(e.EmployeeId)) // Find employees with the given IDs
+                .ToList();
 
             var newEvent = (EventSchedule)apiEvent;
             //newEvent.EmployeeID = validEmployeeId;
@@ -155,8 +155,10 @@ namespace CourseProject.Areas.Calendar.Controllers
             }
 
             updatedEvent.Service = _context.Services.Find(apiEvent.service_id);
-            dbEvent.Service = _context.Services.Find(dbEvent.ServiceID);
+            updatedEvent.Resident = _context.Residents.Find(apiEvent.resident_id);
+            //dbEvent.Service = _context.Services.Find(dbEvent.ServiceID);
             dbEvent.Service = updatedEvent.Service;
+            dbEvent.Resident = updatedEvent.Resident;
             //dbEvent.EmployeeID = updatedEvent.EmployeeID;
             dbEvent.Employees.Clear();
             dbEvent.Employees = updatedEvent.Employees;
