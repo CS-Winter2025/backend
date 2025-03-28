@@ -3,6 +3,7 @@ using CourseProject.Areas.Employees.Controllers;
 using CourseProject.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 using NUnit.Framework.Legacy;
 
 namespace UnitTests.ControllerTests
@@ -32,6 +33,14 @@ namespace UnitTests.ControllerTests
         }
 
         // ----- Index and Details Tests -----
+        
+        [Test]
+        public async Task Details_EmployeeNotFound_ReturnsNotFound()
+        {
+            var result = await _controller.Details(999);
+            Assert.That(result, Is.InstanceOf<NotFoundResult>());
+        }
+
 
         [Test]
         public async Task Index_ReturnsViewResult_WithListOfEmployees()
@@ -131,6 +140,13 @@ namespace UnitTests.ControllerTests
         // ----- Create Tests -----
 
         [Test]
+        public void Create_Get_ReturnsView()
+        {
+            var result = _controller.Create();
+            Assert.That(result, Is.InstanceOf<ViewResult>());
+        }
+
+        [Test]
         public async Task Create_ValidModel_ReturnsViewResult()
         {
             var employee = new Employee
@@ -193,6 +209,33 @@ namespace UnitTests.ControllerTests
         }
 
         // ----- Edit Tests -----
+
+        [Test]
+        public async Task Edit_Get_EmployeeNotFound_ReturnsNotFound()
+        {
+            var result = await _controller.Edit(999);
+            Assert.That(result, Is.InstanceOf<NotFoundResult>());
+        }
+        
+        [Test]
+        public async Task Edit_Post_IdMismatch_ReturnsViewResult()
+        {
+            var employee = new Employee
+            {
+                EmployeeId = 1,
+                Name = "Mismatch Employee",
+                JobTitle = "Tester",
+                EmploymentType = "Full-Time",
+                OrganizationId = 1
+            };
+            _context.Employees.Add(employee);
+            await _context.SaveChangesAsync();
+
+            var result = await _controller.Edit(2, employee);
+
+            Assert.That(result, Is.InstanceOf<ViewResult>());
+        }
+
 
         [Test]
         public async Task Edit_Get_ValidId_ReturnsViewResult_WithEmployee()
@@ -280,8 +323,104 @@ namespace UnitTests.ControllerTests
             var unchangedEmployee = await _context.Employees.FindAsync(1);
             Assert.That(unchangedEmployee.Name, Is.EqualTo("Original Name"));
         }
+        
+        [Test]
+        public async Task Edit_Post_ConcurrencyException_WhenEmployeeNoLongerExists_ReturnsNotFound()
+        {
+            var options = new DbContextOptionsBuilder<DatabaseContext>()
+                .UseInMemoryDatabase("ConcurrencyTestDb2")
+                .Options;
+
+            using (var realContext = new DatabaseContext(options))
+            {
+            }
+
+            var mockContext = new Mock<DatabaseContext>(options) { CallBase = true };
+
+            mockContext
+                .Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new DbUpdateConcurrencyException());
+
+            var controller = new EmployeesController(mockContext.Object);
+
+            controller.ModelState.AddModelError("FakeKey", "Forcing invalid model");
+
+            var employee = new Employee
+            {
+                EmployeeId = 99,
+                Name = "Ghost",
+                EmploymentType = "Full-Time",
+                JobTitle = "Developer",
+                OrganizationId = 1
+            };
+
+            var result = await controller.Edit(employee.EmployeeId, employee);
+
+            Assert.That(result, Is.InstanceOf<NotFoundResult>());
+        }
+        
+        [Test]
+        public async Task Edit_Post_ConcurrencyException_WhenEmployeeStillExists_Throws()
+        {
+            var options = new DbContextOptionsBuilder<DatabaseContext>()
+                .UseInMemoryDatabase("ConcurrencyTestDb_EmployeeStillExists")
+                .Options;
+
+            using (var realContext = new DatabaseContext(options))
+            {
+                realContext.Employees.Add(new Employee
+                {
+                    EmployeeId = 1,
+                    Name = "Concurrent Employee",
+                    JobTitle = "Developer",
+                    EmploymentType = "Full-Time",
+                    OrganizationId = 1
+                });
+                await realContext.SaveChangesAsync();
+            }
+
+            var mockContext = new Mock<DatabaseContext>(options) { CallBase = true };
+
+            mockContext
+                .Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new DbUpdateConcurrencyException());
+
+            var controller = new EmployeesController(mockContext.Object);
+            controller.ModelState.AddModelError("FakeKey", "Forcing invalid model");
+
+            var existingEmployee = new Employee
+            {
+                EmployeeId = 1,
+                Name = "Concurrent Employee Updated",
+                JobTitle = "Developer",
+                EmploymentType = "Full-Time",
+                OrganizationId = 1
+            };
+
+            Assert.ThrowsAsync<DbUpdateConcurrencyException>(async () =>
+                await controller.Edit(existingEmployee.EmployeeId, existingEmployee)
+            );
+        }
 
         // ----- Delete Tests -----
+
+        [Test]
+        public async Task Delete_Get_EmployeeNotFound_ReturnsNotFound()
+        {
+            var result = await _controller.Delete(999);
+
+            Assert.That(result, Is.InstanceOf<NotFoundResult>());
+        }
+        
+        [Test]
+        public async Task Delete_Post_EmployeeNotFound_RedirectsToIndex()
+        {
+            var result = await _controller.DeleteConfirmed(999); 
+
+            Assert.That(result, Is.InstanceOf<RedirectToActionResult>());
+            var redirectResult = result as RedirectToActionResult;
+            Assert.That(redirectResult?.ActionName, Is.EqualTo("Index"));
+        }
 
         [Test]
         public async Task Delete_Get_ValidId_ReturnsViewResult_WithEmployee()
