@@ -14,9 +14,14 @@
     <link rel="stylesheet" href="~/CourseProject.styles.css" asp-append-version="true" />
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.bootstrap5.min.css" />
+    <link rel="stylesheet" href="~/css/datatable.css" asp-append-version="true" />
     <!-- Master CSS -->
     <link rel="stylesheet" href="~/css/reset.css" asp-append-version="true" />
     @await RenderSectionAsync("Styles", required: false)
+
+    <link rel="stylesheet" href="~/css/care.css"/>
+    <link rel="stylesheet" href="~/css/housing.css" />
+    <link rel="stylesheet" href="~/css/HR.css" />
 </head>
 <body>
     <header>
@@ -61,7 +66,7 @@
                                 <span class="nav-link text-dark">Welcome, @Context.Session.GetString("Username")!</span>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Users" asp-action="Logout">Logout</a>
+                                <a class="nav-link text-danger" asp-controller="Users" asp-action="Logout">Logout</a>
                             </li>
                         }
                         else
@@ -78,10 +83,12 @@
             </div>
         </nav>
     </header>
-    <div class="container">
+    <div class="d-flex justify-content-center">
+        <div class="container-fluid">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
+    </div>
     </div>
     <footer class="border-top footer text-muted">
         <div class="container fs-6">

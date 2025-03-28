@@ -1,0 +1,41 @@
+﻿/* === Table Colors === */
+table.datatable th,
+table.datatable td {
+    background-color: white !important;
+    color: black !important;
+    border: 1px solid #496DDB !important;
+}
+
+/* === Header Colors === */
+table.datatable thead th {
+    background-color: #496DDB !important;
+    color: #F7F7FF !important;
+}
+
+/* === Pagination (default) === */
+ul.pagination .page-link {
+    background-color: #717EC3;
+    color: #253031;
+    border-color: #5C6D9C;
+}
+
+    /* === Pagination (hover) === */
+    ul.pagination .page-link:hover {
+        background-color: #3E59A6;
+        color: #fff;
+    }
+
+/* === Pagination (active) === */
+ul.pagination .active .page-link {
+    background-color: #3E59A6;
+    color: #fff;
+    border-color: #3E59A6;
+}
+
+/* === Select & Search Input Color === */
+select.form-select.form-select-sm,
+input.form-control.form-control-sm[type="search"] {
+    background-color: #F7F7FF;
+    color: black;
+    border-color: #496DDB;
+}
