@@ -6,11 +6,11 @@ on:
   push:
     branches:
       - dev
-      - feature_pipeline
+      - pipeline_integration
   pull_request:
     branches:
       - dev
-      - feature_pipeline
+      - pipeline_integration
 
 jobs:
   test:
