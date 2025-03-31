@@ -57,9 +57,6 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v3
 
-      - name: Create appsettings.json from secret
-        run: echo "${{ secrets.APPSETTINGS_JSON }}" > ./CourseProject/appsettings.json
-
       - name: Verify appsettings.json content
         run: |
           if [ -s ./CourseProject/appsettings.json ]; then
@@ -91,11 +88,6 @@ jobs:
         uses: browser-actions/setup-chrome@v1
         with:
           install-dependencies: true
-
-      - name: Confirm Chrome is ready
-        run: |
-          echo "Chrome version:"
-          chrome --version
 
       - name: Start backend server and warm it up before running tests
         run: |
