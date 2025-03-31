@@ -86,9 +86,20 @@ jobs:
       - name: Build application (${{ inputs.configuration }})
         run: dotnet build ${{ inputs.project_path }} -c ${{ inputs.configuration }} --no-restore
 
+      # Setup Chrome (cross-platform support)
+      - name: Setup Chrome
+        uses: browser-actions/setup-chrome@v1
+        with:
+          install-dependencies: true
+
+      - name: Confirm Chrome is ready
+        run: |
+          echo "Chrome version:"
+          google-chrome --version
+
       - name: Start backend server and warm it up before running tests
         run: |
-          dotnet run --project CourseProject/CourseProject.csproj &
+          dotnet run --project ${{ inputs.project_path }} --urls "http://localhost:5000"
           sleep 5
 
       # Conditional Unit Tests
