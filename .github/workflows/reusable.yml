@@ -86,30 +86,10 @@ jobs:
       - name: Build application (${{ inputs.configuration }})
         run: dotnet build ${{ inputs.project_path }} -c ${{ inputs.configuration }} --no-restore
 
-      # Setup Chrome (cross-platform support)
-      - name: Setup Chrome
-        uses: browser-actions/setup-chrome@v1
-        with:
-          install-dependencies: true
-
-      # Setup ChromeDriver (cross-platform support)
-      - name: Setup ChromeDriver
-        uses: nanasess/setup-chromedriver@v2
-        with:
-          chromeapp: google-chrome
-
-      # Run ChromeDriver in the background on Ubuntu
-      - name: Start ChromeDriver on Ubuntu
-        if: ${{ matrix.os == 'ubuntu-latest' }}
+      - name: Start backend server and warm it up before running tests
         run: |
-          export DISPLAY=:99
-          sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &
-          chromedriver --url-base=/wd/hub &
-
-      # Run ChromeDriver on Windows
-      - name: Start ChromeDriver on Windows
-        if: ${{ matrix.os == 'windows-latest' }}
-        run: chromedriver --url-base=/wd/hub &
+          dotnet run --project CourseProject/CourseProject.csproj &
+          sleep 5
 
       # Conditional Unit Tests
       - name: Run Unit Tests
