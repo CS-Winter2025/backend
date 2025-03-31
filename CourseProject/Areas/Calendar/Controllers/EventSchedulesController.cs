@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CourseProject;
 using CourseProject.Models;
+using CourseProject.Common;
 
 namespace CourseProject.Areas.Calendar.Controllers
 {
@@ -27,6 +28,16 @@ namespace CourseProject.Areas.Calendar.Controllers
             {
                 return RedirectToAction("Login", "Users"); // Redirect to login if not logged in
             }
+            if (!Util.HasAccess(HttpContext, 
+                    UserRole.ADMIN, 
+                    UserRole.RESIDENT,
+                    UserRole.HOUSING_MANAGER, 
+                    UserRole.EMPLOYEE,
+                    UserRole.HR_MANAGER,
+                    UserRole.HIRING_MANAGER,
+                    UserRole.SERVICE_MANAGER))
+                return RedirectToAction("Forbidden", "Error");
+
             string personName = string.Empty;
 
             if (personId.HasValue && isEmployee.HasValue)
