@@ -1,0 +1,94 @@
+﻿@{
+    var currentResidents = ViewBag.CurrentResidents as List<Resident>;
+    var pastResidents = ViewBag.PastResidents as List<Resident>;
+}
+
+@{
+    ViewData["Title"] = "Residents";
+}
+
+<h1 class="title titleFont text-center">Residents</h1>
+<p class="text-center">
+    <a asp-area="Housing"  asp-action="Create">Create New</a>
+</p>
+<h2 class="header headerFont">Current Residents</h2>
+<table class="table table-striped table-bordered datatable">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Is Currently Living</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var resident in currentResidents)
+        {
+            <tr>
+                <td>@resident.Name</td>
+                <td>@resident.IsCurrentlyLiving</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@resident.ResidentId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@resident.ResidentId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@resident.ResidentId">Delete</a> |
+                    <a asp-action="AssignedAssets" asp-route-id="@resident.ResidentId">See Assigned Assets</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h2 class="header headerFont">Past Residents</h2>
+<table class="table table-striped table-bordered datatable">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Was Living</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var resident in pastResidents)
+        {
+            <tr>
+                <td>@resident.Name</td>
+                <td>@resident.IsCurrentlyLiving</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@resident.ResidentId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@resident.ResidentId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@resident.ResidentId">Delete</a> |
+                    <a asp-action="AssignedAssets" asp-route-id="@resident.ResidentId">See Assigned Assets</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h2 class="header headerFont">Unassigned Residents</h2>
+<table class="table table-striped table-bordered datatable">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Is Currently Living</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var resident in (ViewBag.UnassignedResidents as List<Resident>))
+        {
+            <tr>
+                <td>@resident.Name</td>
+                <td>@resident.IsCurrentlyLiving</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@resident.ResidentId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@resident.ResidentId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@resident.ResidentId">Delete</a> |
+                    <a asp-action="AssignedAssets" asp-route-id="@resident.ResidentId">See Assigned Assets</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Styles {
+	<link rel="stylesheet" href="~/css/datatable.residents.css" />
+}

@@ -1,9 +1,14 @@
 using CourseProject.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNet.Identity;
 
 namespace CourseProject
 {
-    public class DatabaseContext : DbContext
+
+    public class DatabaseContext : IdentityDbContext<IdentityUser>
+
     {
         public DbSet<Organization> Organizations { get; set; }
         public DbSet<Employee> Employees { get; set; }
@@ -12,6 +17,12 @@ namespace CourseProject
         public DbSet<Service> Services { get; set; }
         public DbSet<EventSchedule> EventSchedules { get; set; }
         public DbSet<Asset> Assets { get; set; }
+        public DbSet<ResidentAsset> ResidentAssets { get; set; }
+        public DbSet<ResidentAssetRequest> ResidentAssetRequests { get; set; }
+
+
+        public DbSet<User> Users { get; set; }
+
 
         public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
         {
@@ -58,7 +69,41 @@ namespace CourseProject
                 .WithMany()
                 .HasForeignKey(es => es.ServiceID);
 
-            modelBuilder.Entity<Resident>()
+            modelBuilder.Entity<EventSchedule>()
+                .HasOne(es => es.Resident)
+                .WithMany(r => r.EventSchedules)
+                .HasForeignKey(es => es.ResidentId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<ResidentAsset>()
+    .HasOne(ra => ra.Resident)
+    .WithMany()
+    .HasForeignKey(ra => ra.ResidentId);
+
+            modelBuilder.Entity<ResidentAsset>()
+                .HasOne(ra => ra.Asset)
+                .WithMany()
+                .HasForeignKey(ra => ra.AssetID);
+
+            modelBuilder.Entity<ResidentAssetRequest>()
+    .HasOne(r => r.Resident)
+    .WithMany()
+    .HasForeignKey(r => r.ResidentId);
+
+            modelBuilder.Entity<ResidentAssetRequest>()
+                .HasOne(r => r.Asset)
+                .WithMany()
+                .HasForeignKey(r => r.AssetID);
+
+            modelBuilder.Entity<User>()
+                .Property(u => u.Role)
+                .HasConversion(
+                    r => r.ToString(),
+                    r => Enum.Parse<UserRole>(r)
+                );
+
+            // Resident-Service many-to-many relationship
+            modelBuilder.Entity<Resident>().ToTable("Resident")
                 .HasMany(r => r.Services)
                 .WithMany(s => s.Residents) 
                 .UsingEntity(j => j.HasData(
@@ -66,13 +111,17 @@ namespace CourseProject
                     new { ResidentsResidentId = 2, ServicesServiceID = 2 }
                 ));
 
-            modelBuilder.Entity<Invoice>()
+            modelBuilder.Entity<Asset>().ToTable("Asset");
+
+
+            // Invoice-Resident relationship
+            modelBuilder.Entity<Invoice>().ToTable("Invoice")
                 .HasOne(i => i.Resident)
                 .WithMany()
                 .HasForeignKey(i => i.ResidentID)
                 .IsRequired();
 
-            modelBuilder.Entity<Organization>().HasData(
+            modelBuilder.Entity<Organization>().ToTable("Organization").HasData(
                 new Organization { OrganizationId = 1 },
                 new Organization { OrganizationId = 2 }
             );
@@ -94,6 +143,44 @@ namespace CourseProject
 
             modelBuilder.Entity<Invoice>().HasData(
                 new Invoice { InvoiceID = 1, ResidentID = 1, Date = DateTime.UtcNow, AmountDue = 200, AmountPaid = 100 }
+            );
+
+            modelBuilder.Entity<User>().HasData(
+                new User
+                {
+                    Id = 1, Username = "admin", Role = UserRole.ADMIN,
+                    Password = new PasswordHasher().HashPassword("123")
+                },
+                new User
+                {
+                    Id = 2, Username = "resident", Role = UserRole.RESIDENT,
+                    Password = new PasswordHasher().HashPassword("123")
+                },
+                new User
+                {
+                    Id = 3, Username = "housing", Role = UserRole.HOUSING_MANAGER,
+                    Password = new PasswordHasher().HashPassword("123")
+                },
+                new User
+                {
+                    Id = 4, Username = "employee", Role = UserRole.EMPLOYEE,
+                    Password = new PasswordHasher().HashPassword("123")
+                },
+                new User
+                {
+                    Id = 5, Username = "service", Role = UserRole.SERVICE_MANAGER,
+                    Password = new PasswordHasher().HashPassword("123")
+                },
+                new User
+                {
+                    Id = 6, Username = "hr", Role = UserRole.HR_MANAGER,
+                    Password = new PasswordHasher().HashPassword("123")
+                },
+                new User
+                {
+                    Id = 7, Username = "hiring", Role = UserRole.HIRING_MANAGER,
+                    Password = new PasswordHasher().HashPassword("123")
+                }
             );
 
             modelBuilder.Entity<EventSchedule>().HasData(
