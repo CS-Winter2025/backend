@@ -34,51 +34,73 @@
                 </button>
                 <popover content='Helpful info.' title='Need help?' />
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark headerFont" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark headerFont" asp-area="" asp-controller="Home"
-                                asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark headerFont" asp-area="Services" asp-controller="Services"
-                               asp-action="Index">Services</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark headerFont" asp-area="Charges" asp-controller="Invoices"
-                               asp-action="Index">Charges</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark headerFont" asp-area="Employees" asp-controller="Employees"
-                               asp-action="Index">Employees</a>
-                        </li>
-                            <a class="nav-link text-dark headerFont" asp-area="" asp-controller="Residents"
-                               asp-action="Index">Residents</a>
-                        </li>
-                    </ul>
-                    <!-- Login/Logout Section -->
-                    <ul class="navbar-nav">
-                        @if (Context.Session.GetString("Username") != null)
-                        {
-                            <li class="nav-item">
-                                <span class="nav-link text-dark">Welcome, @Context.Session.GetString("Username")!</span>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-danger" asp-controller="Users" asp-action="Logout">Logout</a>
-                            </li>
-                        }
-                        else
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Users" asp-action="Login">Login</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Users" asp-action="Register">Sign Up</a>
-                            </li>
-                        }
-                    </ul>
+	                @{
+		                var role = Context.Session.GetString("Role") ?? "NONE";
+	                }
+	                <ul class="navbar-nav flex-grow-1">
+		                <li class="nav-item">
+			                <a class="nav-link text-dark headerFont" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+		                </li>
+		                <li class="nav-item">
+			                <a class="nav-link text-dark headerFont" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+		                </li>
+
+		                @if (role is "ADMIN" or "HOUSING_MANAGER" or "EMPLOYEE")
+		                {
+			                <li class="nav-item">
+				                <a class="nav-link text-dark headerFont" asp-area="Charges" asp-controller="Invoices" asp-action="Index">Charges</a>
+			                </li>
+		                }
+
+						@if (role is "ADMIN" or "RESIDENT" or "HOUSING_MANAGER")
+		                {
+			                <li class="nav-item">
+				                <a class="nav-link text-dark headerFont" asp-area="" asp-controller="Residents" asp-action="Index">Residents</a>
+			                </li>
+		                }
+
+						@if (role is "ADMIN" or "SERVICE_MANAGER" or "EMPLOYEE")
+		                {
+			                <li class="nav-item">
+				                <a class="nav-link text-dark headerFont" asp-area="Services" asp-controller="Services" asp-action="Index">Services</a>
+			                </li>
+		                }
+
+						@if (role is "ADMIN" or "HR_MANAGER")
+		                {
+			                <li class="nav-item">
+				                <a class="nav-link text-dark headerFont" asp-area="Employees" asp-controller="Employees" asp-action="Index">Employees</a>
+			                </li>
+		                }
+
+						@if (role == "ADMIN")
+		                {
+			                <li class="nav-item">
+				                <a class="nav-link text-dark headerFont" asp-area="" asp-controller="Users" asp-action="Index">Users</a>
+			                </li>
+		                }
+	                </ul>
+	                <!-- Login/Logout Section -->
+	                <ul class="navbar-nav">
+		                @if (Context.Session.GetString("Username") != null)
+		                {
+			                <li class="nav-item">
+				                <span class="nav-link text-dark">Welcome, @Context.Session.GetString("Username")!</span>
+			                </li>
+			                <li class="nav-item">
+				                <a class="nav-link text-danger" asp-controller="Users" asp-action="Logout">Logout</a>
+			                </li>
+		                }
+		                else
+		                {
+			                <li class="nav-item">
+				                <a class="nav-link text-dark" asp-controller="Users" asp-action="Login">Login</a>
+			                </li>
+			                <li class="nav-item">
+				                <a class="nav-link text-dark" asp-controller="Users" asp-action="Register">Sign Up</a>
+			                </li>
+		                }
+	                </ul>
                 </div>
             </div>
         </nav>
