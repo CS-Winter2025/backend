@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CourseProject;
 using CourseProject.Models;
+using CourseProject.Common;
 
 namespace CourseProject.Areas.Services.Controllers
 {
@@ -20,19 +21,22 @@ namespace CourseProject.Areas.Services.Controllers
             _context = context;
         }
 
-        // GET: Services/Services
+        // GET: Services/Services        
         public async Task<IActionResult> Index()
         {
-            if (HttpContext.Session.GetString("Username") == null)
+            if (Util.HasAccess(HttpContext, UserRole.ADMIN, UserRole.SERVICE_MANAGER, UserRole.EMPLOYEE))
             {
-                return RedirectToAction("Login", "Users"); // Redirect to login if not logged in
+                return View(await _context.Services.ToListAsync());
             }
-            return View(await _context.Services.ToListAsync());
+            return RedirectToAction("Forbidden", "Error");
         }
 
         // GET: Services/Services/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            if (!Util.HasAccess(HttpContext, UserRole.ADMIN, UserRole.SERVICE_MANAGER, UserRole.EMPLOYEE)) 
+                return RedirectToAction("Forbidden", "Error");
+
             if (id == null)
             {
                 return NotFound();
@@ -50,7 +54,10 @@ namespace CourseProject.Areas.Services.Controllers
 
         // GET: Services/Services/Create
         public IActionResult Create()
-        {
+        {            
+            if (!Util.HasAccess(HttpContext, UserRole.ADMIN, UserRole.SERVICE_MANAGER, UserRole.EMPLOYEE))
+                return RedirectToAction("Forbidden", "Error");
+
             return View();
         }
 
@@ -61,6 +68,9 @@ namespace CourseProject.Areas.Services.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ServiceID,Type,Rate,Requirements")] Service service)
         {
+            if (!Util.HasAccess(HttpContext, UserRole.ADMIN, UserRole.SERVICE_MANAGER, UserRole.EMPLOYEE))
+                return RedirectToAction("Forbidden", "Error");
+
             if (ModelState.IsValid)
             {
                 _context.Add(service);
@@ -73,6 +83,9 @@ namespace CourseProject.Areas.Services.Controllers
         // GET: Services/Services/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            if (!Util.HasAccess(HttpContext, UserRole.ADMIN, UserRole.SERVICE_MANAGER, UserRole.EMPLOYEE))
+                return RedirectToAction("Forbidden", "Error");
+
             if (id == null)
             {
                 return NotFound();
@@ -93,6 +106,9 @@ namespace CourseProject.Areas.Services.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([Bind(Prefix = "ServiceID")] int id, [Bind("ServiceID,Type,Rate,Requirements")] Service service)
         {
+            if (!Util.HasAccess(HttpContext, UserRole.ADMIN, UserRole.SERVICE_MANAGER, UserRole.EMPLOYEE))
+                return RedirectToAction("Forbidden", "Error");
+
             if (id != service.ServiceID)
             {
                 return NotFound();
@@ -124,6 +140,9 @@ namespace CourseProject.Areas.Services.Controllers
         // GET: Services/Services/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            if (!Util.HasAccess(HttpContext, UserRole.ADMIN, UserRole.SERVICE_MANAGER, UserRole.EMPLOYEE))
+                return RedirectToAction("Forbidden", "Error");
+
             if (id == null)
             {
                 return NotFound();
@@ -144,6 +163,9 @@ namespace CourseProject.Areas.Services.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed([Bind(Prefix = "ServiceID")] int id)
         {
+            if (!Util.HasAccess(HttpContext, UserRole.ADMIN, UserRole.SERVICE_MANAGER, UserRole.EMPLOYEE))
+                return RedirectToAction("Forbidden", "Error");
+
             var service = await _context.Services.FindAsync(id);
             if (service != null)
             {
@@ -157,6 +179,6 @@ namespace CourseProject.Areas.Services.Controllers
         private bool ServiceExists(int id)
         {
             return _context.Services.Any(e => e.ServiceID == id);
-        }
+        }              
     }
 }
