@@ -8,6 +8,11 @@ namespace CourseProject.Models
         public string Username { get; set; }
         public string Password { get; set; }
         public UserRole Role { get; set; }
+
+        public Employee? Employee { get; set; }
+        public int? EmployeeId { get; set; }
+        public Resident? Resident { get; set; }
+        public int? ResidentID { get; set; }
     }
 
     public class UserView

@@ -149,37 +149,44 @@ namespace CourseProject
                 new User
                 {
                     Id = 1, Username = "admin", Role = UserRole.ADMIN,
-                    Password = new PasswordHasher().HashPassword("123")
+                    Password = new PasswordHasher().HashPassword("123"),
+                    EmployeeId = 1,
                 },
                 new User
                 {
                     Id = 2, Username = "resident", Role = UserRole.RESIDENT,
-                    Password = new PasswordHasher().HashPassword("123")
+                    Password = new PasswordHasher().HashPassword("123"),
+                    ResidentID = 1,
                 },
                 new User
                 {
                     Id = 3, Username = "housing", Role = UserRole.HOUSING_MANAGER,
-                    Password = new PasswordHasher().HashPassword("123")
+                    Password = new PasswordHasher().HashPassword("123"),
+                    EmployeeId = 1,
                 },
                 new User
                 {
                     Id = 4, Username = "employee", Role = UserRole.EMPLOYEE,
-                    Password = new PasswordHasher().HashPassword("123")
+                    Password = new PasswordHasher().HashPassword("123"),
+                    ResidentID = 2,
                 },
                 new User
                 {
                     Id = 5, Username = "service", Role = UserRole.SERVICE_MANAGER,
-                    Password = new PasswordHasher().HashPassword("123")
+                    Password = new PasswordHasher().HashPassword("123"),
+                    EmployeeId = 1,
                 },
                 new User
                 {
                     Id = 6, Username = "hr", Role = UserRole.HR_MANAGER,
-                    Password = new PasswordHasher().HashPassword("123")
+                    Password = new PasswordHasher().HashPassword("123"),
+                    EmployeeId = 1,
                 },
                 new User
                 {
                     Id = 7, Username = "hiring", Role = UserRole.HIRING_MANAGER,
-                    Password = new PasswordHasher().HashPassword("123")
+                    Password = new PasswordHasher().HashPassword("123"),
+                    EmployeeId = 1,
                 }
             );
 
