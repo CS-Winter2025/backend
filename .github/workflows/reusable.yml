@@ -51,21 +51,14 @@ jobs:
 
     strategy:
       matrix:
-        os: [windows-latest] # To accommodate both Linux and Windows environment
+        os: [ubuntu-latest, windows-latest] # To accommodate both Linux and Windows environment
 
     steps:
       - name: Checkout source code
         uses: actions/checkout@v3
 
-      - name: Verify appsettings.json content
-        run: |
-          if [ -s ./CourseProject/appsettings.json ]; then
-            echo "appsettings.json created and has content."
-          else
-            echo "appsettings.json is empty or not created!"
-            exit 1
-          fi
-        shell: bash
+      - name: Create appsettings.json from secret
+        run: echo "${{ secrets.APPSETTINGS_JSON }}" > ./CourseProject/appsettings.json
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4
@@ -82,17 +75,6 @@ jobs:
 
       - name: Build application (${{ inputs.configuration }})
         run: dotnet build ${{ inputs.project_path }} -c ${{ inputs.configuration }} --no-restore
-
-      # Setup Chrome (cross-platform support)
-      - name: Setup Chrome
-        uses: browser-actions/setup-chrome@v1
-        with:
-          install-dependencies: true
-
-      - name: Start backend server and warm it up before running tests
-        run: |
-          dotnet run --project ${{ inputs.project_path }} --urls "http://localhost:5000"
-          sleep 5
 
       # Conditional Unit Tests
       - name: Run Unit Tests
