@@ -164,6 +164,8 @@ namespace CourseProject.Areas.Calendar.Controllers
             dbEvent.Employees = updatedEvent.Employees;
             dbEvent.StartDate = updatedEvent.StartDate;
             dbEvent.EndDate = updatedEvent.EndDate;
+            dbEvent.RepeatPattern = updatedEvent.RepeatPattern;
+            dbEvent.RecurringEventId = updatedEvent.RecurringEventId;
             _context.SaveChanges();
 
             return Ok(new
