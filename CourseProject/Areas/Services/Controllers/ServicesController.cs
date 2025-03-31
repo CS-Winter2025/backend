@@ -24,7 +24,7 @@ namespace CourseProject.Areas.Services.Controllers
         // GET: Services/Services        
         public async Task<IActionResult> Index()
         {
-            if (Util.HasAccess(HttpContext, UserRole.SERVICE_MANAGER, UserRole.EMPLOYEE))
+            if (Util.HasAccess(HttpContext, UserRole.ADMIN, UserRole.SERVICE_MANAGER, UserRole.EMPLOYEE))
             {
                 return View(await _context.Services.ToListAsync());
             }
@@ -34,7 +34,7 @@ namespace CourseProject.Areas.Services.Controllers
         // GET: Services/Services/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (!Util.HasAccess(HttpContext, UserRole.SERVICE_MANAGER, UserRole.EMPLOYEE)) 
+            if (!Util.HasAccess(HttpContext, UserRole.ADMIN, UserRole.SERVICE_MANAGER, UserRole.EMPLOYEE)) 
                 return RedirectToAction("Forbidden", "Error");
 
             if (id == null)
@@ -55,7 +55,7 @@ namespace CourseProject.Areas.Services.Controllers
         // GET: Services/Services/Create
         public IActionResult Create()
         {            
-            if (!Util.HasAccess(HttpContext, UserRole.SERVICE_MANAGER, UserRole.EMPLOYEE))
+            if (!Util.HasAccess(HttpContext, UserRole.ADMIN, UserRole.SERVICE_MANAGER, UserRole.EMPLOYEE))
                 return RedirectToAction("Forbidden", "Error");
 
             return View();
@@ -68,7 +68,7 @@ namespace CourseProject.Areas.Services.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ServiceID,Type,Rate,Requirements")] Service service)
         {
-            if (!Util.HasAccess(HttpContext, UserRole.SERVICE_MANAGER, UserRole.EMPLOYEE))
+            if (!Util.HasAccess(HttpContext, UserRole.ADMIN, UserRole.SERVICE_MANAGER, UserRole.EMPLOYEE))
                 return RedirectToAction("Forbidden", "Error");
 
             if (ModelState.IsValid)
@@ -83,7 +83,7 @@ namespace CourseProject.Areas.Services.Controllers
         // GET: Services/Services/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (!Util.HasAccess(HttpContext, UserRole.SERVICE_MANAGER, UserRole.EMPLOYEE))
+            if (!Util.HasAccess(HttpContext, UserRole.ADMIN, UserRole.SERVICE_MANAGER, UserRole.EMPLOYEE))
                 return RedirectToAction("Forbidden", "Error");
 
             if (id == null)
@@ -106,7 +106,7 @@ namespace CourseProject.Areas.Services.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([Bind(Prefix = "ServiceID")] int id, [Bind("ServiceID,Type,Rate,Requirements")] Service service)
         {
-            if (!Util.HasAccess(HttpContext, UserRole.SERVICE_MANAGER, UserRole.EMPLOYEE))
+            if (!Util.HasAccess(HttpContext, UserRole.ADMIN, UserRole.SERVICE_MANAGER, UserRole.EMPLOYEE))
                 return RedirectToAction("Forbidden", "Error");
 
             if (id != service.ServiceID)
@@ -140,7 +140,7 @@ namespace CourseProject.Areas.Services.Controllers
         // GET: Services/Services/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (!Util.HasAccess(HttpContext, UserRole.SERVICE_MANAGER, UserRole.EMPLOYEE))
+            if (!Util.HasAccess(HttpContext, UserRole.ADMIN, UserRole.SERVICE_MANAGER, UserRole.EMPLOYEE))
                 return RedirectToAction("Forbidden", "Error");
 
             if (id == null)
@@ -163,7 +163,7 @@ namespace CourseProject.Areas.Services.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed([Bind(Prefix = "ServiceID")] int id)
         {
-            if (!Util.HasAccess(HttpContext, UserRole.SERVICE_MANAGER, UserRole.EMPLOYEE))
+            if (!Util.HasAccess(HttpContext, UserRole.ADMIN, UserRole.SERVICE_MANAGER, UserRole.EMPLOYEE))
                 return RedirectToAction("Forbidden", "Error");
 
             var service = await _context.Services.FindAsync(id);
