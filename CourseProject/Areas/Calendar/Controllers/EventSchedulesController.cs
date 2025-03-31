@@ -36,7 +36,7 @@ namespace CourseProject.Areas.Calendar.Controllers
                     var employee = _context.Employees.FirstOrDefault(e => e.EmployeeId == personId.Value);
                     if (employee != null)
                     {
-                        personName = employee.Name;
+                        personName = employee.Name.ToString();
                     }
                 }
                 else
@@ -44,7 +44,7 @@ namespace CourseProject.Areas.Calendar.Controllers
                     var resident = _context.Residents.FirstOrDefault(e => e.ResidentId == personId.Value);
                     if (resident != null)
                     {
-                        personName = resident.Name;
+                        personName = resident.Name.ToString();
                     }
                 }
 

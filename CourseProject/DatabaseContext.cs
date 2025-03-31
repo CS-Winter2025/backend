@@ -141,7 +141,8 @@ namespace CourseProject
                     EmploymentType = "Full-Time",
                     PayRate = 60000,
                     OrganizationId = 1,
-                    Address = new FullAddress { Street = "123 Main St", City = "New York", State = "NY", ZipCode = "10001" }
+                    Address = new FullAddress { Street = "123 Main St", City = "New York", State = "NY", ZipCode = "10001" },
+                    ProfilePicture = null
                 },
                 new Employee
                 {
@@ -152,7 +153,8 @@ namespace CourseProject
                     PayRate = 50000,
                     OrganizationId = 1,
                     ManagerId = 1,
-                    Address = new FullAddress { Street = "456 Park Ave", City = "New York", State = "NY", ZipCode = "10002" }
+                    Address = new FullAddress { Street = "456 Park Ave", City = "New York", State = "NY", ZipCode = "10002" },
+                    ProfilePicture = null
                 }
             );
 
