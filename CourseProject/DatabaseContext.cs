@@ -32,6 +32,12 @@ namespace CourseProject
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<Employee>().OwnsOne(e => e.Name);
+            modelBuilder.Entity<Resident>().OwnsOne(r => r.Name);
+
+            modelBuilder.Entity<Employee>().OwnsOne(e => e.Address);
+            modelBuilder.Entity<Resident>().OwnsOne(r => r.Address);
+
             modelBuilder.Entity<Employee>()
                 .HasOne(e => e.Manager)
                 .WithMany(e => e.Subordinates)
@@ -76,9 +82,9 @@ namespace CourseProject
                 .OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.Entity<ResidentAsset>()
-    .HasOne(ra => ra.Resident)
-    .WithMany()
-    .HasForeignKey(ra => ra.ResidentId);
+                .HasOne(ra => ra.Resident)
+                .WithMany()
+                .HasForeignKey(ra => ra.ResidentId);
 
             modelBuilder.Entity<ResidentAsset>()
                 .HasOne(ra => ra.Asset)
@@ -86,9 +92,9 @@ namespace CourseProject
                 .HasForeignKey(ra => ra.AssetID);
 
             modelBuilder.Entity<ResidentAssetRequest>()
-    .HasOne(r => r.Resident)
-    .WithMany()
-    .HasForeignKey(r => r.ResidentId);
+                .HasOne(r => r.Resident)
+                .WithMany()
+                .HasForeignKey(r => r.ResidentId);
 
             modelBuilder.Entity<ResidentAssetRequest>()
                 .HasOne(r => r.Asset)
@@ -127,15 +133,43 @@ namespace CourseProject
             );
 
             modelBuilder.Entity<Employee>().HasData(
-                new Employee { EmployeeId = 1, Name = "Alice", JobTitle = "Manager", EmploymentType = "Full-Time", PayRate = 60000, OrganizationId = 1 },
-                new Employee { EmployeeId = 2, Name = "Bob", JobTitle = "Developer", EmploymentType = "Full-Time", PayRate = 50000, OrganizationId = 1, ManagerId = 1 }
+                new Employee
+                {
+                    EmployeeId = 1,
+                    Name = new FullName { FirstName = "Alice", LastName = "Smith" },
+                    JobTitle = "Manager",
+                    EmploymentType = "Full-Time",
+                    PayRate = 60000,
+                    OrganizationId = 1,
+                    Address = new FullAddress { Street = "123 Main St", City = "New York", State = "NY", ZipCode = "10001" }
+                },
+                new Employee
+                {
+                    EmployeeId = 2,
+                    Name = new FullName { FirstName = "Bob", LastName = "Johnson" },
+                    JobTitle = "Developer",
+                    EmploymentType = "Full-Time",
+                    PayRate = 50000,
+                    OrganizationId = 1,
+                    ManagerId = 1,
+                    Address = new FullAddress { Street = "456 Park Ave", City = "New York", State = "NY", ZipCode = "10002" }
+                }
             );
 
             modelBuilder.Entity<Resident>().HasData(
-                new Resident { ResidentId = 1, Name = "Charlie" },
-                new Resident { ResidentId = 2, Name = "Diana" }
+                new Resident
+                {
+                    ResidentId = 1,
+                    Name = new FullName { FirstName = "Charlie", LastName = "Brown" },
+                    Address = new FullAddress { Street = "789 Oak St", City = "Los Angeles", State = "CA", ZipCode = "90001" }
+                },
+                new Resident
+                {
+                    ResidentId = 2,
+                    Name = new FullName { FirstName = "Diana", LastName = "Prince" },
+                    Address = new FullAddress { Street = "101 Pine St", City = "San Francisco", State = "CA", ZipCode = "94101" }
+                }
             );
-
             modelBuilder.Entity<Service>().HasData(
                 new Service { ServiceID = 1, Type = "Cleaning", Rate = 50 },
                 new Service { ServiceID = 2, Type = "Security", Rate = 100 }
