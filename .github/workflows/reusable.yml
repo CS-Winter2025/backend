@@ -95,7 +95,7 @@ jobs:
       - name: Confirm Chrome is ready
         run: |
           echo "Chrome version:"
-          google-chrome --version
+          chrome --version
 
       - name: Start backend server and warm it up before running tests
         run: |
