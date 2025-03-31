@@ -138,10 +138,43 @@ namespace CourseProject
             modelBuilder.Entity<Invoice>().HasData(
                 new Invoice { InvoiceID = 1, ResidentID = 1, Date = DateTime.UtcNow, AmountDue = 200, AmountPaid = 100 }
             );
-                                              
+
             modelBuilder.Entity<User>().HasData(
-                new User { Id = 1, Username = "admin", Role = UserRole.ADMIN, Password = new PasswordHasher().HashPassword("123") },
-                new User { Id = 2, Username = "resident", Role = UserRole.RESIDENT, Password = new PasswordHasher().HashPassword("123") }
+                new User
+                {
+                    Id = 1, Username = "admin", Role = UserRole.ADMIN,
+                    Password = new PasswordHasher().HashPassword("123")
+                },
+                new User
+                {
+                    Id = 2, Username = "resident", Role = UserRole.RESIDENT,
+                    Password = new PasswordHasher().HashPassword("123")
+                },
+                new User
+                {
+                    Id = 3, Username = "housing", Role = UserRole.HOUSING_MANAGER,
+                    Password = new PasswordHasher().HashPassword("123")
+                },
+                new User
+                {
+                    Id = 4, Username = "employee", Role = UserRole.EMPLOYEE,
+                    Password = new PasswordHasher().HashPassword("123")
+                },
+                new User
+                {
+                    Id = 5, Username = "service", Role = UserRole.SERVICE_MANAGER,
+                    Password = new PasswordHasher().HashPassword("123")
+                },
+                new User
+                {
+                    Id = 6, Username = "hr", Role = UserRole.HR_MANAGER,
+                    Password = new PasswordHasher().HashPassword("123")
+                },
+                new User
+                {
+                    Id = 7, Username = "hiring", Role = UserRole.HIRING_MANAGER,
+                    Password = new PasswordHasher().HashPassword("123")
+                }
             );
 
             modelBuilder.Entity<EventSchedule>().HasData(
