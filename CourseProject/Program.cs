@@ -4,11 +4,19 @@ using CourseProject;
 using CourseProject.Areas.Calendar.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Set session timeout
+    options.Cookie.HttpOnly = true; // Ensures the session cookie is accessible only by the server
+    options.Cookie.IsEssential = true; // Required for GDPR compliance
+});
 builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DBContext' not found.")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession();
 
 var app = builder.Build();
 
@@ -35,6 +43,11 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapStaticAssets();
+
+app.UseSession();
+app.MapControllers();
+app.UseStaticFiles();
+
 
 //app.InitializeCalendarDatabase();
 
