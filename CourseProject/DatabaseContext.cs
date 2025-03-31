@@ -136,42 +136,56 @@ namespace CourseProject
                 new Employee
                 {
                     EmployeeId = 1,
-                    Name = new FullName { FirstName = "Alice", LastName = "Smith" },
                     JobTitle = "Manager",
                     EmploymentType = "Full-Time",
                     PayRate = 60000,
                     OrganizationId = 1,
-                    Address = new FullAddress { Street = "123 Main St", City = "New York", State = "NY", ZipCode = "10001" },
                     ProfilePicture = null
                 },
                 new Employee
                 {
                     EmployeeId = 2,
-                    Name = new FullName { FirstName = "Bob", LastName = "Johnson" },
                     JobTitle = "Developer",
                     EmploymentType = "Full-Time",
                     PayRate = 50000,
                     OrganizationId = 1,
                     ManagerId = 1,
-                    Address = new FullAddress { Street = "456 Park Ave", City = "New York", State = "NY", ZipCode = "10002" },
                     ProfilePicture = null
                 }
             );
+
+            modelBuilder.Entity<Employee>().OwnsOne(e => e.Name).HasData(
+                new { EmployeeId = 1, FirstName = "Alice", LastName = "Smith" },
+                new { EmployeeId = 2, FirstName = "Bob", LastName = "Johnson" }
+            );
+
+            modelBuilder.Entity<Employee>().OwnsOne(e => e.Address).HasData(
+                new { EmployeeId = 1, Street = "123 Main St", City = "New York", State = "NY", Country = "USA", ZipCode = "10001" },
+                new { EmployeeId = 2, Street = "456 Park Ave", City = "New York", State = "NY", Country = "USA", ZipCode = "10002" }
+            );
+
 
             modelBuilder.Entity<Resident>().HasData(
                 new Resident
                 {
                     ResidentId = 1,
-                    Name = new FullName { FirstName = "Charlie", LastName = "Brown" },
-                    Address = new FullAddress { Street = "789 Oak St", City = "Los Angeles", State = "CA", ZipCode = "90001" }
                 },
                 new Resident
                 {
                     ResidentId = 2,
-                    Name = new FullName { FirstName = "Diana", LastName = "Prince" },
-                    Address = new FullAddress { Street = "101 Pine St", City = "San Francisco", State = "CA", ZipCode = "94101" }
                 }
             );
+
+            modelBuilder.Entity<Resident>().OwnsOne(r => r.Name).HasData(
+                new { ResidentId = 1, FirstName = "Charlie", LastName = "Brown" },
+                new { ResidentId = 2, FirstName = "Diana", LastName = "Prince" }
+            );
+
+            modelBuilder.Entity<Resident>().OwnsOne(r => r.Address).HasData(
+                new { ResidentId = 1, Street = "789 Oak St", City = "Los Angeles", State = "CA", Country = "USA", ZipCode = "90001" },
+                new { ResidentId = 2, Street = "101 Pine St", City = "San Francisco", State = "CA", Country = "USA", ZipCode = "94101" }
+            );
+
             modelBuilder.Entity<Service>().HasData(
                 new Service { ServiceID = 1, Type = "Cleaning", Rate = 50 },
                 new Service { ServiceID = 2, Type = "Security", Rate = 100 }
