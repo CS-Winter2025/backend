@@ -33,7 +33,6 @@ public class EmployeeSearchBar
     [Test]
     public void SearchByName()
     {
-        //Init();
         //Test if search can find someone that is in the table via name
         driver.FindElement(By.Id("dt-search-0")).SendKeys("Alice");
         var IDelements = driver.FindElements(By.XPath("//td"));
