@@ -32,6 +32,13 @@ namespace CourseProject
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<ScheduleBase>().UseTphMappingStrategy();
+
+            modelBuilder.Entity<Models.File>()
+            .HasOne(f => f.ScheduleBase)
+            .WithMany(s => s.Attachments)
+            .HasForeignKey(f => f.ScheduleBaseID);
+
             modelBuilder.Entity<Employee>().OwnsOne(e => e.Name);
             modelBuilder.Entity<Resident>().OwnsOne(r => r.Name);
 
