@@ -6,7 +6,7 @@ namespace BlackBoxTests.SearchBarTests;
 
 public class ServicesSearchBar
 {
-    private SearchBarUtils searchUtils = new SearchBarUtils(4);
+    private SearchBarUtils searchUtils = new SearchBarUtils(4, "Services");
 
     [SetUp]
     public void Setup()

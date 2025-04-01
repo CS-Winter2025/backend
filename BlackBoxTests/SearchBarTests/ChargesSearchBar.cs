@@ -2,7 +2,7 @@
 
 public class ChargesSearchBar
 {
-    private SearchBarUtils searchUtils = new SearchBarUtils(5);
+    private SearchBarUtils searchUtils = new SearchBarUtils(5, "Charges");
 
     [SetUp]
     public void Setup()

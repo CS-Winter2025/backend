@@ -9,8 +9,10 @@ public class SearchBarUtils
     static ChromeDriver driver = new(path + @"\drivers\");
     private static readonly string url = "https://localhost:7176/"; // Change this if backend URL is different
     private readonly int NUM_OF_ROWS;
-    public SearchBarUtils(int numRows)
+    private readonly string TAB;
+    public SearchBarUtils(int numRows, string tab)
     {
+        TAB = tab;
         NUM_OF_ROWS = numRows;
     }
 
@@ -19,6 +21,8 @@ public class SearchBarUtils
         try
         {
             driver.FindElement(By.Id("dt-search-0"));
+            driver.FindElement(By.LinkText(TAB)).Click();
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(100);
         }
         catch (NoSuchElementException)
         {
@@ -29,7 +33,7 @@ public class SearchBarUtils
             driver.FindElement(By.Id("Password")).SendKeys("123");
             driver.FindElement(By.XPath("//button[@type='submit']")).Click();
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(100);
-            driver.FindElement(By.LinkText("Services")).Click();
+            driver.FindElement(By.LinkText(TAB)).Click();
         }
     }
 
