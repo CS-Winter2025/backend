@@ -47,6 +47,18 @@ namespace CourseProject
                 .HasMany(e => e.Services)
                 .WithMany(s => s.Employees);
 
+            modelBuilder.Entity<User>()
+                .HasOne(u => u.Resident)
+                .WithOne(r => r.User)
+                .HasForeignKey<User>(u => u.ResidentId)
+                .IsRequired(false);
+
+            modelBuilder.Entity<User>()
+                .HasOne(u => u.Employee)
+                .WithOne(r => r.User)
+                .HasForeignKey<User>(u => u.EmployeeId)
+                .IsRequired(false);
+
             modelBuilder.Entity<EventSchedule>()
                 .HasMany(es => es.Employees)
                 .WithMany(e => e.EventSchedules)
@@ -154,7 +166,8 @@ namespace CourseProject
                 new User
                 {
                     Id = 2, Username = "resident", Role = UserRole.RESIDENT,
-                    Password = new PasswordHasher().HashPassword("123")
+                    Password = new PasswordHasher().HashPassword("123"),
+                    ResidentId = 1
                 },
                 new User
                 {
@@ -164,7 +177,8 @@ namespace CourseProject
                 new User
                 {
                     Id = 4, Username = "employee", Role = UserRole.EMPLOYEE,
-                    Password = new PasswordHasher().HashPassword("123")
+                    Password = new PasswordHasher().HashPassword("123"),
+                    EmployeeId = 2
                 },
                 new User
                 {
