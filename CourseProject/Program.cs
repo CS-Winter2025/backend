@@ -18,6 +18,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     .AddCookie(options =>
     {
         options.LoginPath = "/Users/Login"; // Redirect here if not authenticated
+        options.AccessDeniedPath = "/Error/403";
     });
 
 // Add authorization services
