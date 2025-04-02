@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using CourseProject.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -56,7 +57,17 @@ namespace CourseProject.Areas.Housing.Controllers
             return View();
         }
 
+        [Authorize(Roles = nameof(UserRole.RESIDENT) + "," + nameof(UserRole.ADMIN))]
+        public async Task<IActionResult> Me()
+        {            
+            string? stringId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (stringId == null) return RedirectToAction("Forbidden", "Error");
 
+            int id = Int32.Parse(stringId);
+            User? user = await _context.Users.FindAsync(id);
+            if (user == null) return RedirectToAction("NotFound", "Error");
+            return View(user);
+        }
 
         // GET: Residents/Details/5
         [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]

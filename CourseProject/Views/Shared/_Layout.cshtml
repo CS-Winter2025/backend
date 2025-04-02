@@ -53,6 +53,12 @@
 		                <li class="nav-item">
 			                <a class="nav-link text-dark headerFont" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
 		                </li>
+						@if (role is "RESIDENT")
+						{
+							<li class="nav-item">
+								<a class="nav-link text-dark headerFont" asp-area="Housing" asp-controller="Residents" asp-action="Me">My Info</a>
+							</li>
+						}
 
 		                @if (role is "ADMIN" or "HOUSING_MANAGER" or "EMPLOYEE")
 		                {
