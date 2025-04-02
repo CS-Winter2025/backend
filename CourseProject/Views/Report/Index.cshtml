@@ -1,0 +1,39 @@
+﻿@{
+    ViewData["Title"] = "Resident Report";
+}
+
+<h2>Resident Report</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Is Living</th>
+            <th>Services</th>
+            <th>Event Schedules</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var resident in @Model)
+        {
+            <tr>
+                <td>@resident.ResidentId</td>
+                <td>@resident.Name</td>
+                <td>@(resident.IsCurrentlyLiving ? "Yes" : "No")</td>
+                <td>
+                    @foreach (var service in resident.Services)
+                    {
+                        <div>@service.Type</div>
+                    }
+                </td>
+                <td>
+                    @foreach (var schedule in resident.EventSchedules)
+                    {
+                        <div>Event @schedule.EventScheduleId</div>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
