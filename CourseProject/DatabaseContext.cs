@@ -88,9 +88,9 @@ namespace CourseProject
                 .OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.Entity<ResidentAsset>()
-    .HasOne(ra => ra.Resident)
-    .WithMany()
-    .HasForeignKey(ra => ra.ResidentId);
+                .HasOne(ra => ra.Resident)
+                .WithMany()
+                .HasForeignKey(ra => ra.ResidentId);
 
             modelBuilder.Entity<ResidentAsset>()
                 .HasOne(ra => ra.Asset)
@@ -98,9 +98,9 @@ namespace CourseProject
                 .HasForeignKey(ra => ra.AssetID);
 
             modelBuilder.Entity<ResidentAssetRequest>()
-    .HasOne(r => r.Resident)
-    .WithMany()
-    .HasForeignKey(r => r.ResidentId);
+                .HasOne(r => r.Resident)
+                .WithMany()
+                .HasForeignKey(r => r.ResidentId);
 
             modelBuilder.Entity<ResidentAssetRequest>()
                 .HasOne(r => r.Asset)
