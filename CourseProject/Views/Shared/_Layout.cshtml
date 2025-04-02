@@ -88,6 +88,12 @@
 				                <a class="nav-link text-dark headerFont" asp-area="" asp-controller="Users" asp-action="Index">Users</a>
 			                </li>
 		                }
+						@if (role == "ADMIN" || role == "EMPLOYEE")
+						{
+							<li class="nav-item">
+								<a class="nav-link text-dark headerFont" asp-controller="Report" asp-action="Index">Reports</a>
+							</li>
+						}
 	                </ul>
 	                <!-- Login/Logout Section -->
 	                <ul class="navbar-nav">
