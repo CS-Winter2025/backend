@@ -1,4 +1,5 @@
 ﻿using CourseProject.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +16,7 @@ namespace CourseProject.Areas.Housing.Controllers
         }
 
         // GET: Housing/ResidentAssets
+        [Authorize(Roles = nameof(UserRole.RESIDENT))]
         public async Task<IActionResult> Index()
         {
             var availableAssets = await _context.Assets
@@ -28,6 +30,7 @@ namespace CourseProject.Areas.Housing.Controllers
         }
 
         // GET: Housing/ResidentAssets/Details/5
+        [Authorize(Roles = nameof(UserRole.RESIDENT))]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
@@ -40,6 +43,7 @@ namespace CourseProject.Areas.Housing.Controllers
 
         // POST: Housing/ResidentAssets/Request/5
         [HttpPost]
+        [Authorize(Roles = nameof(UserRole.RESIDENT))]
         public async Task<IActionResult> Request(int id)
         {
             var userName = User.Identity.Name;

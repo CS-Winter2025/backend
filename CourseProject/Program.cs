@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using CourseProject;
 using CourseProject.Areas.Calendar.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSession(options =>
@@ -12,6 +13,15 @@ builder.Services.AddSession(options =>
 });
 builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DBContext' not found.")));
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Users/Login"; // Redirect here if not authenticated
+    });
+
+// Add authorization services
+builder.Services.AddAuthorization();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -40,6 +50,7 @@ app.UseHttpsRedirection();
 app.UseRouting();
 
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();

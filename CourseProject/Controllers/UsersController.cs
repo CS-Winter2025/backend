@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -8,6 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using CourseProject;
 using CourseProject.Models;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace MVCSampleApp.Controllers
 {
@@ -57,8 +60,21 @@ namespace MVCSampleApp.Controllers
                     user.Password = hasher.HashPassword(user.Password);
                     await _context.SaveChangesAsync();
                 }
+
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, user.Username),
+                    new Claim(ClaimTypes.Role, user.Role.ToString())
+                };
+
+                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var principal = new ClaimsPrincipal(identity);
+
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
                 HttpContext.Session.SetString("Username", user.Username);
                 HttpContext.Session.SetString("Role", user.Role.ToString());
+
                 return RedirectToAction("Index", "Home");
             }
             ViewBag.Error = "Invalid login";
@@ -164,7 +180,7 @@ namespace MVCSampleApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(userView);
+            return View(user);
         }
 
         // GET: Users/Delete/5
