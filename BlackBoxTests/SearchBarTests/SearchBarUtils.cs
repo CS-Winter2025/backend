@@ -10,17 +10,19 @@ public class SearchBarUtils
     private static readonly string url = "https://localhost:7176/"; // Change this if backend URL is different
     private readonly int NUM_OF_ROWS;
     private readonly string TAB;
-    public SearchBarUtils(int numRows, string tab)
+    private readonly string SEARCH_ID;
+    public SearchBarUtils(int numRows, string tab, string searchId = "dt-search-0")
     {
         TAB = tab;
         NUM_OF_ROWS = numRows;
+        SEARCH_ID = searchId;
     }
 
     public void login()
     {
         try
         {
-            driver.FindElement(By.Id("dt-search-0"));
+            driver.FindElement(By.Id(SEARCH_ID));
             driver.FindElement(By.LinkText(TAB)).Click();
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(100);
         }
@@ -29,7 +31,7 @@ public class SearchBarUtils
             driver.Manage().Window.Maximize();
             driver.Navigate().GoToUrl(url);
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
-            driver.FindElement(By.Id("Username")).SendKeys("nav@gmail.com");
+            driver.FindElement(By.Id("Username")).SendKeys("admin");
             driver.FindElement(By.Id("Password")).SendKeys("123");
             driver.FindElement(By.XPath("//button[@type='submit']")).Click();
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(100);
@@ -51,7 +53,7 @@ public class SearchBarUtils
     public void CheckLetterSearch(string expected, int rowIndex)
     {
         //Test if search can find someone that is in the table via [expected] parameter
-        driver.FindElement(By.Id("dt-search-0")).SendKeys(expected);
+        driver.FindElement(By.Id(SEARCH_ID)).SendKeys(expected);
         var IDelements = driver.FindElements(By.XPath("//td"));
         for (int i = rowIndex; i < IDelements.Count; i += NUM_OF_ROWS)
         {
@@ -61,12 +63,12 @@ public class SearchBarUtils
                 break;
             }
         }
-        driver.FindElement(By.Id("dt-search-0")).Clear();
+        driver.FindElement(By.Id(SEARCH_ID)).Clear();
 
         //Test if search displays no results when inputted [expected] is not in the table
-        driver.FindElement(By.Id("dt-search-0")).SendKeys("Cheese");
+        driver.FindElement(By.Id(SEARCH_ID)).SendKeys("Cheese");
         Assert.That(driver.FindElement(By.XPath("//td[contains(text(), 'No matching records found')]")).Displayed);
-        driver.FindElement(By.Id("dt-search-0")).Clear();
+        driver.FindElement(By.Id(SEARCH_ID)).Clear();
 
         Assert.Pass("Search bar works");
     }
@@ -86,7 +88,7 @@ public class SearchBarUtils
     public void CheckNumericSearch(string expected, int rowIndex)
     {
         //Test if search can find someone that is in the table via rate
-        driver.FindElement(By.Id("dt-search-0")).SendKeys(expected);
+        driver.FindElement(By.Id(SEARCH_ID)).SendKeys(expected);
         var IDelements = driver.FindElements(By.XPath("//td"));
         for (int i = rowIndex; i < IDelements.Count; i += NUM_OF_ROWS)
         {
@@ -96,17 +98,17 @@ public class SearchBarUtils
                 break;
             }
         }
-        driver.FindElement(By.Id("dt-search-0")).Clear();
+        driver.FindElement(By.Id(SEARCH_ID)).Clear();
 
         //Test if search displays no results when inputted negative [expected]
-        driver.FindElement(By.Id("dt-search-0")).SendKeys("-1");
+        driver.FindElement(By.Id(SEARCH_ID)).SendKeys("-1");
         Assert.That(driver.FindElement(By.XPath("//td[contains(text(), 'No matching records found')]")).Displayed);
-        driver.FindElement(By.Id("dt-search-0")).Clear();
+        driver.FindElement(By.Id(SEARCH_ID)).Clear();
 
         //Test if search displays no results when inputted [expected] is greater than the number of rows in the table
-        driver.FindElement(By.Id("dt-search-0")).SendKeys("3784536292837");
+        driver.FindElement(By.Id(SEARCH_ID)).SendKeys("3784536292837");
         Assert.That(driver.FindElement(By.XPath("//td[contains(text(), 'No matching records found')]")).Displayed);
-        driver.FindElement(By.Id("dt-search-0")).Clear();
+        driver.FindElement(By.Id(SEARCH_ID)).Clear();
 
         Assert.Pass("Search bar works");
     }
