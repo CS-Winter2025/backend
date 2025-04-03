@@ -1,8 +1,8 @@
 using CourseProject.Models;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.AspNet.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace CourseProject
 {
@@ -117,7 +117,7 @@ namespace CourseProject
             // Resident-Service many-to-many relationship
             modelBuilder.Entity<Resident>().ToTable("Resident")
                 .HasMany(r => r.Services)
-                .WithMany(s => s.Residents) 
+                .WithMany(s => s.Residents)
                 .UsingEntity(j => j.HasData(
                     new { ResidentsResidentId = 1, ServicesServiceID = 1 },
                     new { ResidentsResidentId = 2, ServicesServiceID = 2 }
@@ -160,39 +160,39 @@ namespace CourseProject
             modelBuilder.Entity<User>().HasData(
                 new User
                 {
-                    Id = 1, Username = "admin", Role = UserRole.ADMIN,
+                    Id = 1,
+                    Username = "admin",
+                    Role = UserRole.ADMIN,
                     Password = new PasswordHasher().HashPassword("123")
                 },
                 new User
                 {
-                    Id = 2, Username = "resident", Role = UserRole.RESIDENT,
+                    Id = 2,
+                    Username = "resident",
+                    Role = UserRole.RESIDENT,
                     Password = new PasswordHasher().HashPassword("123"),
                     ResidentId = 1
                 },
                 new User
                 {
-                    Id = 3, Username = "housing", Role = UserRole.HOUSING_MANAGER,
+                    Id = 3,
+                    Username = "housing",
+                    Role = UserRole.HOUSING_MANAGER,
                     Password = new PasswordHasher().HashPassword("123")
                 },
                 new User
                 {
-                    Id = 4, Username = "employee", Role = UserRole.EMPLOYEE,
+                    Id = 4,
+                    Username = "employee",
+                    Role = UserRole.EMPLOYEE,
                     Password = new PasswordHasher().HashPassword("123"),
                     EmployeeId = 2
                 },
                 new User
                 {
-                    Id = 5, Username = "service", Role = UserRole.SERVICE_MANAGER,
-                    Password = new PasswordHasher().HashPassword("123")
-                },
-                new User
-                {
-                    Id = 6, Username = "hr", Role = UserRole.HR_MANAGER,
-                    Password = new PasswordHasher().HashPassword("123")
-                },
-                new User
-                {
-                    Id = 7, Username = "hiring", Role = UserRole.HIRING_MANAGER,
+                    Id = 6,
+                    Username = "hr",
+                    Role = UserRole.HR_MANAGER,
                     Password = new PasswordHasher().HashPassword("123")
                 }
             );
