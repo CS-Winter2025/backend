@@ -6,7 +6,7 @@ namespace BlackBoxTests;
 public class SearchBarUtils
 {
     private static readonly string path = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
-    static ChromeDriver driver = new(path + @"\drivers\");
+    static ChromeDriver driver = new ChromeDriver();
     private static readonly string url = "https://localhost:7176/"; // Change this if backend URL is different
     private readonly int NUM_OF_ROWS;
     private readonly string TAB;
@@ -111,5 +111,12 @@ public class SearchBarUtils
         driver.FindElement(By.Id(SEARCH_ID)).Clear();
 
         Assert.Pass("Search bar works");
+    }
+
+    [OneTimeTearDown]
+    public void CloseChromeDrivers()
+    {
+        driver.Quit();
+        driver.Dispose();
     }
 }
