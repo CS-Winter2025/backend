@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
+﻿using System.Security.Claims;
 using CourseProject.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace CourseProject.Areas.Housing.Controllers
@@ -59,12 +54,12 @@ namespace CourseProject.Areas.Housing.Controllers
 
         [Authorize(Roles = nameof(UserRole.RESIDENT) + "," + nameof(UserRole.ADMIN))]
         public async Task<IActionResult> Me()
-        {            
+        {
             string? stringId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (stringId == null) return RedirectToAction("Forbidden", "Error");
 
             int id = Int32.Parse(stringId);
-            User? user = await _context.Users.FindAsync(id);
+            User? user = await _context.Users.Include(u => u.Resident).FirstOrDefaultAsync(u => u.Id == id);
             if (user == null) return RedirectToAction("NotFound", "Error");
             return View(user);
         }
