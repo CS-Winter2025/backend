@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CourseProject.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CourseProject.Areas.Housing.Controllers
 {
@@ -19,6 +21,7 @@ namespace CourseProject.Areas.Housing.Controllers
         }
 
         // GET: Assets
+        [Authorize(Roles = nameof(UserRole.RESIDENT) + "," + nameof(UserRole.HOUSING_MANAGER) + "," + nameof(UserRole.ADMIN))]
         public async Task<IActionResult> Index()
         {
             var assets = await _context.Assets.ToListAsync();
@@ -51,9 +54,8 @@ namespace CourseProject.Areas.Housing.Controllers
             return View();
         }
 
-
-
         [HttpPost]
+        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> ApproveRequest(int requestId)
         {
             var request = await _context.ResidentAssetRequests
@@ -79,6 +81,7 @@ namespace CourseProject.Areas.Housing.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> DeclineRequest(int requestId)
         {
             var request = await _context.ResidentAssetRequests.FindAsync(requestId);
@@ -90,8 +93,8 @@ namespace CourseProject.Areas.Housing.Controllers
             return RedirectToAction("Index");
         }
 
-
         // GET: Assets/Assign/5
+        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> Assign(int id)
         {
             var asset = await _context.Assets.FindAsync(id);
@@ -103,6 +106,7 @@ namespace CourseProject.Areas.Housing.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> Assign(int assetId, List<ResidentAssignmentViewModel> selectedResidents)
         {
             foreach (var item in selectedResidents)
@@ -128,10 +132,8 @@ namespace CourseProject.Areas.Housing.Controllers
             return RedirectToAction("Index");
         }
 
-
-
-
         // GET: Assets/Details/5
+        [Authorize(Roles = nameof(UserRole.RESIDENT) + "," + nameof(UserRole.HOUSING_MANAGER) + "," + nameof(UserRole.ADMIN))]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -150,16 +152,16 @@ namespace CourseProject.Areas.Housing.Controllers
         }
 
         // GET: Assets/Create
+        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public IActionResult Create()
         {
             return View();
         }
 
         // POST: Assets/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> Create([Bind("AssetID,Type,DetailsJson")] Asset asset)
         {
             if (ModelState.IsValid)
@@ -172,8 +174,8 @@ namespace CourseProject.Areas.Housing.Controllers
             return View(asset);
         }
 
-
         // GET: Assets/Edit/5
+        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -190,10 +192,9 @@ namespace CourseProject.Areas.Housing.Controllers
         }
 
         // POST: Assets/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> Edit(int id, [Bind("AssetID,Type,DetailsJson")] Asset asset)
         {
             if (id != asset.AssetID)
@@ -225,6 +226,7 @@ namespace CourseProject.Areas.Housing.Controllers
         }
 
         // GET: Assets/Delete/5
+        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -245,6 +247,7 @@ namespace CourseProject.Areas.Housing.Controllers
         // POST: Assets/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var asset = await _context.Assets.FindAsync(id);
@@ -263,6 +266,7 @@ namespace CourseProject.Areas.Housing.Controllers
         }
 
         // GET: Assets/Available
+        [Authorize(Roles = nameof(UserRole.RESIDENT) + "," + nameof(UserRole.HOUSING_MANAGER) + "," + nameof(UserRole.ADMIN))]
         public async Task<IActionResult> Available()
         {
             var availableAssets = await _context.Assets
@@ -272,6 +276,7 @@ namespace CourseProject.Areas.Housing.Controllers
         }
 
         // GET: Assets/Assigned
+        [Authorize(Roles = nameof(UserRole.RESIDENT) + "," + nameof(UserRole.HOUSING_MANAGER) + "," + nameof(UserRole.ADMIN))]
         public async Task<IActionResult> Assigned()
         {
             var assignedAssets = await _context.Assets
@@ -283,6 +288,7 @@ namespace CourseProject.Areas.Housing.Controllers
         // POST: Assets/CancelRequest/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> CancelRequest(int id)
         {
             var asset = await _context.Assets.FindAsync(id);
@@ -297,6 +303,5 @@ namespace CourseProject.Areas.Housing.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Assigned));
         }
-
     }
 }
