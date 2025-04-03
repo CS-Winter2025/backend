@@ -10,7 +10,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create" method="post" novalidate>
+        <form asp-action="Create" method="post" novalidate enctype="multipart/form-data">
             @Html.AntiForgeryToken()
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
@@ -63,6 +63,12 @@
                     <option value="">-- Select Organization --</option> <!-- Default option -->
                 </select>
                 <span asp-validation-for="OrganizationId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="ProfilePicture" class="control-label"></label>
+                <input type="file" name="ProfilePicture" class="form-control" />
+                <span asp-validation-for="ProfilePicture " class="text-danger"></span>
             </div>
             
             <div class="form-group">
