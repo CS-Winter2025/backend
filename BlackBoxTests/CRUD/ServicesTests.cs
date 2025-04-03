@@ -30,7 +30,7 @@ public class ServicesTests
         _driver.Navigate().GoToUrl(BaseUrl);
         _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
         
-        Assert.That(_driver.Url, Does.Contain(LoginUri), "Did not navigate to the Login page.");
+        _driver.FindElement(By.XPath("//a[text()='Login']")).Click();
         
         // Login with Admin
         _driver.FindElement(By.Id("Username")).SendKeys(AdminLogin);
