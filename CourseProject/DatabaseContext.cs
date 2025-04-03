@@ -190,7 +190,7 @@ namespace CourseProject
                 },
                 new User
                 {
-                    Id = 6,
+                    Id = 5,
                     Username = "hr",
                     Role = UserRole.HR_MANAGER,
                     Password = new PasswordHasher().HashPassword("123")
