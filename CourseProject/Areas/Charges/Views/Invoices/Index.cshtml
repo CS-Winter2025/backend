@@ -34,7 +34,7 @@
                 @Html.DisplayFor(modelItem => item.Resident.ResidentId)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Date)
+                @item.Date.ToString("yyyy-MM-dd hh:mm:ss tt")
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.AmountDue)

@@ -13,22 +13,22 @@ public class ChargesTests
     
     private const string AdminLogin = "admin";
     private const string AdminPassword = "123";
-
+    
     private const string InvoiceResidentId = "2";
     private const string InvoiceDateYear = "2025";
     private const string InvoiceDateOther = "04010000AM";
-    private const string InvoiceDateList = "2025-04-01 12:00:00\u202fAM";
+    private const string InvoiceDateList = "2025-04-01 12:00:00 AM";
     private const string InvoiceDateCalender = "2025-04-01T00:00";
     private const string InvoiceAmountDue = "100.00";
     private const string InvoiceAmountPaid = "50.00";
-    
+
     private const string NewInvoiceResidentId = "1";
     private const string NewInvoiceDateYear = "2025";
     private const string NewInvoiceDateOther = "12210630PM";
-    private const string NewInvoiceDateList = "2025-12-21 6:30:00\u202fPM";
+    private const string NewInvoiceDateList = "2025-12-21 06:30:00 PM";
     private const string NewInvoiceAmountDue = "137.54";
     private const string NewInvoiceAmountPaid = "24.33";
-    
+
     [OneTimeSetUp]
     public void Setup()
     {
@@ -51,7 +51,7 @@ public class ChargesTests
     }
 
     [Test, Order(1)]
-    public void CreateService()
+    public void CreateInvoice()
     {
         // Create New
         _driver.FindElement(By.LinkText("Create New")).Click();
@@ -91,7 +91,7 @@ public class ChargesTests
     }
     
     [Test, Order(2)]
-    public void ReadService()
+    public void ReadInvoice()
     {
         Assert.That(_driver.Url, Does.Contain("Invoices"), "Did not navigate to the Invoices page.");
         
@@ -116,7 +116,7 @@ public class ChargesTests
     }
 
     [Test, Order(3)]
-    public void UpdateService()
+    public void UpdateInvoice()
     {
         // Navigate to Charges page
         _driver.FindElement(By.XPath("//a[text()='Charges']")).Click();
@@ -180,7 +180,7 @@ public class ChargesTests
     }
 
     [Test, Order(4)]
-    public void DeleteService()
+    public void DeleteInvoice()
     {
         Assert.That(_driver.Url, Does.Contain("Invoices"), "Did not navigate to the Invoices page.");
         
