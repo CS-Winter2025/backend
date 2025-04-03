@@ -25,10 +25,6 @@ namespace CourseProject.Areas.Employees.Controllers
         [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HR_MANAGER) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> Index()
         {
-            if (HttpContext.Session.GetString("Username") == null)
-            {
-                return RedirectToAction("Login", "Users"); // Redirect to login if not logged in
-            }
             var databaseContext = _context.Employees.Include(e => e.Manager).Include(e => e.Organization);
             return View(await databaseContext.ToListAsync());
         }
@@ -41,7 +37,6 @@ namespace CourseProject.Areas.Employees.Controllers
             {
                 return NotFound();
             }
-
             var employee = await _context.Employees
                 .Include(e => e.Manager)
                 .Include(e => e.Organization)
