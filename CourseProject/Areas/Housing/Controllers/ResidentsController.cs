@@ -59,7 +59,10 @@ namespace CourseProject.Areas.Housing.Controllers
             if (stringId == null) return RedirectToAction("Forbidden", "Error");
 
             int id = Int32.Parse(stringId);
-            User? user = await _context.Users.Include(u => u.Resident).FirstOrDefaultAsync(u => u.Id == id);
+            User? user = await _context.Users.Include(u => u.Resident)
+                                .ThenInclude(r => r.Services)
+                                .FirstOrDefaultAsync(u => u.Id == id);
+
             if (user == null) return RedirectToAction("NotFound", "Error");
             return View(user);
         }
@@ -74,6 +77,7 @@ namespace CourseProject.Areas.Housing.Controllers
             }
 
             var resident = await _context.Residents
+                .Include(r => r.Services)
                 .FirstOrDefaultAsync(m => m.ResidentId == id);
             if (resident == null)
             {
