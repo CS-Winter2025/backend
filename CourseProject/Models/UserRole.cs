@@ -6,9 +6,7 @@
         RESIDENT,
         EMPLOYEE,
         ADMIN,
-        HR_MANAGER,
-        HIRING_MANAGER,
-        HOUSING_MANAGER,
-        SERVICE_MANAGER
+        HR_MANAGER,        
+        HOUSING_MANAGER,        
     }
 }

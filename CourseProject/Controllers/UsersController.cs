@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+﻿using System.Security.Claims;
 using CourseProject;
 using CourseProject.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace MVCSampleApp.Controllers
 {
@@ -45,7 +41,7 @@ namespace MVCSampleApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(string username, string password)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);            
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
             if (user != null)
             {
                 PasswordHasher hasher = new PasswordHasher();
@@ -64,6 +60,7 @@ namespace MVCSampleApp.Controllers
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, user.Username),
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                     new Claim(ClaimTypes.Role, user.Role.ToString())
                 };
 
@@ -81,10 +78,11 @@ namespace MVCSampleApp.Controllers
             return View();
         }
 
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
             HttpContext.Session.Clear();
-            return RedirectToAction("Login");
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Index", "Home");
         }
 
 
@@ -98,27 +96,24 @@ namespace MVCSampleApp.Controllers
             return View();
         }
 
-
-
         // GET: Users
+        [Authorize(Roles = nameof(UserRole.ADMIN))]
         public async Task<IActionResult> Index()
         {
-            if (HttpContext.Session.GetString("Role") != "ADMIN")
-            {
-                return RedirectToAction("Index", "Home");
-            }
             return View(await _context.Users.ToListAsync());
         }
 
         // GET: Users/Details/5
+        [Authorize(Roles = nameof(UserRole.ADMIN))]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-
             var user = await _context.Users
+                .Include(u => u.Resident) // Should be null if user part of the role
+                .Include(u => u.Employee)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (user == null)
             {
@@ -129,6 +124,7 @@ namespace MVCSampleApp.Controllers
         }
 
         // GET: Users/Edit/5
+        [Authorize(Roles = nameof(UserRole.ADMIN))]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -149,6 +145,7 @@ namespace MVCSampleApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = nameof(UserRole.ADMIN))]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Username,Role")] UserView userView)
         {
             if (id != userView.Id)
@@ -156,7 +153,7 @@ namespace MVCSampleApp.Controllers
                 return NotFound();
             }
 
-            User user = await _context.Users.FindAsync(id);          
+            User user = await _context.Users.FindAsync(id);
 
             if (user != null)
             {
@@ -184,6 +181,7 @@ namespace MVCSampleApp.Controllers
         }
 
         // GET: Users/Delete/5
+        [Authorize(Roles = nameof(UserRole.ADMIN))]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -204,6 +202,7 @@ namespace MVCSampleApp.Controllers
         // POST: Users/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = nameof(UserRole.ADMIN))]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var user = await _context.Users.FindAsync(id);

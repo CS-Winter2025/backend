@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using CourseProject.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using CourseProject;
-using CourseProject.Models;
-using CourseProject.Common;
-using Microsoft.AspNetCore.Authorization;
 
 namespace CourseProject.Areas.Charges.Controllers
 {
@@ -64,9 +58,6 @@ namespace CourseProject.Areas.Charges.Controllers
         [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> Create([Bind("InvoiceID,ResidentID,Date,AmountDue,AmountPaid")] Invoice invoice)
         {
-            if (!Util.HasAccess(HttpContext, UserRole.ADMIN, UserRole.HOUSING_MANAGER, UserRole.EMPLOYEE))
-                return RedirectToAction("Forbidden", "Error");
-
             Resident? resident = await _context.Residents.FindAsync(invoice.ResidentID);
             if (resident == null) return View(invoice);
             else ModelState.SetModelValue("Resident", resident, null);
@@ -107,9 +98,6 @@ namespace CourseProject.Areas.Charges.Controllers
         [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> Edit([Bind(Prefix = "InvoiceID")] int id, [Bind("InvoiceID,ResidentID,Date,AmountDue,AmountPaid")] Invoice invoice)
         {
-            if (!Util.HasAccess(HttpContext, UserRole.ADMIN, UserRole.HOUSING_MANAGER, UserRole.EMPLOYEE))
-                return RedirectToAction("Forbidden", "Error");
-
             if (id != invoice.InvoiceID)
             {
                 return NotFound();
@@ -149,9 +137,6 @@ namespace CourseProject.Areas.Charges.Controllers
         [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> Delete(int? id)
         {
-            if (!Util.HasAccess(HttpContext, UserRole.ADMIN, UserRole.HOUSING_MANAGER, UserRole.EMPLOYEE))
-                return RedirectToAction("Forbidden", "Error");
-
             if (id == null)
             {
                 return NotFound();
@@ -174,10 +159,6 @@ namespace CourseProject.Areas.Charges.Controllers
         [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> DeleteConfirmed([Bind(Prefix = "InvoiceID")] int id)
         {
-            if (!Util.HasAccess(HttpContext, UserRole.ADMIN, UserRole.HOUSING_MANAGER, UserRole.EMPLOYEE))
-                return RedirectToAction("Forbidden", "Error");
-
-            Console.WriteLine(id);
             var invoice = await _context.Invoices.FindAsync(id);
             if (invoice != null)
             {
