@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CourseProject.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -76,7 +77,12 @@ namespace CourseProject.Areas.Housing.Controllers
         // GET: Residents/Create
         public IActionResult Create()
         {
-            return View();
+            var resident = new Employee
+            {
+                Name = new FullName(),
+                Address = new FullAddress()
+            };
+            return View(resident);
         }
 
         // POST: Residents/Create
@@ -84,7 +90,7 @@ namespace CourseProject.Areas.Housing.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ResidentId,ServiceSubscriptionIds,Name,DetailsJson")] Resident resident)
+        public async Task<IActionResult> Create([Bind("ResidentId,ServiceSubscriptionIds,Name,Address,DetailsJson")] Resident resident)
         {
             if (ModelState.IsValid)
             {

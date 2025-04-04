@@ -22,11 +22,8 @@
                     <input class="form-check-input" asp-for="IsCurrentlyLiving" /> @Html.DisplayNameFor(model => model.IsCurrentlyLiving)
                 </label>
             </div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
+            @Html.EditorFor(model => model.Name)
+            @Html.EditorFor(model => model.Address)
             <div class="form-group">
                 <label asp-for="DetailsJson" class="control-label"></label>
                 <input asp-for="DetailsJson" class="form-control" />
