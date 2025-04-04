@@ -1,7 +1,10 @@
-﻿using System.Security.Claims;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using CourseProject.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace CourseProject.Areas.Housing.Controllers
@@ -17,7 +20,6 @@ namespace CourseProject.Areas.Housing.Controllers
         }
 
         // GET: Residents
-        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> Index()
         {
             var now = DateTime.Now;
@@ -52,23 +54,9 @@ namespace CourseProject.Areas.Housing.Controllers
             return View();
         }
 
-        [Authorize(Roles = nameof(UserRole.RESIDENT) + "," + nameof(UserRole.ADMIN))]
-        public async Task<IActionResult> Me()
-        {
-            string? stringId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (stringId == null) return RedirectToAction("Forbidden", "Error");
 
-            int id = Int32.Parse(stringId);
-            User? user = await _context.Users.Include(u => u.Resident)
-                                .ThenInclude(r => r.Services)
-                                .FirstOrDefaultAsync(u => u.Id == id);
-
-            if (user == null) return RedirectToAction("NotFound", "Error");
-            return View(user);
-        }
 
         // GET: Residents/Details/5
-        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -77,7 +65,6 @@ namespace CourseProject.Areas.Housing.Controllers
             }
 
             var resident = await _context.Residents
-                .Include(r => r.Services)
                 .FirstOrDefaultAsync(m => m.ResidentId == id);
             if (resident == null)
             {
@@ -88,10 +75,14 @@ namespace CourseProject.Areas.Housing.Controllers
         }
 
         // GET: Residents/Create
-        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public IActionResult Create()
         {
-            return View();
+            var resident = new Resident
+            {
+                Name = new FullName(),
+                Address = new FullAddress()
+            };
+            return View(resident);
         }
 
         // POST: Residents/Create
@@ -99,8 +90,7 @@ namespace CourseProject.Areas.Housing.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
-        public async Task<IActionResult> Create([Bind("ResidentId,ServiceSubscriptionIds,Name,DetailsJson")] Resident resident)
+        public async Task<IActionResult> Create([Bind("ResidentId,ServiceSubscriptionIds,Name,Address,DetailsJson")] Resident resident)
         {
             if (ModelState.IsValid)
             {
@@ -112,7 +102,6 @@ namespace CourseProject.Areas.Housing.Controllers
         }
 
         // GET: Residents/Edit/5
-        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -133,7 +122,6 @@ namespace CourseProject.Areas.Housing.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> Edit(int id, [Bind("ResidentId,ServiceSubscriptionIds,Name,DetailsJson")] Resident resident)
         {
             if (id != resident.ResidentId)
@@ -165,7 +153,6 @@ namespace CourseProject.Areas.Housing.Controllers
         }
 
         // GET: Residents/Delete/5
-        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -183,7 +170,6 @@ namespace CourseProject.Areas.Housing.Controllers
             return View(resident);
         }
 
-        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> AssignedAssets(int id)
         {
             var resident = await _context.Residents.FindAsync(id);
@@ -206,7 +192,6 @@ namespace CourseProject.Areas.Housing.Controllers
         // POST: Residents/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var resident = await _context.Residents.FindAsync(id);
@@ -225,7 +210,6 @@ namespace CourseProject.Areas.Housing.Controllers
         }
 
         // GET: Residents/Current
-        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> Current()
         {
             var currentRenters = await _context.Residents
@@ -235,7 +219,6 @@ namespace CourseProject.Areas.Housing.Controllers
         }
 
         // GET: Residents/Past
-        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> Past()
         {
             var pastRenters = await _context.Residents
@@ -247,7 +230,6 @@ namespace CourseProject.Areas.Housing.Controllers
         // POST: Residents/UpdateOccupants/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> UpdateOccupants(int id, [FromForm] string newOccupantsJson)
         {
             var resident = await _context.Residents.FindAsync(id);
@@ -265,7 +247,6 @@ namespace CourseProject.Areas.Housing.Controllers
         // POST: Residents/MarkVacant/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> MarkVacant(int id)
         {
             var resident = await _context.Residents.FindAsync(id);

@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CourseProject;
 using CourseProject.Models;
-using Microsoft.AspNetCore.Authorization;
 
 namespace CourseProject.Areas.Employees.Controllers
 {
@@ -22,21 +21,24 @@ namespace CourseProject.Areas.Employees.Controllers
         }
 
         // GET: Employees/Employees
-        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HR_MANAGER) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> Index()
         {
+            if (HttpContext.Session.GetString("Username") == null)
+            {
+                return RedirectToAction("Login", "Users"); // Redirect to login if not logged in
+            }
             var databaseContext = _context.Employees.Include(e => e.Manager).Include(e => e.Organization);
             return View(await databaseContext.ToListAsync());
         }
 
         // GET: Employees/Employees/Details/5
-        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HR_MANAGER) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
+
             var employee = await _context.Employees
                 .Include(e => e.Manager)
                 .Include(e => e.Organization)
@@ -50,19 +52,26 @@ namespace CourseProject.Areas.Employees.Controllers
         }
 
         // GET: Employees/Employees/Create
-        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HR_MANAGER) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public IActionResult Create()
         {
+            var employee = new Employee
+            {
+                Name = new FullName(),         
+                Address = new FullAddress()    
+            };
+
             ViewBag.ManagerId = new SelectList(_context.Employees, "EmployeeId", "EmployeeId");
             ViewBag.OrganizationId = new SelectList(_context.Organizations, "OrganizationId", "OrganizationId");
-            return View();
+            return View(employee);
         }
 
+
         // POST: Employees/Employees/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HR_MANAGER) + "," + nameof(UserRole.HOUSING_MANAGER))]
-        public async Task<IActionResult> Create([Bind("EmployeeId,ManagerId,JobTitle,EmploymentType,PayRate,Availability,HoursWorked,Certifications,OrganizationId,Name,DetailsJson")] Employee employee, string Certifications)
+        public async Task<IActionResult> Create([Bind("EmployeeId,ManagerId,JobTitle,EmploymentType,PayRate,Availability,HoursWorked,Certifications,OrganizationId,Name,Address,DetailsJson")] Employee employee, string Certifications)
         {
             if (!ModelState.IsValid)
             {
@@ -80,8 +89,8 @@ namespace CourseProject.Areas.Employees.Controllers
             return View(employee);
         }
 
+
         // GET: Employees/Employees/Edit/5
-        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HR_MANAGER) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -94,6 +103,8 @@ namespace CourseProject.Areas.Employees.Controllers
             {
                 return NotFound();
             }
+
+            
 
             // Pass the data to the view
             ViewData["ManagerId"] = new SelectList(_context.Employees, "EmployeeId", "EmployeeId", employee.ManagerId);
@@ -110,7 +121,6 @@ namespace CourseProject.Areas.Employees.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HR_MANAGER) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> Edit(int id, [Bind("EmployeeId,ManagerId,JobTitle,EmploymentType,PayRate,Availability,HoursWorked,Certifications,OrganizationId,Name,DetailsJson")] Employee employee)
         {
             //if (id != employee.EmployeeId)
@@ -144,7 +154,6 @@ namespace CourseProject.Areas.Employees.Controllers
         }
 
         // GET: Employees/Employees/Delete/5
-        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HR_MANAGER) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -166,7 +175,6 @@ namespace CourseProject.Areas.Employees.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HR_MANAGER) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var employee = await _context.Employees.FindAsync(id);
@@ -183,6 +191,7 @@ namespace CourseProject.Areas.Employees.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
 
         private bool EmployeeExists(int id)
         {

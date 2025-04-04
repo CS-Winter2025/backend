@@ -1,6 +1,4 @@
 
-using System.ComponentModel.DataAnnotations;
-
 namespace CourseProject.Models;
 
 public class Invoice

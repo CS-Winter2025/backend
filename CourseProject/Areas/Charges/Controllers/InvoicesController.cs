@@ -1,8 +1,13 @@
-﻿using CourseProject.Models;
-using Microsoft.AspNetCore.Authorization;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using CourseProject;
+using CourseProject.Models;
+using CourseProject.Common;
 
 namespace CourseProject.Areas.Charges.Controllers
 {
@@ -17,17 +22,22 @@ namespace CourseProject.Areas.Charges.Controllers
         }
 
         // GET: Charges/Invoices
-        [Authorize(Roles = nameof(UserRole.RESIDENT) + "," + nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> Index()
         {
-            var invoices = _context.Invoices.Include(i => i.Resident);
-            return View(await invoices.ToListAsync());
+            if (Util.HasAccess(HttpContext, UserRole.ADMIN, UserRole.HOUSING_MANAGER, UserRole.EMPLOYEE))
+            {
+                var databaseContext = _context.Invoices.Include(i => i.Resident);
+                return View(await databaseContext.ToListAsync());
+            }
+            return RedirectToAction("Forbidden", "Error");
         }
 
         // GET: Charges/Invoices/Details/5
-        [Authorize(Roles = nameof(UserRole.RESIDENT) + "," + nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> Details(int? id)
         {
+            if (!Util.HasAccess(HttpContext, UserRole.ADMIN, UserRole.HOUSING_MANAGER, UserRole.EMPLOYEE))
+                return RedirectToAction("Forbidden", "Error");
+
             if (id == null)
             {
                 return NotFound();
@@ -45,19 +55,25 @@ namespace CourseProject.Areas.Charges.Controllers
         }
 
         // GET: Charges/Invoices/Create
-        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public IActionResult Create()
         {
+            if (!Util.HasAccess(HttpContext, UserRole.ADMIN, UserRole.HOUSING_MANAGER, UserRole.EMPLOYEE))
+                return RedirectToAction("Forbidden", "Error");
+
             ViewData["ResidentID"] = new SelectList(_context.Residents, "ResidentId", "ResidentId");
             return View();
         }
 
         // POST: Charges/Invoices/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> Create([Bind("InvoiceID,ResidentID,Date,AmountDue,AmountPaid")] Invoice invoice)
         {
+            if (!Util.HasAccess(HttpContext, UserRole.ADMIN, UserRole.HOUSING_MANAGER, UserRole.EMPLOYEE))
+                return RedirectToAction("Forbidden", "Error");
+
             Resident? resident = await _context.Residents.FindAsync(invoice.ResidentID);
             if (resident == null) return View(invoice);
             else ModelState.SetModelValue("Resident", resident, null);
@@ -75,9 +91,11 @@ namespace CourseProject.Areas.Charges.Controllers
         }
 
         // GET: Charges/Invoices/Edit/5
-        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> Edit(int? id)
         {
+            if (!Util.HasAccess(HttpContext, UserRole.ADMIN, UserRole.HOUSING_MANAGER, UserRole.EMPLOYEE))
+                return RedirectToAction("Forbidden", "Error");
+
             if (id == null)
             {
                 return NotFound();
@@ -93,11 +111,15 @@ namespace CourseProject.Areas.Charges.Controllers
         }
 
         // POST: Charges/Invoices/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> Edit([Bind(Prefix = "InvoiceID")] int id, [Bind("InvoiceID,ResidentID,Date,AmountDue,AmountPaid")] Invoice invoice)
         {
+            if (!Util.HasAccess(HttpContext, UserRole.ADMIN, UserRole.HOUSING_MANAGER, UserRole.EMPLOYEE))
+                return RedirectToAction("Forbidden", "Error");
+
             if (id != invoice.InvoiceID)
             {
                 return NotFound();
@@ -134,9 +156,11 @@ namespace CourseProject.Areas.Charges.Controllers
         }
 
         // GET: Charges/Invoices/Delete/5
-        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> Delete(int? id)
         {
+            if (!Util.HasAccess(HttpContext, UserRole.ADMIN, UserRole.HOUSING_MANAGER, UserRole.EMPLOYEE))
+                return RedirectToAction("Forbidden", "Error");
+
             if (id == null)
             {
                 return NotFound();
@@ -156,14 +180,18 @@ namespace CourseProject.Areas.Charges.Controllers
         // POST: Charges/Invoices/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> DeleteConfirmed([Bind(Prefix = "InvoiceID")] int id)
         {
+            if (!Util.HasAccess(HttpContext, UserRole.ADMIN, UserRole.HOUSING_MANAGER, UserRole.EMPLOYEE))
+                return RedirectToAction("Forbidden", "Error");
+
+            Console.WriteLine(id);
             var invoice = await _context.Invoices.FindAsync(id);
             if (invoice != null)
             {
                 _context.Invoices.Remove(invoice);
             }
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

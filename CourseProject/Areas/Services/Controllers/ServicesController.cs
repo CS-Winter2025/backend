@@ -1,7 +1,13 @@
-﻿using CourseProject.Models;
-using Microsoft.AspNetCore.Authorization;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using CourseProject;
+using CourseProject.Models;
+using CourseProject.Common;
 
 namespace CourseProject.Areas.Services.Controllers
 {
@@ -15,28 +21,22 @@ namespace CourseProject.Areas.Services.Controllers
             _context = context;
         }
 
-        // GET: Services/Services       
-        [Authorize(Roles = nameof(UserRole.NONE) + "," +
-                           nameof(UserRole.EMPLOYEE) + "," +
-                           nameof(UserRole.RESIDENT) + "," +
-                           nameof(UserRole.HR_MANAGER) + "," +
-                           nameof(UserRole.HOUSING_MANAGER) + "," +
-                           nameof(UserRole.ADMIN))]
+        // GET: Services/Services        
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Services.ToListAsync());
+            if (Util.HasAccess(HttpContext, UserRole.ADMIN, UserRole.SERVICE_MANAGER, UserRole.EMPLOYEE))
+            {
+                return View(await _context.Services.ToListAsync());
+            }
+            return RedirectToAction("Forbidden", "Error");
         }
 
         // GET: Services/Services/Details/5
-        // All roles can read
-        [Authorize(Roles = nameof(UserRole.NONE) + "," +
-                           nameof(UserRole.EMPLOYEE) + "," +
-                           nameof(UserRole.RESIDENT) + "," +
-                           nameof(UserRole.HR_MANAGER) + "," +
-                           nameof(UserRole.HOUSING_MANAGER) + "," +
-                           nameof(UserRole.ADMIN))]
         public async Task<IActionResult> Details(int? id)
         {
+            if (!Util.HasAccess(HttpContext, UserRole.ADMIN, UserRole.SERVICE_MANAGER, UserRole.EMPLOYEE)) 
+                return RedirectToAction("Forbidden", "Error");
+
             if (id == null)
             {
                 return NotFound();
@@ -53,9 +53,11 @@ namespace CourseProject.Areas.Services.Controllers
         }
 
         // GET: Services/Services/Create
-        [Authorize(Roles = nameof(UserRole.HOUSING_MANAGER) + "," + nameof(UserRole.ADMIN))]
         public IActionResult Create()
-        {
+        {            
+            if (!Util.HasAccess(HttpContext, UserRole.ADMIN, UserRole.SERVICE_MANAGER, UserRole.EMPLOYEE))
+                return RedirectToAction("Forbidden", "Error");
+
             return View();
         }
 
@@ -64,9 +66,11 @@ namespace CourseProject.Areas.Services.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = nameof(UserRole.HOUSING_MANAGER) + "," + nameof(UserRole.ADMIN))]
         public async Task<IActionResult> Create([Bind("ServiceID,Type,Rate,Requirements")] Service service)
         {
+            if (!Util.HasAccess(HttpContext, UserRole.ADMIN, UserRole.SERVICE_MANAGER, UserRole.EMPLOYEE))
+                return RedirectToAction("Forbidden", "Error");
+
             if (ModelState.IsValid)
             {
                 _context.Add(service);
@@ -77,11 +81,11 @@ namespace CourseProject.Areas.Services.Controllers
         }
 
         // GET: Services/Services/Edit/5
-        [Authorize(Roles = nameof(UserRole.HR_MANAGER) + "," +
-                           nameof(UserRole.HOUSING_MANAGER) + "," +
-                           nameof(UserRole.ADMIN))]
         public async Task<IActionResult> Edit(int? id)
         {
+            if (!Util.HasAccess(HttpContext, UserRole.ADMIN, UserRole.SERVICE_MANAGER, UserRole.EMPLOYEE))
+                return RedirectToAction("Forbidden", "Error");
+
             if (id == null)
             {
                 return NotFound();
@@ -100,11 +104,11 @@ namespace CourseProject.Areas.Services.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = nameof(UserRole.HR_MANAGER) + "," +
-                           nameof(UserRole.HOUSING_MANAGER) + "," +
-                           nameof(UserRole.ADMIN))]
         public async Task<IActionResult> Edit([Bind(Prefix = "ServiceID")] int id, [Bind("ServiceID,Type,Rate,Requirements")] Service service)
         {
+            if (!Util.HasAccess(HttpContext, UserRole.ADMIN, UserRole.SERVICE_MANAGER, UserRole.EMPLOYEE))
+                return RedirectToAction("Forbidden", "Error");
+
             if (id != service.ServiceID)
             {
                 return NotFound();
@@ -134,9 +138,11 @@ namespace CourseProject.Areas.Services.Controllers
         }
 
         // GET: Services/Services/Delete/5
-        [Authorize(Roles = nameof(UserRole.HOUSING_MANAGER) + "," + nameof(UserRole.ADMIN))]
         public async Task<IActionResult> Delete(int? id)
         {
+            if (!Util.HasAccess(HttpContext, UserRole.ADMIN, UserRole.SERVICE_MANAGER, UserRole.EMPLOYEE))
+                return RedirectToAction("Forbidden", "Error");
+
             if (id == null)
             {
                 return NotFound();
@@ -155,21 +161,24 @@ namespace CourseProject.Areas.Services.Controllers
         // POST: Services/Services/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = nameof(UserRole.HOUSING_MANAGER) + "," + nameof(UserRole.ADMIN))]
         public async Task<IActionResult> DeleteConfirmed([Bind(Prefix = "ServiceID")] int id)
         {
+            if (!Util.HasAccess(HttpContext, UserRole.ADMIN, UserRole.SERVICE_MANAGER, UserRole.EMPLOYEE))
+                return RedirectToAction("Forbidden", "Error");
+
             var service = await _context.Services.FindAsync(id);
             if (service != null)
             {
-                _context.Services.Remove(service);
+                _context.Services.Remove(service);                
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
         private bool ServiceExists(int id)
         {
             return _context.Services.Any(e => e.ServiceID == id);
-        }
+        }              
     }
 }

@@ -9,7 +9,7 @@
     width: 100%;
 }
 
-.landing-container {
+.hero-container {
     position: relative;
     width: 100vw;
     height: 100vh;
@@ -18,7 +18,7 @@
     padding-top: 0;
 }
 
-.landing-banner {
+.fullscreen-banner {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -28,7 +28,7 @@
     padding: 0;
 }
 
-.landing-text {
+.hero-text {
     position: absolute;
     top: 20%;
     left: 50%;
