@@ -5,7 +5,6 @@ namespace BlackBoxTests;
 
 public class SearchBarUtils
 {
-    private static readonly string path = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
     static ChromeDriver driver = new ChromeDriver();
     private static readonly string url = "https://localhost:7176/"; // Change this if backend URL is different
     private readonly int NUM_OF_ROWS;
@@ -22,8 +21,8 @@ public class SearchBarUtils
     {
         try
         {
-            driver.FindElement(By.Id(SEARCH_ID));
-            driver.FindElement(By.LinkText(TAB)).Click();
+            driver.FindElement(By.LinkText(TAB)).Click();driver.FindElement(By.Id(SEARCH_ID));
+            
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(100);
         }
         catch (NoSuchElementException)
