@@ -126,9 +126,14 @@ namespace CourseProject
                 new Organization { OrganizationId = 2 }
             );
 
+            var hoursWorked = new List<int>();
+            hoursWorked.Add( 222 );
+            var certs = new List<string>();
+            certs.Add( "First-aid" );
+
             modelBuilder.Entity<Employee>().HasData(
                 new Employee { EmployeeId = 1, Name = "Alice", JobTitle = "Manager", EmploymentType = "Full-Time", PayRate = 60000, OrganizationId = 1 },
-                new Employee { EmployeeId = 2, Name = "Bob", JobTitle = "Developer", EmploymentType = "Full-Time", PayRate = 50000, OrganizationId = 1, ManagerId = 1 }
+                new Employee { EmployeeId = 2, Name = "Bob", JobTitle = "Developer", EmploymentType = "Part-Time", PayRate = 50000, OrganizationId = 1, ManagerId = 1, HoursWorked = hoursWorked, Certifications = certs, DetailsJson = "details"}
             );
 
             modelBuilder.Entity<Resident>().HasData(

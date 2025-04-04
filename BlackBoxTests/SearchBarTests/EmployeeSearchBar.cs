@@ -18,19 +18,19 @@ public class EmployeeSearchBar
     [Test]
     public void SearchByName()
     {
-        searchUtils.CheckLetterSearch("Alice", 0);
+        searchUtils.CheckLetterSearch("Bob", 0);
     }
 
     [Test]
     public void SearchByManager()
     {
-        searchUtils.CheckNumericSearch("2", 1);
+        searchUtils.CheckNumericSearch("1", 1);
     }
 
     [Test]
     public void SearchByJobTitle()
     {
-        searchUtils.CheckLetterSearch("Dev", 2);
+        searchUtils.CheckLetterSearch("Developer", 2);
     }
 
     [Test]
@@ -42,19 +42,19 @@ public class EmployeeSearchBar
     [Test]
     public void SearchByPayRate()
     {
-        searchUtils.CheckNumericSearch("1000000.00", 4);
+        searchUtils.CheckNumericSearch("50000.00", 4);
     }
 
     [Test]
     public void SearchByHoursWorked()
     {
-        searchUtils.CheckNumericSearch("9001", 6);
+        searchUtils.CheckNumericSearch("222", 6);
     }
 
     [Test]
     public void SearchByCertifications()
     {
-        searchUtils.CheckLetterSearch("CEO", 7);
+        searchUtils.CheckLetterSearch("First-aid", 7);
     }
 
     [Test]
