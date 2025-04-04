@@ -94,11 +94,12 @@ namespace CourseProject.Areas.Employees.Controllers
             // Pass the data to the view
             ViewData["ManagerId"] = new SelectList(_context.Employees, "EmployeeId", "EmployeeId", employee.ManagerId);
             ViewData["OrganizationId"] = new SelectList(_context.Organizations, "OrganizationId", "OrganizationId", employee.OrganizationId);
+            ViewData["Details"] = Util.ParseJson(employee.DetailsJson);
 
             ViewBag.Availability = string.Join(", ", employee.Availability);
             ViewBag.Certifications = string.Join(", ", employee.Certifications);
             ViewBag.HoursWorked = string.Join(", ", employee.HoursWorked);
-            ViewBag.Details = Util.ParseJson(employee.DetailsJson);
+
             return View(employee);
         }
 
