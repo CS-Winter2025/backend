@@ -1,5 +1,6 @@
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.DevTools.V132.Network;
 using OpenQA.Selenium.Support.UI;
 
 namespace BlackBoxTests.CRUD;
@@ -8,24 +9,23 @@ public class ChargesTests
 {
     private ChromeDriver _driver;
     private const string BaseUrl = "http://localhost:5072/"; // Change as needed
-    private const string LoginUri = "Users/Login";
     private const string ChargesUri = "Invoices?area=Charges";
     
     private const string AdminLogin = "admin";
     private const string AdminPassword = "123";
     
     private const string InvoiceResidentId = "2";
-    private const string InvoiceDateYear = "2025";
-    private const string InvoiceDateOther = "04010000AM";
-    private const string InvoiceDateList = "2025-04-01 12:00:00 AM";
+    private const string InvoiceDate = "4012025";
+    private const string InvoiceDateTime = "1200AM";
+    private const string InvoiceDateList = "4/1/2025 12:00:00 AM";
     private const string InvoiceDateCalender = "2025-04-01T00:00";
     private const string InvoiceAmountDue = "100.00";
     private const string InvoiceAmountPaid = "50.00";
 
     private const string NewInvoiceResidentId = "1";
-    private const string NewInvoiceDateYear = "2025";
-    private const string NewInvoiceDateOther = "12210630PM";
-    private const string NewInvoiceDateList = "2025-12-21 06:30:00 PM";
+    private const string NewInvoiceDate = "12212025";
+    private const string NewInvoiceDateTime = "06:30PM";
+    private const string NewInvoiceDateList = "12/21/2025 6:30:00 PM";
     private const string NewInvoiceAmountDue = "137.54";
     private const string NewInvoiceAmountPaid = "24.33";
 
@@ -63,9 +63,9 @@ public class ChargesTests
         selectResidentId.SelectByValue(InvoiceResidentId);
         var dateTimeField = _driver.FindElement(By.Id("Date"));
         dateTimeField.Clear();
-        dateTimeField.SendKeys(InvoiceDateYear);
+        dateTimeField.SendKeys(InvoiceDate);
         dateTimeField.SendKeys(Keys.Tab);
-        dateTimeField.SendKeys(InvoiceDateOther);
+        dateTimeField.SendKeys(InvoiceDateTime);
         _driver.FindElement(By.Id("AmountDue")).SendKeys(InvoiceAmountDue);
         _driver.FindElement(By.Id("AmountPaid")).SendKeys(InvoiceAmountPaid);
         
@@ -151,9 +151,9 @@ public class ChargesTests
         selectResidentId.SelectByValue(NewInvoiceResidentId);
         var dateTimeField = _driver.FindElement(By.Id("Date"));
         dateTimeField.Clear();
-        dateTimeField.SendKeys(NewInvoiceDateYear);
+        dateTimeField.SendKeys(NewInvoiceDate);
         dateTimeField.SendKeys(Keys.Tab);
-        dateTimeField.SendKeys(NewInvoiceDateOther);
+        dateTimeField.SendKeys(NewInvoiceDateTime);
         var amountDue = _driver.FindElement(By.Id("AmountDue"));
         amountDue.Clear();
         amountDue.SendKeys( NewInvoiceAmountDue);
