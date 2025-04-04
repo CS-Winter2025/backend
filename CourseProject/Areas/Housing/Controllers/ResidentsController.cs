@@ -77,7 +77,7 @@ namespace CourseProject.Areas.Housing.Controllers
         // GET: Residents/Create
         public IActionResult Create()
         {
-            var resident = new Employee
+            var resident = new Resident
             {
                 Name = new FullName(),
                 Address = new FullAddress()
