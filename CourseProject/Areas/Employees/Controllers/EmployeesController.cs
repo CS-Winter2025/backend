@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using CourseProject.Common;
+using CourseProject.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using CourseProject;
-using CourseProject.Models;
-using Microsoft.AspNetCore.Authorization;
 
 namespace CourseProject.Areas.Employees.Controllers
 {
@@ -45,7 +41,7 @@ namespace CourseProject.Areas.Employees.Controllers
             {
                 return NotFound();
             }
-
+            ViewBag.Details = Util.ParseJson(employee.DetailsJson);
             return View(employee);
         }
 
@@ -102,6 +98,7 @@ namespace CourseProject.Areas.Employees.Controllers
             ViewBag.Availability = string.Join(", ", employee.Availability);
             ViewBag.Certifications = string.Join(", ", employee.Certifications);
             ViewBag.HoursWorked = string.Join(", ", employee.HoursWorked);
+            ViewBag.Details = Util.ParseJson(employee.DetailsJson);
             return View(employee);
         }
 
@@ -113,11 +110,6 @@ namespace CourseProject.Areas.Employees.Controllers
         [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HR_MANAGER) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> Edit(int id, [Bind("EmployeeId,ManagerId,JobTitle,EmploymentType,PayRate,Availability,HoursWorked,Certifications,OrganizationId,Name,DetailsJson")] Employee employee)
         {
-            //if (id != employee.EmployeeId)
-            //{
-            //    return NotFound();
-            //}
-
             if (!ModelState.IsValid)
             {
                 try
