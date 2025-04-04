@@ -14,8 +14,8 @@
             @Html.AntiForgeryToken()
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <partial name="_FullName" for="Name" />
-            <partial name="_FullAddress" for="Address" />
+            @Html.EditorFor(model => model.Name)
+            @Html.EditorFor(model => model.Address)
 
             <div class="form-group">
                 <label asp-for="ManagerId" class="control-label"></label>
