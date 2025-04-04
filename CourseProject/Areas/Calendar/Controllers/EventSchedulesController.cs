@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using CourseProject;
 using CourseProject.Models;
 using CourseProject.Common;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace CourseProject.Areas.Calendar.Controllers
 {
@@ -22,48 +24,45 @@ namespace CourseProject.Areas.Calendar.Controllers
         }
 
         // GET: Calendar/EventSchedules
+        [Authorize(Roles = 
+            nameof(UserRole.ADMIN) + "," + 
+            nameof(UserRole.RESIDENT) + "," + 
+            nameof(UserRole.EMPLOYEE) + "," +
+            nameof(UserRole.HOUSING_MANAGER) + "," +
+            nameof(UserRole.HR_MANAGER)
+        )]
         public async Task<IActionResult> Index(int? personId, bool? isEmployee)
         {
-            if (HttpContext.Session.GetString("Username") == null)
-            {
-                return RedirectToAction("Login", "Users"); // Redirect to login if not logged in
-            }
-            if (!Util.HasAccess(HttpContext, 
-                    UserRole.ADMIN, 
-                    UserRole.RESIDENT,
-                    UserRole.HOUSING_MANAGER, 
-                    UserRole.EMPLOYEE,
-                    UserRole.HR_MANAGER,
-                    UserRole.HIRING_MANAGER,
-                    UserRole.SERVICE_MANAGER))
-                return RedirectToAction("Forbidden", "Error");
+            //string personName = string.Empty;
 
-            string personName = string.Empty;
+            //if (personId.HasValue && isEmployee.HasValue)
+            //{
+            //    if ((bool)isEmployee)
+            //    {
+            //        var employee = _context.Employees.FirstOrDefault(e => e.EmployeeId == personId.Value);
+            //        if (employee != null)
+            //        {
+            //            personName = employee.Name;
+            //        }
+            //    }
+            //    else
+            //    {
+            //        var resident = _context.Residents.FirstOrDefault(e => e.ResidentId == personId.Value);
+            //        if (resident != null)
+            //        {
+            //            personName = resident.Name;
+            //        }
+            //    }
 
-            if (personId.HasValue && isEmployee.HasValue)
-            {
-                if ((bool)isEmployee)
-                {
-                    var employee = _context.Employees.FirstOrDefault(e => e.EmployeeId == personId.Value);
-                    if (employee != null)
-                    {
-                        personName = employee.Name;
-                    }
-                }
-                else
-                {
-                    var resident = _context.Residents.FirstOrDefault(e => e.ResidentId == personId.Value);
-                    if (resident != null)
-                    {
-                        personName = resident.Name;
-                    }
-                }
+            //}
 
-            }
+            //ViewData["PersonID"] = personId;
+            //ViewData["PersonName"] = personName;
+            //ViewData["IsEmployee"] = isEmployee.ToString();
 
-            ViewData["PersonID"] = personId;
-            ViewData["PersonName"] = personName;
-            ViewData["IsEmployee"] = isEmployee.ToString();
+            ViewData["PersonID"] = 5;
+            ViewData["PersonName"] = "Test";
+            ViewData["IsEmployee"] = true;
 
 
             var databaseContext = _context.EventSchedules.Include(e => e.Employees).Include(e => e.Service);

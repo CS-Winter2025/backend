@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CourseProject;
 using CourseProject.Models;
+using System.Security.Claims;
 
 namespace CourseProject.Areas.Calendar.Controllers
 {
@@ -25,32 +26,47 @@ namespace CourseProject.Areas.Calendar.Controllers
         [HttpGet]
         public IActionResult Get(int? personId, bool? isEmployee)
         {
+            string? stringId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (stringId == null) return RedirectToAction("NotFound", "Error");
 
-            //Console.WriteLine("IN GET: " + employeeId);
+            int id = Int32.Parse(stringId);
+            User? user = _context.Users.Find(id);
+
+            if (user == null || user.Id == null || user.Role == null || user.Role == UserRole.NONE)
+            {
+                return RedirectToAction("NotFound", "Error");
+            }
+
+            if (user.Role == UserRole.EMPLOYEE && user.EmployeeId == null)
+            {
+                return RedirectToAction("NotFound", "Error");
+            }
+
+            if (user.Role == UserRole.RESIDENT && user.ResidentId == null)
+            {
+                return RedirectToAction("NotFound", "Error");
+            }
+
             var fullTable = _context.EventSchedules
             .Include(e => e.Employees) // Ensure Employees are included
             .Include(e => e.Service)
             .Include(e => e.Resident);
 
-            IQueryable<EventSchedule> userTable;
-            if (personId == null || isEmployee == null)
+            IQueryable<EventSchedule> userTable = Enumerable.Empty<EventSchedule>().AsQueryable();
+            if (user.Role == UserRole.ADMIN || user.Role == UserRole.HOUSING_MANAGER || user.Role == UserRole.HR_MANAGER)
             {
                 userTable = fullTable;
-            } 
-            else
-            {
-                if ((bool)isEmployee)
-                {
-                    userTable = fullTable
-                        .Where(e => e.Employees.Any(emp => emp.EmployeeId == personId));
-                }
-                else
-                {
-                    userTable = fullTable
-                        .Where(e => e.ResidentId == personId);
-                }
             }
-            
+            else if (user.Role == UserRole.EMPLOYEE)
+            {
+                userTable = fullTable
+                    .Where(e => e.Employees.Any(emp => emp.EmployeeId == user.EmployeeId));
+            }
+            else if (user.Role == UserRole.RESIDENT)
+            {
+                userTable = fullTable
+                    .Where(e => e.ResidentId == user.ResidentId);
+            }
 
             var data = userTable
             .ToList()
@@ -86,6 +102,19 @@ namespace CourseProject.Areas.Calendar.Controllers
                     label = r.Name
                 })
                 .ToList();
+
+            if (user.Role == UserRole.HR_MANAGER)
+            {
+                var employees = _context.Employees
+                .Select(e => new
+                {
+                    value = e.EmployeeId,
+                    label = e.Name
+                })
+                .ToList();
+
+                return Ok(new { data, collections = new { services, residents, employees } });
+            }
 
             return Ok(new { data, collections = new { services, residents } });
         }
