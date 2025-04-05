@@ -122,14 +122,14 @@ namespace CourseProject.Areas.Housing.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ResidentId,ServiceSubscriptionIds,Name,DetailsJson")] Resident resident)
+        public async Task<IActionResult> Edit(int id, [Bind("ResidentId,ServiceSubscriptionIds,Name,Address,DetailsJson")] Resident resident)
         {
-            if (id != resident.ResidentId)
-            {
-                return NotFound();
-            }
+            //if (id != resident.ResidentId)
+            //{
+            //    return NotFound();
+            //}
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 try
                 {
