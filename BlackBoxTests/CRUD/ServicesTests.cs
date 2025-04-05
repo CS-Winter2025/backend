@@ -7,7 +7,6 @@ public class ServicesTests
 {
     private ChromeDriver _driver;
     private const string BaseUrl = "http://localhost:5072/"; // Change as needed
-    private const string LoginUri = "Users/Login";
     private const string ServiceUri = "Services?area=Services";
 
     private const string AdminLogin = "admin";
