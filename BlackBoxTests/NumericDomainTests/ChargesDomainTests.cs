@@ -1,15 +1,24 @@
-﻿namespace BlackBoxTests;
+﻿namespace BlackBoxTests.NumericDomainTests;
 
 public class ChargesDomainTests
 {
+    NumericDomainUtils numericDomainUtils = new("Charges");
+
     [SetUp]
     public void Setup()
     {
+        numericDomainUtils.login();
     }
 
     [Test]
-    public void Test1()
+    public void TestAmountDue()
     {
-        Assert.Pass();
+        numericDomainUtils.TestNumericInput(1, 1000, 0, "AmountDue");
+    }
+
+    [Test]
+    public void TestAmountPaid()
+    {
+        numericDomainUtils.TestNumericInput(1, 1000, 0, "AmountPaid");
     }
 }
