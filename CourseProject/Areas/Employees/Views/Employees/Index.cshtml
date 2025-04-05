@@ -50,7 +50,7 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                @item.Name.ToString()
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Manager.EmployeeId)

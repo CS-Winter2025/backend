@@ -1,14 +1,17 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
-using System.Linq;
 
-namespace BlackBoxTests;
+namespace BlackBoxTests.CRUD;
 
-public class CrudServicesTests
+public class ServicesTests
 {
     private ChromeDriver _driver;
     private const string BaseUrl = "http://localhost:5072/"; // Change as needed
+    private const string LoginUri = "Users/Login";
     private const string ServiceUri = "Services?area=Services";
+
+    private const string AdminLogin = "admin";
+    private const string AdminPassword = "123";
     
     private const string ServiceType = "Coaching";
     private const string ServiceRate = "95.00";
@@ -23,16 +26,28 @@ public class CrudServicesTests
     {
         _driver = new ChromeDriver();
         _driver.Manage().Window.Maximize();
+        
+        _driver.Navigate().GoToUrl(BaseUrl);
+        _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
+        
+        _driver.FindElement(By.XPath("//a[text()='Login']")).Click();
+        
+        // Login with Admin
+        _driver.FindElement(By.Id("Username")).SendKeys(AdminLogin);
+        _driver.FindElement(By.Id("Password")).SendKeys(AdminPassword);
+        _driver.FindElement(By.XPath("//button[text()='Login']")).Click();
+        
+        // Navigate to Services page
+        _driver.FindElement(By.XPath("//a[text()='Services']")).Click();
+        Assert.That(_driver.Url, Does.Contain(ServiceUri), "Did not navigate to the Services page.");
     }
 
     [Test, Order(1)]
     public void CreateService()
     {
-        _driver.Navigate().GoToUrl(BaseUrl + ServiceUri);
-        
         // Create New
-        _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
         _driver.FindElement(By.LinkText("Create New")).Click();
+        Assert.That(_driver.Url, Does.Contain("/Services/Create"), "Did not navigate to the Create page.");
         
         // Input Values
         _driver.FindElement(By.Id("Type")).SendKeys(ServiceType);
@@ -61,7 +76,9 @@ public class CrudServicesTests
     [Test, Order(2)]
     public void ReadService()
     {
-        _driver.Navigate().GoToUrl(BaseUrl + ServiceUri);
+        // Navigate to Services page
+        _driver.FindElement(By.XPath("//a[text()='Services']")).Click();
+        Assert.That(_driver.Url, Does.Contain(ServiceUri), "Did not navigate to the Services page.");
         
         _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
         _driver.FindElement(By.LinkText("Create New"));
@@ -70,8 +87,8 @@ public class CrudServicesTests
         var serviceRow = _driver.FindElements(By.CssSelector("table tbody tr")).FirstOrDefault(row => row.Text.Contains(ServiceType));
         Assert.That(serviceRow, Is.Not.Null, $"Service '{ServiceType}' not found in the list.");
         
+        // Navigate to Details
         serviceRow.FindElement(By.XPath(".//a[text()='Details']")).Click();
-        
         Assert.That(_driver.Url, Does.Contain("/Services/Details"), "Did not navigate to the Details page.");
 
         var serviceDetailsTable = _driver.FindElement(By.XPath(".//dl"));
@@ -97,20 +114,20 @@ public class CrudServicesTests
         var serviceRow = _driver.FindElements(By.CssSelector("table tbody tr")).FirstOrDefault(row => row.Text.Contains(ServiceType));
         Assert.That(serviceRow, Is.Not.Null, $"Service '{ServiceType}' not found in the list.");
         
+        // Navigate to Edit
         serviceRow.FindElement(By.XPath(".//a[text()='Edit']")).Click();
-        
         Assert.That(_driver.Url, Does.Contain("/Services/Edit"), "Did not navigate to the Edit page.");
         
         // NOTE currently not working as Requirements field returns: System.Collections.Generic.List`1[System.String]
-        // var currentServiceType = _driver.FindElement(By.Id("Type")).Text.Trim();
-        // var currentServiceRate = _driver.FindElement(By.Id("Rate")).Text.Trim();
-        // var currentServiceRequirements = _driver.FindElement(By.Id("Requirements")).Text.Trim(); // Bug found
-        // Assert.Multiple(() =>
-        // {
-        //     Assert.That(currentServiceType, Is.EqualTo(ServiceType), "Service type mismatch.");
-        //     Assert.That(currentServiceRate, Is.EqualTo(ServiceRate), "Service rate mismatch.");
-        //     Assert.That(currentServiceRequirements, Is.EqualTo(ServiceRequirements), "Service requirements mismatch.");
-        // });
+        var currentServiceType = _driver.FindElement(By.Id("Type")).GetAttribute("value")!.Trim();
+        var currentServiceRate = _driver.FindElement(By.Id("Rate")).GetAttribute("value")!.Trim();
+        // var currentServiceRequirements = _driver.FindElement(By.Id("Requirements")).GetAttribute("value")!.Trim(); // Bug found
+        Assert.Multiple(() =>
+        {
+            Assert.That(currentServiceType, Is.EqualTo(ServiceType), "Service type mismatch.");
+            Assert.That(currentServiceRate, Is.EqualTo(ServiceRate), "Service rate mismatch.");
+            // Assert.That(currentServiceRequirements, Is.EqualTo(ServiceRequirements), "Service requirements mismatch.");
+        });
 
         var serviceTypeField = _driver.FindElement(By.Id("Type"));
         serviceTypeField.Clear();
@@ -144,16 +161,14 @@ public class CrudServicesTests
     public void DeleteService()
     {
         _driver.Navigate().GoToUrl(BaseUrl + ServiceUri);
-        
-        _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
         _driver.FindElement(By.LinkText("Create New"));
         
         // Ensure row exists
         var serviceRow = _driver.FindElements(By.CssSelector("table tbody tr")).FirstOrDefault(row => row.Text.Contains(NewServiceType));
         Assert.That(serviceRow, Is.Not.Null, $"Service '{NewServiceType}' not found in the list.");
         
+        // Navigate to Delete
         serviceRow.FindElement(By.XPath(".//a[text()='Delete']")).Click();
-        
         Assert.That(_driver.Url, Does.Contain("/Services/Delete"), "Did not navigate to the Delete page.");
         
         _driver.FindElement(By.XPath("//Input[@type='submit']")).Click();

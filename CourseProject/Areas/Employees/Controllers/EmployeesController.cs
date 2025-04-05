@@ -54,9 +54,15 @@ namespace CourseProject.Areas.Employees.Controllers
         // GET: Employees/Employees/Create
         public IActionResult Create()
         {
+            var employee = new Employee
+            {
+                Name = new FullName(),         
+                Address = new FullAddress()    
+            };
+
             ViewBag.ManagerId = new SelectList(_context.Employees, "EmployeeId", "EmployeeId");
             ViewBag.OrganizationId = new SelectList(_context.Organizations, "OrganizationId", "OrganizationId");
-            return View();
+            return View(employee);
         }
 
 
@@ -65,7 +71,7 @@ namespace CourseProject.Areas.Employees.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("EmployeeId,ManagerId,JobTitle,EmploymentType,PayRate,Availability,HoursWorked,Certifications,OrganizationId,Name,DetailsJson")] Employee employee, string Certifications)
+        public async Task<IActionResult> Create([Bind("EmployeeId,ManagerId,JobTitle,EmploymentType,PayRate,Availability,HoursWorked,Certifications,OrganizationId,Name,Address,DetailsJson")] Employee employee, string Certifications)
         {
             if (!ModelState.IsValid)
             {

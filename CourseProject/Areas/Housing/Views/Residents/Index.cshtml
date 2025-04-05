@@ -24,7 +24,9 @@
         @foreach (var resident in currentResidents)
         {
             <tr>
-                <td>@resident.Name</td>
+                <td>
+                    @resident.Name.ToString()
+                </td>
                 <td>@resident.IsCurrentlyLiving</td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@resident.ResidentId">Edit</a> |
