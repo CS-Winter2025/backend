@@ -5,7 +5,7 @@ namespace BlackBoxTests;
 
 public class SearchBarUtils
 {
-    static ChromeDriver driver = new ChromeDriver();
+    ChromeDriver driver = new ChromeDriver();
     private static readonly string url = "https://localhost:7176/"; // Change this if backend URL is different
     private readonly int NUM_OF_ROWS;
     private readonly string TAB;
@@ -21,8 +21,7 @@ public class SearchBarUtils
     {
         try
         {
-            driver.FindElement(By.LinkText(TAB)).Click();driver.FindElement(By.Id(SEARCH_ID));
-            
+            driver.FindElement(By.Id(SEARCH_ID));
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(100);
         }
         catch (NoSuchElementException)
@@ -117,5 +116,10 @@ public class SearchBarUtils
     {
         driver.Quit();
         driver.Dispose();
+    }
+
+    public void logout()
+    {
+        driver.FindElement(By.LinkText("Logout")).Click();
     }
 }

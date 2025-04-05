@@ -31,4 +31,10 @@ public class ServicesSearchBar
     {
         searchUtils.CheckLetterSearch("The cleaning requirements", 2);
     }
+
+    [OneTimeTearDown]
+    public void Cleanup()
+    {
+        searchUtils.logout();
+    }
 }

@@ -141,13 +141,16 @@ namespace CourseProject
                 new Resident { ResidentId = 2, Name = "Diana" }
             );
 
+            var req = new List<string>();
+            req.Add("The cleaning requirements");
             modelBuilder.Entity<Service>().HasData(
-                new Service { ServiceID = 1, Type = "Cleaning", Rate = 50 },
+                new Service { ServiceID = 1, Type = "Cleaning", Rate = 50, Requirements = req},
                 new Service { ServiceID = 2, Type = "Security", Rate = 100 }
             );
 
             modelBuilder.Entity<Invoice>().HasData(
-                new Invoice { InvoiceID = 1, ResidentID = 1, Date = DateTime.UtcNow, AmountDue = 200, AmountPaid = 100 }
+                new Invoice { InvoiceID = 1, ResidentID = 1, Date = DateTime.UtcNow, AmountDue = 200, AmountPaid = 100 },
+                new Invoice { InvoiceID = 2, ResidentID = 2, Date = new DateTime(2025, 2, 21, 14, 0, 0, DateTimeKind.Utc), AmountDue = 300, AmountPaid = 150 }
             );
 
             modelBuilder.Entity<User>().HasData(

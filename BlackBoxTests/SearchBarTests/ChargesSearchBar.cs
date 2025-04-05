@@ -19,7 +19,7 @@ public class ChargesSearchBar
     [Test]
     public void SearchByDate()
     {
-        searchUtils.CheckLetterSearch("2025-03-31 10:09:02 PM", 1);
+        searchUtils.CheckLetterSearch("2025-02-21 2:00:00 PM", 1);
     }
 
     [Test]
@@ -32,5 +32,11 @@ public class ChargesSearchBar
     public void SearchByAmountPaid()
     {
         searchUtils.CheckNumericSearch("100.00", 3);
+    }
+
+    [OneTimeTearDown]
+    public void Cleanup()
+    {
+        searchUtils.logout();
     }
 }

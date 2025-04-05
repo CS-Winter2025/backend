@@ -2,8 +2,8 @@
 
 public class ResidentsSearchBar
 {
-    private SearchBarUtils searchUtils1 = new SearchBarUtils(1, "Residents");
-    private SearchBarUtils searchUtils2 = new SearchBarUtils(1, "Residents", "dt-search-1");
+    //private SearchBarUtils searchUtils1 = new SearchBarUtils(1, "Residents");
+    //private SearchBarUtils searchUtils2 = new SearchBarUtils(1, "Residents", "dt-search-1");
     private SearchBarUtils searchUtils3 = new SearchBarUtils(3, "Residents", "dt-search-2");
     
     [SetUp]
@@ -32,5 +32,10 @@ public class ResidentsSearchBar
     {
         //searchUtils1.CheckLetterSearch("No data available in table", 1);
         Assert.Pass();
+    }
+    [OneTimeTearDown]
+    public void Cleanup()
+    {
+        searchUtils3.logout();
     }
 }

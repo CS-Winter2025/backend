@@ -68,4 +68,10 @@ public class EmployeeSearchBar
     {
         searchUtils.CheckLetterSearch("details", 9);
     }
+
+    [OneTimeTearDown]
+    public void Cleanup()
+    {
+        searchUtils.logout();
+    }
 }
