@@ -4,8 +4,26 @@ using CourseProject;
 using CourseProject.Areas.Calendar.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+
+string connectionString;
+var jawsdbUrl = Environment.GetEnvironmentVariable("JAWSDB_URL");
+
+if (!string.IsNullOrEmpty(jawsdbUrl))
+{
+    var uri = new Uri(jawsdbUrl);
+    var userInfo = uri.UserInfo.Split(':');
+
+    connectionString = $"Server={uri.Host};Port={uri.Port};Database={uri.AbsolutePath.TrimStart('/')};Uid={userInfo[0]};Pwd={userInfo[1]};";
+}
+else
+{
+    connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+                       ?? throw new InvalidOperationException("No MySQL connection string found.");
+}
+
 builder.Services.AddDbContext<DatabaseContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DBContext' not found.")));
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
