@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using CourseProject;
 using CourseProject.Models;
 using System.Security.Claims;
+using System.Dynamic;
 
 namespace CourseProject.Areas.Calendar.Controllers
 {
@@ -87,36 +88,36 @@ namespace CourseProject.Areas.Calendar.Controllers
                 employee_ids = string.Join(",", e.Employees.Select(emp => emp.EmployeeId.ToString()))
             });
 
-            var services = _context.Services
-                .Select(s => new
-                {
-                    value = s.ServiceID,
-                    label = s.Type
-                })
-                .ToList();
+            dynamic collections = new ExpandoObject();
 
-            var residents = _context.Residents
-                .Select(r => new
-                {
-                    value = r.ResidentId,
-                    label = r.Name
-                })
-                .ToList();
-
-            if (user.Role == UserRole.HR_MANAGER)
+            collections.services = _context.Services
+            .Select(s => new
             {
-                var employees = _context.Employees
-                .Select(e => new
-                {
-                    value = e.EmployeeId,
-                    label = e.Name
-                })
-                .ToList();
+                value = s.ServiceID,
+                label = s.Type
+            })
+            .ToList();
 
-                return Ok(new { data, collections = new { services, residents, employees } });
-            }
+            collections.residents = _context.Residents
+            .Select(r => new
+            {
+                value = r.ResidentId,
+                label = r.Name
+            })
+            .ToList();
 
-            return Ok(new { data, collections = new { services, residents } });
+            collections.employees = _context.Employees
+            .Select(e => new
+            {
+                value = e.EmployeeId,
+                label = e.Name
+            })
+            .ToList();
+
+            collections.role = new List<object> { new { value = 1, label = user.Role.ToString() } };
+
+            //return Ok(new { data, collections = new { services, residents } });
+            return Ok(new { data, collections });
         }
 
         // GET api/events/5
