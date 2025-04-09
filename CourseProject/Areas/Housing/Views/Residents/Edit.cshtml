@@ -10,7 +10,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" asp-route-id="@Model.ResidentId" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="ResidentId" />
             <div class="form-group">
@@ -35,6 +35,17 @@
                 <label asp-for="DetailsJson" class="control-label"></label>
                 <input asp-for="DetailsJson" class="form-control" />
                 <span asp-validation-for="DetailsJson" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ProfilePicture" class="control-label"></label>
+                @if (Model.ProfilePicture != null)
+                {
+                    <div class="mb-2">
+                        <img src="data:image/jpeg;base64,@Convert.ToBase64String(Model.ProfilePicture)"
+                             alt="Current photo" style="max-width: 200px;" />
+                    </div>
+                }
+                <input type="file" name="profilepicture" class="form-control" accept="image/*" />
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

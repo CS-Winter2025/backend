@@ -43,6 +43,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.DetailsJson)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProfilePicture)
+            </th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -81,6 +84,18 @@
             <td>
                 @Html.DisplayFor(modelItem => item.DetailsJson)
             </td>
+                <td>
+                    @if (item.ProfilePicture != null)
+                    {
+                        <img src="data:image/jpeg;base64,@Convert.ToBase64String(item.ProfilePicture)"
+                             alt="Employee photo"
+                             style="max-width: 100px; max-height: 100px;" />
+                    }
+                    else
+                    {
+                        <span>No photo</span>
+                    }
+                </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.EmployeeId">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.EmployeeId">Details</a> |
