@@ -84,6 +84,7 @@ namespace CourseProject.Areas.Calendar.Controllers
                 deleted = e.Deleted,
                 service_id = e.ServiceID,
                 resident_id = e.ResidentId,
+                status = e.Status,
                 // Convert the list of Employee IDs to a comma-separated string
                 employee_ids = string.Join(",", e.Employees.Select(emp => emp.EmployeeId.ToString()))
             });
@@ -196,6 +197,7 @@ namespace CourseProject.Areas.Calendar.Controllers
             dbEvent.EndDate = updatedEvent.EndDate;
             dbEvent.RepeatPattern = updatedEvent.RepeatPattern;
             dbEvent.RecurringEventId = updatedEvent.RecurringEventId;
+            dbEvent.Status = updatedEvent.Status;
             _context.SaveChanges();
 
             return Ok(new

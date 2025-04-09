@@ -32,18 +32,24 @@
 
     const rolePermissions = [
         {role: "ADMIN", permissions: ["create", "update", "delete"], disabledFields: []},
-        {role: "RESIDENT", permissions: ["create", "update", "delete"], disabledFields: ["Resident", "Employees"]},
-        {role: "EMPLOYEE", permissions: [], disabledFields: ["Service", "Resident", "Employees", "recurring", "time"]},
+        {role: "RESIDENT", permissions: ["create", "update", "delete"], disabledFields: ["Resident", "Employees", "Status"]},
+        {role: "EMPLOYEE", permissions: [], disabledFields: ["Service", "Resident", "Employees", "Status", "recurring", "time"]},
         {role: "HOUSING_MANAGER", permissions: ["create", "update", "delete"], disabledFields: ["Employees"]},
         {role: "HR_MANAGER", permissions: ["update"], disabledFields: ["Resident", "recurring", "time"]},
-        {role: "NONE", permissions: [], disabledFields: ["Service", "Resident", "Employees", "recurring", "time"]},
+        {role: "NONE", permissions: [], disabledFields: ["Service", "Resident", "Employees", "Status", "recurring", "time"]},
     ]
 
-    // TODO: create a function to change these fields based on role
+    const statusList = [
+        {key: 1, label: "Requested"},
+        {key: 2, label: "Requires Review"},
+        {key: 3, label: "Approved"}
+    ]
+
     scheduler.config.lightbox.sections = [
         { name: "Service", map_to: "service_id", type: "select", options: scheduler.serverList("services") },
         { name: "Resident", map_to: "resident_id", type: "select", options: scheduler.serverList("residents") },
         { name: "Employees", height: 30, map_to: "employee_ids", type: "textarea" },
+        { name: "Status", map_to: "status", type: "select", options: statusList },
         { name: "recurring", type: "recurring", map_to: "rrule" },
         { name: "time", height: 72, type: "time", map_to: "auto" }
     ];
