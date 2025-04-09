@@ -21,7 +21,7 @@ namespace CourseProject.Areas.Calendar.Controllers
         }
 
         // GET: Calendar/EventSchedules
-        public async Task<IActionResult> Index(int? personId, bool? isEmployee)
+        public async Task<IActionResult> Index(int? personId, bool? isEmployee, int? serviceId)
         {
             if (HttpContext.Session.GetString("Username") == null)
             {
@@ -53,9 +53,18 @@ namespace CourseProject.Areas.Calendar.Controllers
             ViewData["PersonID"] = personId;
             ViewData["PersonName"] = personName;
             ViewData["IsEmployee"] = isEmployee.ToString();
+            ViewData["ServiceID"] = serviceId;
 
 
-            var databaseContext = _context.EventSchedules.Include(e => e.Employees).Include(e => e.Service);
+            var databaseContext = _context.EventSchedules.Include(e => e.Employees).Include(e => e.Service).AsQueryable();
+            
+            if (serviceId.HasValue)
+            {
+                databaseContext = databaseContext.Where(e => e.ServiceID == serviceId);
+                var service = _context.Services.FirstOrDefault(s => s.ServiceID == serviceId.Value);
+                ViewData["ServiceName"] = service?.Type ?? "";
+            }
+            
             return View(await databaseContext.ToListAsync());
         }
 

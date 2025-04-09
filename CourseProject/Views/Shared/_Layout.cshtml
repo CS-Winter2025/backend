@@ -79,6 +79,13 @@
 				                <a class="nav-link text-dark headerFont" asp-area="" asp-controller="Users" asp-action="Index">Users</a>
 			                </li>
 		                }
+		                @if (role == "RESIDENT")
+		                {
+			                <li class="nav-item">
+				                <a class="nav-link text-dark headerFont" asp-area="Services" asp-controller="Services" asp-action="ResidentView">View Services</a>
+			                </li>
+		                }
+
 	                </ul>
 	                <!-- Login/Logout Section -->
 	                <ul class="navbar-nav">

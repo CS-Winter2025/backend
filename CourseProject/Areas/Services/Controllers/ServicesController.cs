@@ -175,6 +175,18 @@ namespace CourseProject.Areas.Services.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+        
+        // GET: Services/Services/ResidentView
+        [HttpGet]
+        public async Task<IActionResult> ResidentView()
+        {
+            if (!Util.HasAccess(HttpContext, UserRole.RESIDENT))
+                return RedirectToAction("Forbidden", "Error");
+
+            var services = await _context.Services.ToListAsync();
+            return View(services);
+        }
+
 
         private bool ServiceExists(int id)
         {

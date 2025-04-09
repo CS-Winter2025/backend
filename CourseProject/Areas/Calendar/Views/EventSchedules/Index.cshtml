@@ -8,7 +8,7 @@
 <link href="https://cdn.dhtmlx.com/scheduler/edge/dhtmlxscheduler.css"
       rel="stylesheet" type="text/css" charset="utf-8">
 
-<h2>Calendar for: @ViewData["PersonName"]</h2>
+<h2>Calendar for: @ViewData["PersonName"] @(!string.IsNullOrEmpty((string)ViewData["ServiceName"]) ? $" {ViewData["ServiceName"]}" : "")</h2>
 
 <div id="scheduler_here" class="dhx_cal_container" style='width:100%; height:100vh;'>
     <div class="dhx_cal_navline">
@@ -65,7 +65,7 @@
     }
 
     // load data from backend
-    scheduler.load("/api/events?personId=" + @ViewData["PersonID"] +'&isEmployee='+ @ViewData["IsEmployee"].ToString().ToLower());
+    scheduler.load("/api/events?personId=" + @ViewData["PersonID"] +'&isEmployee='+ @ViewData["IsEmployee"].ToString().ToLower() +  "&serviceId=" + @ViewData["ServiceID"]);
     // connect backend to scheduler
     var dp = scheduler.createDataProcessor({
         url: "/api/events",
