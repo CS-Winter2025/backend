@@ -38,12 +38,9 @@
     <Folder Include="Areas\Charges\Controllers\" />
     <Folder Include="Areas\Calendar\Views\" />
     <Folder Include="Areas\Charges\Data\" />
-    <Folder Include="Areas\Charges\Views\" />
     <Folder Include="Areas\Employees\Controllers\" />
     <Folder Include="Areas\Employees\Data\" />
     <Folder Include="Areas\Housing\Data\" />
-    <Folder Include="Areas\Housing\Views\" />
-    <Folder Include="Areas\Housing\Controllers\" />
     <Folder Include="Areas\Services\Controllers\" />
     <Folder Include="Areas\Services\Data\" />
     <Folder Include="Data\" />

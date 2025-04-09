@@ -43,8 +43,14 @@ namespace CourseProject.Areas.Housing.Controllers
                 .Distinct()
                 .ToListAsync();
 
+            var assignedNowIds = await _context.ResidentAssets
+                .Where(ra => ra.FromDate <= now && ra.ToDate >= now)
+                .Select(ra => ra.ResidentId)
+                .Distinct()
+                .ToListAsync();
+
             var unassignedResidents = await _context.Residents
-                .Where(r => !allAssignedResidentIds.Contains(r.ResidentId))
+                .Where(r => !assignedNowIds.Contains(r.ResidentId))
                 .ToListAsync();
 
             ViewBag.CurrentResidents = currentResidents;

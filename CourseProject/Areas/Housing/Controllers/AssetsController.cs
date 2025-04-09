@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CourseProject.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -25,18 +27,22 @@ namespace CourseProject.Areas.Housing.Controllers
             var now = DateTime.Now;
 
             var assignments = await _context.ResidentAssets
-                .Where(ra => ra.FromDate <= now && ra.ToDate >= now)
-                .ToListAsync();
+    .Include(a => a.Resident)
+    .Where(ra => ra.FromDate <= now && ra.ToDate >= now)
+    .ToListAsync();
+
 
             var assetStatusList = assets.Select(asset =>
             {
-                bool inUse = assignments.Any(a => a.AssetID == asset.AssetID);
+                var activeAssignment = assignments.FirstOrDefault(a => a.AssetID == asset.AssetID);
                 return new AssetStatusViewModel
                 {
                     Asset = asset,
-                    Status = inUse ? "In use" : "Available"
+                    Status = activeAssignment != null ? "In use" : "Available",
+                    AssignedResident = activeAssignment?.Resident
                 };
             }).ToList();
+
 
             var requests = await _context.ResidentAssetRequests
                 .Include(r => r.Resident)
@@ -67,16 +73,17 @@ namespace CourseProject.Areas.Housing.Controllers
             {
                 ResidentId = request.ResidentId,
                 AssetID = request.AssetID,
-                FromDate = DateTime.Now,
-                ToDate = DateTime.Now.AddMonths(6) // default lease period
+                FromDate = request.FromDate,
+                ToDate = request.ToDate
             };
 
             _context.ResidentAssets.Add(assignment);
-            _context.ResidentAssetRequests.Remove(request); // delete request
+            _context.ResidentAssetRequests.Remove(request); // remove request
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Index");
         }
+
 
         [HttpPost]
         public async Task<IActionResult> DeclineRequest(int requestId)
@@ -160,7 +167,7 @@ namespace CourseProject.Areas.Housing.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("AssetID,Type,DetailsJson")] Asset asset)
+        public async Task<IActionResult> Create([Bind("AssetID,Type,DetailsJson,Price")] Asset asset)
         {
             if (ModelState.IsValid)
             {
@@ -176,30 +183,20 @@ namespace CourseProject.Areas.Housing.Controllers
         // GET: Assets/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var asset = await _context.Assets.FindAsync(id);
-            if (asset == null)
-            {
-                return NotFound();
-            }
+            if (asset == null) return NotFound();
+
             return View(asset);
         }
 
         // POST: Assets/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("AssetID,Type,DetailsJson")] Asset asset)
+        public async Task<IActionResult> Edit(int id, [Bind("AssetID,Type,DetailsJson,Price")] Asset asset)
         {
-            if (id != asset.AssetID)
-            {
-                return NotFound();
-            }
+            if (id != asset.AssetID) return NotFound();
 
             if (ModelState.IsValid)
             {
@@ -207,22 +204,19 @@ namespace CourseProject.Areas.Housing.Controllers
                 {
                     _context.Update(asset);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!AssetExists(asset.AssetID))
-                    {
+                    if (!_context.Assets.Any(a => a.AssetID == asset.AssetID))
                         return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    throw;
                 }
-                return RedirectToAction(nameof(Index));
             }
+
             return View(asset);
         }
+
 
         // GET: Assets/Delete/5
         public async Task<IActionResult> Delete(int? id)
@@ -296,6 +290,71 @@ namespace CourseProject.Areas.Housing.Controllers
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Assigned));
+        }
+
+        // GET: Assets/PastRenters/5
+        public async Task<IActionResult> PastRenters(int id)
+        {
+            var asset = await _context.Assets.FindAsync(id);
+            if (asset == null)
+            {
+                return NotFound();
+            }
+
+            var pastRenters = await _context.ResidentAssets
+                .Where(ra => ra.AssetID == id && ra.ToDate < DateTime.Now)
+                .Include(ra => ra.Resident)
+                .ToListAsync();
+
+            ViewBag.Asset = asset;
+            return View(pastRenters);
+        }
+
+
+        // POST: Assets/MarkVacant/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> MarkVacant(int id)
+        {
+            var asset = await _context.Assets.FindAsync(id);
+            if (asset == null) return NotFound();
+
+            // Optionally: close the current assignment
+            var currentAssignment = await _context.ResidentAssets
+                .Where(ra => ra.AssetID == id && ra.FromDate <= DateTime.Now && ra.ToDate >= DateTime.Now)
+                .OrderByDescending(ra => ra.ToDate)
+                .FirstOrDefaultAsync();
+
+            if (currentAssignment != null)
+            {
+                currentAssignment.ToDate = DateTime.Now; // renter vacates now
+            }
+
+            asset.Status = "Available";
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> MonthlyInvoices(int? month, int? year)
+        {
+            var targetMonth = month ?? DateTime.Now.Month;
+            var targetYear = year ?? DateTime.Now.Year;
+
+            var startDate = new DateTime(targetYear, targetMonth, 1);
+            var endDate = startDate.AddMonths(1).AddDays(-1); // Last day of the month
+
+            var assignments = await _context.ResidentAssets
+                .Include(ra => ra.Resident)
+                .Include(ra => ra.Asset)
+                .Where(ra => ra.ToDate >= startDate && ra.FromDate <= endDate)
+            .ToListAsync();
+
+            ViewBag.Month = targetMonth;
+            ViewBag.Year = targetYear;
+            return View(MonthlyInvoices);
+
+
         }
 
     }
