@@ -28,6 +28,12 @@ builder.Services.AddDbContext<DatabaseContext>(options =>
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(8081);  // Bind to any IP address on port 8080
+});
+
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
