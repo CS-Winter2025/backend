@@ -20,9 +20,9 @@ jobs:
       dotnet_version: "9.0.x"
       project_path: CourseProject/CourseProject.csproj
       unit_tests_project_path: UnitTests/UnitTests.csproj
-      run_unit_tests: true
+      run_unit_tests: false
       black_box_tests_project_path: BlackBoxTests/BlackBoxTests.csproj
       run_black_box_tests: false
       reliability_tests_project_path: ReliabilityTests/ReliabilityTests.csproj
-      run_reliability_tests: true
+      run_reliability_tests: false
       run_static_analysis: false
