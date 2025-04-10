@@ -20,7 +20,7 @@
         {
             return new WebAPIEvent
             {
-                id = ev.EventScheduleId,
+                id = ev.ScheduleBaseId,
                 text = ev.Service.Type,
                 start_date = ev.StartDate.ToString("yyyy-MM-dd HH:mm"),
                 end_date = ev.EndDate.ToString("yyyy-MM-dd HH:mm"),
@@ -40,7 +40,7 @@
         {
             return new EventSchedule
             {
-                EventScheduleId = ev.id,
+                ScheduleBaseId = ev.id,
                 ServiceID = ev.service_id,
                 ResidentId = ev.resident_id,
                 Status = ev.status,

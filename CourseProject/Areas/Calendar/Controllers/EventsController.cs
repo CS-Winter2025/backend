@@ -62,10 +62,11 @@ namespace CourseProject.Areas.Calendar.Controllers
                 }
             }
 
-            var fullTable = _context.EventSchedules
-            .Include(e => e.Employees) // Ensure Employees are included
-            .Include(e => e.Service)
-            .Include(e => e.Resident);
+            var fullTable = _context.ScheduleBase
+                .OfType<EventSchedule>()
+                .Include(e => e.Employees) // Ensure Employees are included
+                .Include(e => e.Service)
+                .Include(e => e.Resident);
 
             IQueryable<EventSchedule> userTable = Enumerable.Empty<EventSchedule>().AsQueryable();
             if (userType == null)
@@ -101,7 +102,7 @@ namespace CourseProject.Areas.Calendar.Controllers
             .ToList()
             .Select(e => new WebAPIEvent
             {
-                id = e.EventScheduleId,
+                id = e.ScheduleBaseId,
                 text = e.Service.Type,
                 start_date = e.StartDate.ToString("yyyy-MM-dd HH:mm"),
                 end_date = e.EndDate.ToString("yyyy-MM-dd HH:mm"),
@@ -147,7 +148,6 @@ namespace CourseProject.Areas.Calendar.Controllers
             
             collections.role = new List<object> { new { value = 1, label = user.Role.ToString() } };
 
-            //return Ok(new { data, collections = new { services, residents } });
             return Ok(new { data, collections });
         }
 
@@ -185,7 +185,7 @@ namespace CourseProject.Areas.Calendar.Controllers
 
             return Ok(new
             {
-                tid = newEvent.EventScheduleId,
+                tid = newEvent.ScheduleBaseId,
                 action = "inserted"
             });
         }
@@ -209,7 +209,7 @@ namespace CourseProject.Areas.Calendar.Controllers
             var updatedEvent = (EventSchedule)apiEvent;
             //updatedEvent.EmployeeID = validEmployeeId;
             updatedEvent.Employees = employees;
-            var dbEvent = _context.EventSchedules.Include(e => e.Employees).FirstOrDefault(e => e.EventScheduleId == id);
+            var dbEvent = _context.EventSchedules.Include(e => e.Employees).FirstOrDefault(e => e.ScheduleBaseId == id);
             if (dbEvent == null)
             {
                 return null;

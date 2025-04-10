@@ -17,6 +17,7 @@ namespace CourseProject
         public DbSet<Invoice> Invoices { get; set; }
         public DbSet<Service> Services { get; set; }
         public DbSet<EventSchedule> EventSchedules { get; set; }
+        public DbSet<ScheduleBase> ScheduleBase { get; set; }
         public DbSet<Asset> Assets { get; set; }
         public DbSet<ResidentAsset> ResidentAssets { get; set; }
         public DbSet<ResidentAssetRequest> ResidentAssetRequests { get; set; }
@@ -341,9 +342,9 @@ namespace CourseProject
                 }
             );
 
-            modelBuilder.Entity<EventSchedule>().HasData(
-                new EventSchedule { EventScheduleId = 1, ServiceID = 1 }
-            );
+            //modelBuilder.Entity<EventSchedule>().HasData(
+            //    new EventSchedule { EventScheduleId = 1, ServiceID = 1 }
+            //);
         }
 
     }

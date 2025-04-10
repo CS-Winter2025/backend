@@ -118,6 +118,12 @@
         updateEventName(ev)
     })
 
+    scheduler.attachEvent("onAfterUpdate", function(id, action, tid, response){
+        if (action === "inserted") {
+            scheduler.changeEventId(id, tid);
+        }
+    });
+
     function updateEventName(ev) {
         let selectedServiceId = ev.service_id;
 

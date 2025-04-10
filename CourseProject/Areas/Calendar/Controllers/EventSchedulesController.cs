@@ -120,7 +120,7 @@ namespace CourseProject.Areas.Calendar.Controllers
             var eventSchedule = await _context.EventSchedules
                 .Include(e => e.Employees)
                 .Include(e => e.Service)
-                .FirstOrDefaultAsync(m => m.EventScheduleId == id);
+                .FirstOrDefaultAsync(m => m.ScheduleBaseId == id);
             if (eventSchedule == null)
             {
                 return NotFound();
@@ -180,7 +180,7 @@ namespace CourseProject.Areas.Calendar.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("EventScheduleId,EmployeeID,ServiceID,RangeOfHours,StartDate,EndDate,RepeatPattern")] EventSchedule eventSchedule)
         {
-            if (id != eventSchedule.EventScheduleId)
+            if (id != eventSchedule.ScheduleBaseId)
             {
                 return NotFound();
             }
@@ -194,7 +194,7 @@ namespace CourseProject.Areas.Calendar.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!EventScheduleExists(eventSchedule.EventScheduleId))
+                    if (!EventScheduleExists(eventSchedule.ScheduleBaseId))
                     {
                         return NotFound();
                     }
@@ -221,7 +221,7 @@ namespace CourseProject.Areas.Calendar.Controllers
             var eventSchedule = await _context.EventSchedules
                 .Include(e => e.Employees)
                 .Include(e => e.Service)
-                .FirstOrDefaultAsync(m => m.EventScheduleId == id);
+                .FirstOrDefaultAsync(m => m.ScheduleBaseId == id);
             if (eventSchedule == null)
             {
                 return NotFound();
@@ -247,7 +247,7 @@ namespace CourseProject.Areas.Calendar.Controllers
 
         private bool EventScheduleExists(int id)
         {
-            return _context.EventSchedules.Any(e => e.EventScheduleId == id);
+            return _context.EventSchedules.Any(e => e.ScheduleBaseId == id);
         }
     }
 }
