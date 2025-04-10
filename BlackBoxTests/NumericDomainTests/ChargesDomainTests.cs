@@ -21,4 +21,10 @@ public class ChargesDomainTests
     {
         numericDomainUtils.TestNumericInput(1, 1000, 0, "AmountPaid");
     }
+
+    [OneTimeTearDown]
+    public void Cleanup()
+    {
+        numericDomainUtils.logout();
+    }
 }

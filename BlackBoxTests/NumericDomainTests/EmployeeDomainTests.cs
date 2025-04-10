@@ -21,4 +21,9 @@ public class EmployeeDomainTests
     {
         numericDomainUtils.TestNumericInput(10, 1000, 0, "HoursWorked");
     }
+    [OneTimeTearDown]
+    public void Cleanup()
+    {
+        numericDomainUtils.logout();
+    }
 }

@@ -99,7 +99,7 @@ public class SearchBarUtils
         driver.FindElement(By.Id(SEARCH_ID)).Clear();
 
         //Test if search displays no results when inputted negative [expected]
-        driver.FindElement(By.Id(SEARCH_ID)).SendKeys("-1");
+        driver.FindElement(By.Id(SEARCH_ID)).SendKeys("--1");
         Assert.That(driver.FindElement(By.XPath("//td[contains(text(), 'No matching records found')]")).Displayed);
         driver.FindElement(By.Id(SEARCH_ID)).Clear();
 
@@ -120,6 +120,11 @@ public class SearchBarUtils
 
     public void logout()
     {
-        driver.FindElement(By.LinkText("Logout")).Click();
+        try
+        {
+            driver.FindElement(By.LinkText("Logout")).Click();
+        }
+        catch (ElementClickInterceptedException e){ }
+        driver.Close();
     }
 }

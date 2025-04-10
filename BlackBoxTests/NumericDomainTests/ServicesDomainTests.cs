@@ -16,4 +16,10 @@ public class ServicesDomainTests
     {
         numericDomainUtils.TestNumericInput(10, 1000, 0, "Rate");
     }
+
+    [OneTimeTearDown]
+    public void Cleanup()
+    {
+        numericDomainUtils.logout();
+    }
 }

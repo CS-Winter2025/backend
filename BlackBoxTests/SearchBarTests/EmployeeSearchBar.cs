@@ -7,7 +7,7 @@ namespace BlackBoxTests.SearchBarTests;
 public class EmployeeSearchBar
 {
 
-    private SearchBarUtils searchUtils = new SearchBarUtils(11, "Employees");
+    private SearchBarUtils searchUtils = new SearchBarUtils(12, "Employees");
 
     [SetUp]
     public void Setup()
@@ -18,7 +18,7 @@ public class EmployeeSearchBar
     [Test]
     public void SearchByName()
     {
-        searchUtils.CheckLetterSearch("Bob", 0);
+        searchUtils.CheckLetterSearch("Eve", 0);
     }
 
     [Test]
@@ -30,7 +30,7 @@ public class EmployeeSearchBar
     [Test]
     public void SearchByJobTitle()
     {
-        searchUtils.CheckLetterSearch("Developer", 2);
+        searchUtils.CheckLetterSearch("Quality Assurance", 2);
     }
 
     [Test]
@@ -42,7 +42,7 @@ public class EmployeeSearchBar
     [Test]
     public void SearchByPayRate()
     {
-        searchUtils.CheckNumericSearch("50000.00", 4);
+        searchUtils.CheckNumericSearch("69000.00", 4);
     }
 
     [Test]
@@ -67,6 +67,12 @@ public class EmployeeSearchBar
     public void SearchByDetails()
     {
         searchUtils.CheckLetterSearch("details", 9);
+    }
+
+    [Test]
+    public void SearchByPhoto()
+    {
+        searchUtils.CheckLetterSearch("No photo", 10);
     }
 
     [OneTimeTearDown]

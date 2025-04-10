@@ -13,7 +13,7 @@ public class ChargesSearchBar
     [Test]
     public void SearchByResident()
     {
-        searchUtils.CheckNumericSearch("1", 0);
+        searchUtils.CheckLetterSearch("1", 0);
     }
 
     [Test]

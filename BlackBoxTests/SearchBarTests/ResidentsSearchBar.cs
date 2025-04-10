@@ -27,12 +27,12 @@ public class ResidentsSearchBar
         searchUtils3.CheckLetterSearch("True", 1);
     }
 
-    [Test]
-    public void SearchByWasLiving()
-    {
-        //searchUtils1.CheckLetterSearch("No data available in table", 1);
-        Assert.Pass();
-    }
+    //[Test]
+    //public void SearchByWasLiving()
+    //{
+    //    //searchUtils1.CheckLetterSearch("No data available in table", 1);
+    //    Assert.Pass();
+    //}
     [OneTimeTearDown]
     public void Cleanup()
     {

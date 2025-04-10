@@ -139,6 +139,11 @@ namespace CourseProject
                 new Organization { OrganizationId = 2 }
             );
 
+            var hoursWorked = new List<int>();
+            hoursWorked.Add(222);
+            var certs = new List<string>();
+            certs.Add("First-aid");
+
             modelBuilder.Entity<Employee>().HasData(
                 new Employee
                 {
@@ -158,17 +163,31 @@ namespace CourseProject
                     OrganizationId = 1,
                     ManagerId = 1,
                     ProfilePicture = null
+                },
+                new Employee
+                {
+                    EmployeeId = 3,
+                    JobTitle = "Quality Assurance",
+                    EmploymentType = "Part-Time",
+                    PayRate = 69000,
+                    OrganizationId = 1,
+                    ManagerId = 1,
+                    ProfilePicture = null,
+                    HoursWorked = hoursWorked,
+                    Certifications = certs
                 }
             );
 
             modelBuilder.Entity<Employee>().OwnsOne(e => e.Name).HasData(
                 new { EmployeeId = 1, FirstName = "Alice", LastName = "Smith" },
-                new { EmployeeId = 2, FirstName = "Bob", LastName = "Johnson" }
+                new { EmployeeId = 2, FirstName = "Bob", LastName = "Johnson" },
+                new { EmployeeId = 3, FirstName = "Eve", LastName = "Davis" }
             );
 
             modelBuilder.Entity<Employee>().OwnsOne(e => e.Address).HasData(
                 new { EmployeeId = 1, Street = "123 Main St", City = "New York", State = "NY", Country = "USA", ZipCode = "10001" },
-                new { EmployeeId = 2, Street = "456 Park Ave", City = "New York", State = "NY", Country = "USA", ZipCode = "10002" }
+                new { EmployeeId = 2, Street = "456 Park Ave", City = "New York", State = "NY", Country = "USA", ZipCode = "10002" },
+                new { EmployeeId = 3, Street = "789 Broadway", City = "New York", State = "NY", Country = "USA", ZipCode = "10003" }
             );
 
 
@@ -193,13 +212,17 @@ namespace CourseProject
                 new { ResidentId = 2, Street = "101 Pine St", City = "San Francisco", State = "CA", Country = "USA", ZipCode = "94101" }
             );
 
+            var req = new List<string>();
+            req.Add("The maintenance requirements");
             modelBuilder.Entity<Service>().HasData(
                 new Service { ServiceID = 1, Type = "Cleaning", Rate = 50 },
-                new Service { ServiceID = 2, Type = "Security", Rate = 100 }
+                new Service { ServiceID = 2, Type = "Security", Rate = 100 },
+                new Service { ServiceID = 3, Type = "Maintenance", Rate = 75 , Requirements = req}
             );
 
             modelBuilder.Entity<Invoice>().HasData(
-                new Invoice { InvoiceID = 1, ResidentID = 1, Date = DateTime.UtcNow, AmountDue = 200, AmountPaid = 100 }
+                new Invoice { InvoiceID = 1, ResidentID = 1, Date = DateTime.UtcNow, AmountDue = 200, AmountPaid = 100 },
+                new Invoice { InvoiceID = 2, ResidentID = 2, Date = new DateTime(2025, 2, 21, 14, 0, 0, DateTimeKind.Utc), AmountDue = 300, AmountPaid = 150 }
             );
 
             modelBuilder.Entity<User>().HasData(
