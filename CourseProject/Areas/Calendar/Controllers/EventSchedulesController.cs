@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CourseProject;
 using CourseProject.Models;
+using CourseProject.Common;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace CourseProject.Areas.Calendar.Controllers
 {
@@ -21,39 +24,86 @@ namespace CourseProject.Areas.Calendar.Controllers
         }
 
         // GET: Calendar/EventSchedules
-        public async Task<IActionResult> Index(int? personId, bool? isEmployee)
+        [Authorize(Roles =
+            nameof(UserRole.ADMIN) + "," +
+            nameof(UserRole.RESIDENT) + "," +
+            nameof(UserRole.EMPLOYEE) + "," +
+            nameof(UserRole.HOUSING_MANAGER) + "," +
+            nameof(UserRole.HR_MANAGER)
+        )]
+        public async Task<IActionResult> Index(int? userId, string? userType)
         {
-            if (HttpContext.Session.GetString("Username") == null)
+            if (userType == "employee" && userId != null)
             {
-                return RedirectToAction("Login", "Users"); // Redirect to login if not logged in
-            }
-            string personName = string.Empty;
+                var employee = await _context.Employees
+                    .Include(e => e.Name)
+                    .FirstOrDefaultAsync(e => e.EmployeeId == userId);
 
-            if (personId.HasValue && isEmployee.HasValue)
-            {
-                if ((bool)isEmployee)
-                {
-                    var employee = _context.Employees.FirstOrDefault(e => e.EmployeeId == personId.Value);
-                    if (employee != null)
-                    {
-                        personName = employee.Name.ToString();
-                    }
-                }
-                else
-                {
-                    var resident = _context.Residents.FirstOrDefault(e => e.ResidentId == personId.Value);
-                    if (resident != null)
-                    {
-                        personName = resident.Name.ToString();
-                    }
-                }
+                ViewData["UserID"] = userId;
+                ViewData["UserType"] = userType;
+                ViewData["UserName"] = employee.Name.ToString();
 
+                var empDatabaseContext = _context.EventSchedules.Include(e => e.Employees).Include(e => e.Service);
+                return View(await empDatabaseContext.ToListAsync());
             }
 
-            ViewData["PersonID"] = personId;
-            ViewData["PersonName"] = personName;
-            ViewData["IsEmployee"] = isEmployee.ToString();
+            if (userType == "resident" && userId != null)
+            {
+                var resident = await _context.Residents
+                    .Include(r => r.Name)
+                    .FirstOrDefaultAsync(r => r.ResidentId == userId);
 
+                ViewData["UserID"] = userId;
+                ViewData["UserType"] = userType;
+                ViewData["UserName"] = resident.Name.ToString();
+
+                var resDatabaseContext = _context.EventSchedules.Include(e => e.Employees).Include(e => e.Service);
+                return View(await resDatabaseContext.ToListAsync());
+            }
+
+            if (userId == null)
+            {
+                string? stringId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (stringId == null) return RedirectToAction("NotFound", "Error");
+                userId = Int32.Parse(stringId);
+            }
+
+            User? user = await _context.Users.Include(u => u.Resident)
+                                .Include(u => u.Employee)
+                                .FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (user == null || user.Id == null || user.Role == null || user.Role == UserRole.NONE)
+            {
+                return RedirectToAction("NotFound", "Error");
+            }
+
+            if (user.Role == UserRole.EMPLOYEE && user.EmployeeId == null)
+            {
+                return RedirectToAction("NotFound", "Error");
+            }
+
+            if (user.Role == UserRole.RESIDENT && user.ResidentId == null)
+            {
+                return RedirectToAction("NotFound", "Error");
+            }
+
+            string userName;
+            if (user.Role == UserRole.EMPLOYEE) 
+            {
+                userName = user.Employee.Name.ToString();
+            } 
+            else if (user.Role == UserRole.RESIDENT)
+            {
+                userName = user.Resident.Name.ToString();
+            } 
+            else
+            {
+                userName = user.Role.ToString();
+            }
+
+            ViewData["UserID"] = userId;
+            ViewData["UserType"] = "";
+            ViewData["UserName"] = userName;
 
             var databaseContext = _context.EventSchedules.Include(e => e.Employees).Include(e => e.Service);
             return View(await databaseContext.ToListAsync());
@@ -70,7 +120,7 @@ namespace CourseProject.Areas.Calendar.Controllers
             var eventSchedule = await _context.EventSchedules
                 .Include(e => e.Employees)
                 .Include(e => e.Service)
-                .FirstOrDefaultAsync(m => m.EventScheduleId == id);
+                .FirstOrDefaultAsync(m => m.ScheduleBaseId == id);
             if (eventSchedule == null)
             {
                 return NotFound();
@@ -130,7 +180,7 @@ namespace CourseProject.Areas.Calendar.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("EventScheduleId,EmployeeID,ServiceID,RangeOfHours,StartDate,EndDate,RepeatPattern")] EventSchedule eventSchedule)
         {
-            if (id != eventSchedule.EventScheduleId)
+            if (id != eventSchedule.ScheduleBaseId)
             {
                 return NotFound();
             }
@@ -144,7 +194,7 @@ namespace CourseProject.Areas.Calendar.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!EventScheduleExists(eventSchedule.EventScheduleId))
+                    if (!EventScheduleExists(eventSchedule.ScheduleBaseId))
                     {
                         return NotFound();
                     }
@@ -171,7 +221,7 @@ namespace CourseProject.Areas.Calendar.Controllers
             var eventSchedule = await _context.EventSchedules
                 .Include(e => e.Employees)
                 .Include(e => e.Service)
-                .FirstOrDefaultAsync(m => m.EventScheduleId == id);
+                .FirstOrDefaultAsync(m => m.ScheduleBaseId == id);
             if (eventSchedule == null)
             {
                 return NotFound();
@@ -197,7 +247,7 @@ namespace CourseProject.Areas.Calendar.Controllers
 
         private bool EventScheduleExists(int id)
         {
-            return _context.EventSchedules.Any(e => e.EventScheduleId == id);
+            return _context.EventSchedules.Any(e => e.ScheduleBaseId == id);
         }
     }
 }

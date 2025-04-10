@@ -1,14 +1,23 @@
 ﻿@model IEnumerable<CourseProject.Models.EventSchedule>
 
 @{
-    ViewData["Title"] = "Calendar - " + (ViewData["EmployeeName"] ?? "All Events");
+    ViewData["Title"] = "Calendar - " + (ViewData["UserName"] ?? "All Events");
 }
 
 <script src="https://cdn.dhtmlx.com/scheduler/edge/dhtmlxscheduler.js"></script>
 <link href="https://cdn.dhtmlx.com/scheduler/edge/dhtmlxscheduler.css"
       rel="stylesheet" type="text/css" charset="utf-8">
+<style type="text/css">
+    .event_requested {
+        --dhx-scheduler-event-background: #D4B431;
+    }
 
-<h2>Calendar for: @ViewData["PersonName"]</h2>
+    .event_review {
+        --dhx-scheduler-event-background: #D47E31;
+    } 
+</style>
+
+<h2>Calendar for: @ViewData["UserName"]</h2>
 
 <div id="scheduler_here" class="dhx_cal_container" style='width:100%; height:100vh;'>
     <div class="dhx_cal_navline">
@@ -25,20 +34,80 @@
 </div>
 <script>
     scheduler.plugins({
-        recurring: true
+        recurring: true,
+        multiselect: true
     });
     scheduler.config.date_format = "%Y-%m-%d %H:%i";
     scheduler.init("scheduler_here", new Date(2019, 0, 20), "week");
 
+    const rolePermissions = [
+        {role: "ADMIN", permissions: ["create", "update", "delete"], disabledFields: []},
+        {role: "RESIDENT", permissions: ["create", "update", "delete"], disabledFields: ["Resident", "Employees", "Status"]},
+        {role: "EMPLOYEE", permissions: [], disabledFields: ["Service", "Resident", "Employees", "Status", "recurring", "time"]},
+        {role: "HOUSING_MANAGER", permissions: ["create", "update", "delete"], disabledFields: ["Employees"]},
+        {role: "HR_MANAGER", permissions: ["update"], disabledFields: ["Resident", "recurring", "time"]},
+        {role: "NONE", permissions: [], disabledFields: ["Service", "Resident", "Employees", "Status", "recurring", "time"]},
+    ]
+
+    const statusList = [
+        {key: 'requested', label: "Requested"},
+        {key: 'review', label: "Review Required"},
+        {key: 'approved', label: "Approved"}
+    ]
+
+    scheduler.templates.event_class=function(start, end, event){
+        var css = "";
+
+        if(event.status) // if event has status property then special class should be assigned
+            css += "event_"+event.status;
+
+        return css; // default return
+    };
+
     scheduler.config.lightbox.sections = [
-        // { name: "description", height: 50, map_to: "text", type: "textarea", focus: true },
-        // { name: "Service ID", height: 30, map_to: "service_id", type: "textarea" },
         { name: "Service", map_to: "service_id", type: "select", options: scheduler.serverList("services") },
         { name: "Resident", map_to: "resident_id", type: "select", options: scheduler.serverList("residents") },
-        { name: "Employee IDs", height: 30, map_to: "employee_ids", type: "textarea" },
+        { name: "Employees", map_to: "employee_ids", type: "multiselect", options: scheduler.serverList("employees") },
+        { name: "Status", map_to: "status", type: "select", options: statusList },
         { name: "recurring", type: "recurring", map_to: "rrule" },
         { name: "time", height: 72, type: "time", map_to: "auto" }
     ];
+
+    scheduler.attachEvent("onLightbox", (eventId) => {
+        // console.log(scheduler.getEvent(eventId))
+        setPermissions()
+    })
+
+    function setPermissions() {
+        let userRole = scheduler.serverList("role")
+        if (userRole && userRole.length > 0 && userRole[0].label) {
+            userRole = userRole[0].label
+        } else {
+            userRole = "NONE"
+        }
+
+        const userPermissions = rolePermissions.find(rp => rp.role == userRole)
+        let disableFields
+        if (!userPermissions)
+            disableFields = ["Service", "Resident", "Employees", "Status", "recurring", "time"]
+        else
+            disableFields = userPermissions.disabledFields
+
+        disableFields.forEach(field => {
+            const section = scheduler.formSection(field);
+            if (field == "recurring" || field == "time") {
+                section.node.querySelectorAll("select").forEach(elem => {
+                    elem.disabled = true
+                })
+            } else if (field == "Employees") {
+                section.node.querySelectorAll("input").forEach(elem => {
+                    elem.disabled = true
+                })
+            } else {
+                section.control.disabled = true;
+            }
+        })
+    }
 
     scheduler.attachEvent("onEventAdded", (id, ev, is_new) => {
         updateEventName(ev)
@@ -48,6 +117,12 @@
         console.log("event changed: ", ev)
         updateEventName(ev)
     })
+
+    scheduler.attachEvent("onAfterUpdate", function(id, action, tid, response){
+        if (action === "inserted") {
+            scheduler.changeEventId(id, tid);
+        }
+    });
 
     function updateEventName(ev) {
         let selectedServiceId = ev.service_id;
@@ -65,7 +140,8 @@
     }
 
     // load data from backend
-    scheduler.load("/api/events?personId=" + @ViewData["PersonID"] +'&isEmployee='+ @ViewData["IsEmployee"].ToString().ToLower());
+    scheduler.load("/api/events?userId=@ViewData["UserID"]&userType=@ViewData["UserType"]");
+
     // connect backend to scheduler
     var dp = scheduler.createDataProcessor({
         url: "/api/events",

@@ -14,12 +14,13 @@
         public int? service_id { get; set; }
         public int? resident_id { get; set; }
         public string? employee_ids { get; set; }
+        public string? status { get; set; }
 
         public static explicit operator WebAPIEvent(EventSchedule ev)
         {
             return new WebAPIEvent
             {
-                id = ev.EventScheduleId,
+                id = ev.ScheduleBaseId,
                 text = ev.Service.Type,
                 start_date = ev.StartDate.ToString("yyyy-MM-dd HH:mm"),
                 end_date = ev.EndDate.ToString("yyyy-MM-dd HH:mm"),
@@ -30,7 +31,8 @@
                 deleted = ev.Deleted,
                 //employee_ids = ev.EmployeeID.ToString(),
                 service_id = ev.ServiceID,
-                resident_id = ev.ResidentId
+                resident_id = ev.ResidentId,
+                status = ev.Status
             };
         }
 
@@ -38,9 +40,10 @@
         {
             return new EventSchedule
             {
-                EventScheduleId = ev.id,
+                ScheduleBaseId = ev.id,
                 ServiceID = ev.service_id,
                 ResidentId = ev.resident_id,
+                Status = ev.status,
                 //Service.Type = ev.text,
                 //EmployeeID = 1,
                 StartDate = ev.start_date != null ? DateTime.Parse(ev.start_date,

@@ -75,5 +75,5 @@
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.ResidentId">Edit</a> |
     <a asp-action="Index">Back to List</a> |
-    <a href="@Url.Action("Index", "Calendar", new { personId = Model.ResidentId, isEmployee = false })">View Resident Calendar</a>
+    <a href="@Url.Action("Index", "Calendar", new { userId = Model.ResidentId, userType = "resident" })">View Resident Calendar</a>
 </div>

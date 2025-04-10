@@ -17,6 +17,7 @@ namespace CourseProject
         public DbSet<Invoice> Invoices { get; set; }
         public DbSet<Service> Services { get; set; }
         public DbSet<EventSchedule> EventSchedules { get; set; }
+        public DbSet<ScheduleBase> ScheduleBase { get; set; }
         public DbSet<Asset> Assets { get; set; }
         public DbSet<ResidentAsset> ResidentAssets { get; set; }
         public DbSet<ResidentAssetRequest> ResidentAssetRequests { get; set; }
@@ -198,6 +199,15 @@ namespace CourseProject
                     PayRate = 53000,
                     OrganizationId = 2,
                     ProfilePicture = SamplePictures.Sample2
+                },
+                new Employee
+                {
+                    EmployeeId = 6,
+                    JobTitle = "Housing Manager",
+                    EmploymentType = "Full-Time",
+                    PayRate = 54500,
+                    OrganizationId = 2,
+                    ProfilePicture = null
                 }
             );
 
@@ -214,7 +224,8 @@ namespace CourseProject
                 new { EmployeeId = 2, FirstName = "Bob", LastName = "Johnson" },
                 new { EmployeeId = 3, FirstName = "Cathy", LastName = "Lee" },
                 new { EmployeeId = 4, FirstName = "James", LastName = "Taylor" },
-                new { EmployeeId = 5, FirstName = "Nina", LastName = "Martinez" }
+                new { EmployeeId = 5, FirstName = "Nina", LastName = "Martinez" },
+                new { EmployeeId = 6, FirstName = "Joe", LastName = "Lewis" }
             );
 
             modelBuilder.Entity<Employee>().OwnsOne(e => e.Address).HasData(
@@ -222,7 +233,8 @@ namespace CourseProject
                 new { EmployeeId = 2, Street = "456 Park Ave", City = "New York", State = "NY", Country = "USA", ZipCode = "10002" },
                 new { EmployeeId = 3, Street = "321 Oak St", City = "Dallas", State = "TX", Country = "USA", ZipCode = "75201" },
                 new { EmployeeId = 4, Street = "456 Pine St", City = "Houston", State = "TX", Country = "USA", ZipCode = "77002" },
-                new { EmployeeId = 5, Street = "789 Cedar St", City = "Austin", State = "TX", Country = "USA", ZipCode = "73301" }
+                new { EmployeeId = 5, Street = "789 Cedar St", City = "Austin", State = "TX", Country = "USA", ZipCode = "73301" },
+                new { EmployeeId = 6, Street = "210 Alder St", City = "Houston", State = "TX", Country = "USA", ZipCode = "77042" }
             );
 
             _ = modelBuilder.Entity<Resident>().HasData(
@@ -269,7 +281,7 @@ namespace CourseProject
             modelBuilder.Entity<Resident>().OwnsOne(r => r.Name).HasData(
                 new { ResidentId = 1, FirstName = "Charlie", LastName = "Brown" },
                 new { ResidentId = 2, FirstName = "Diana", LastName = "Prince" },
-                new { ResidentId = 3, FirstName = "Alice", LastName = "Smith" },
+                new { ResidentId = 3, FirstName = "Alison", LastName = "Smythe" },
                 new { ResidentId = 4, FirstName = "Leo", LastName = "Johnson" },
                 new { ResidentId = 5, FirstName = "Amira", LastName = "Williams" }
             );
@@ -310,7 +322,7 @@ namespace CourseProject
                     Username = "housing",
                     Role = UserRole.HOUSING_MANAGER,
                     Password = new PasswordHasher().HashPassword("123"),
-                    EmployeeId = 2,
+                    EmployeeId = 6,
                 },
                 new User
                 {
@@ -318,7 +330,7 @@ namespace CourseProject
                     Username = "employee",
                     Role = UserRole.EMPLOYEE,
                     Password = new PasswordHasher().HashPassword("123"),
-                    ResidentId = 2,
+                    EmployeeId = 2,
                 },
                 new User
                 {
@@ -330,9 +342,9 @@ namespace CourseProject
                 }
             );
 
-            modelBuilder.Entity<EventSchedule>().HasData(
-                new EventSchedule { EventScheduleId = 1, ServiceID = 1 }
-            );
+            //modelBuilder.Entity<EventSchedule>().HasData(
+            //    new EventSchedule { EventScheduleId = 1, ServiceID = 1 }
+            //);
         }
 
     }

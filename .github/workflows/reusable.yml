@@ -1,0 +1,129 @@
+name: Reusable CI/CD Pipeline
+
+on:
+  workflow_call:
+    inputs:
+      configuration:
+        required: true
+        type: string
+      dotnet_version:
+        required: true
+        type: string
+      project_path:
+        required: true
+        type: string
+
+      unit_tests_project_path:
+        required: false
+        type: string
+        default: ""
+      run_unit_tests:
+        required: false
+        type: boolean
+        default: false
+
+      black_box_tests_project_path:
+        required: false
+        type: string
+        default: ""
+      run_black_box_tests:
+        required: false
+        type: boolean
+        default: false
+
+      reliability_tests_project_path:
+        required: false
+        type: string
+        default: ""
+      run_reliability_tests:
+        required: false
+        type: boolean
+        default: false
+
+      run_static_analysis:
+        required: false
+        type: boolean
+        default: false
+
+    secrets:
+      APPSETTINGS_JSON:
+        required: false
+      REGISTRY_NAME:
+        required: false
+      REGISTRY_USERNAME:
+        required: false
+      REGISTRY_PASSWORD:
+        required: false
+      AZURE_WEBAPP_NAME:
+        required: false
+      AZURE_WEBAPP_PUBLISH_PROFILE:
+        required: false
+
+jobs:
+  build-and-publish:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        # os: [ubuntu-latest, windows-latest] # To accommodate both Linux and Windows environment
+        os: [ubuntu-latest] # To accommodate both Linux and Windows environment
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      - name: Create appsettings.json from secret
+        run: |
+          echo "${{ secrets.APPSETTINGS_JSON }}" | base64 -d > ./CourseProject/appsettings.json
+
+      - name: Show contents (for debugging only — remove later)
+        run: cat ./CourseProject/appsettings.json
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ inputs.dotnet_version }}
+
+      - name: Display OS Info
+        run: |
+          echo "Operating System: ${{ runner.os }}"
+          dotnet --info
+
+      - name: Restore dependencies
+        run: dotnet restore ${{ inputs.project_path }}
+
+      - name: Build application (${{ inputs.configuration }})
+        run: dotnet build ${{ inputs.project_path }} -c ${{ inputs.configuration }} --no-restore
+
+      # Conditional Unit Tests
+      - name: Run Unit Tests
+        if: ${{ inputs.run_unit_tests && inputs.unit_tests_project_path != '' }}
+        run: dotnet test ${{ inputs.unit_tests_project_path }} --configuration ${{ inputs.configuration }} --verbosity normal
+
+      # Conditional Reliability Tests
+      - name: Run Reliability Tests
+        if: ${{ inputs.run_reliability_tests && inputs.reliability_tests_project_path != '' }}
+        run: dotnet test ${{ inputs.reliability_tests_project_path }} --configuration ${{ inputs.configuration }} --verbosity normal
+
+      # Conditional Black Box Tests
+      - name: Run Black Box Tests
+        if: ${{ inputs.run_black_box_tests && inputs.black_box_tests_project_path != '' }}
+        run: dotnet test ${{ inputs.black_box_tests_project_path }} --configuration ${{ inputs.configuration }} --verbosity normal
+
+      # Conditional Static Analysis
+      - name: Static Code Analysis (using dotnet format)
+        if: ${{ inputs.run_static_analysis }}
+        run: dotnet format ${{ inputs.project_path }} --verify-no-changes
+
+      # Publish Application
+      - name: Publish application (${{ inputs.configuration }})
+        if: ${{ inputs.configuration == 'Release' }}
+        run: dotnet publish ${{ inputs.project_path }} -c ${{ inputs.configuration }} -o ./publish-${{ inputs.configuration }}
+
+      # Upload Artifact
+      - name: Upload artifact (${{ inputs.configuration }} on ${{ matrix.os }})
+        if: ${{ inputs.configuration == 'Release' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-${{ inputs.configuration }}-${{ matrix.os }}
+          path: ./publish-${{ inputs.configuration }}
