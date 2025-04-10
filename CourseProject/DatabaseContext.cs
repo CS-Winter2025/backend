@@ -160,7 +160,7 @@ namespace CourseProject
                     EmploymentType = "Full-Time",
                     PayRate = 60000,
                     OrganizationId = 1,
-                    ProfilePicture = null
+                    ProfilePicture = SamplePictures.Sample1
                 },
                 new Employee
                 {
@@ -170,7 +170,7 @@ namespace CourseProject
                     PayRate = 50000,
                     OrganizationId = 1,
                     ManagerId = 1,
-                    ProfilePicture = null
+                    ProfilePicture = SamplePictures.Sample4
                 },
                 new Employee
                 {
@@ -188,7 +188,7 @@ namespace CourseProject
                     EmploymentType = "Full-Time",
                     PayRate = 55000,
                     OrganizationId = 2,
-                    ProfilePicture = null
+                    ProfilePicture = SamplePictures.Sample3
                 },
                 new Employee
                 {
@@ -197,7 +197,7 @@ namespace CourseProject
                     EmploymentType = "Full-Time",
                     PayRate = 53000,
                     OrganizationId = 2,
-                    ProfilePicture = null
+                    ProfilePicture = SamplePictures.Sample2
                 }
             );
 
