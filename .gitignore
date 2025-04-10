@@ -15,6 +15,7 @@ js/app.min.js
 *.userosscache
 *.sln.docstates
 appsettings.json
+CourseProject/appsettings.json
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
