@@ -10,31 +10,34 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create" enctype="multipart/form-data">
+        <form asp-action="Create" enctype="multipart/form-data" onsubmit="return serializeDetails();">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="ServiceSubscriptionIds" class="control-label"></label>
-                <input asp-for="ServiceSubscriptionIds" class="form-control" />
-                <span asp-validation-for="ServiceSubscriptionIds" class="text-danger"></span>
-            </div>
+
+            <label class="control-label">Subscribed Services</label>
+            <div id="services-container" class="form-group"></div>
+            <button type="button" class="btn btn-sm btn-secondary mt-2" onclick="addService()">Add Service</button>
+
             <div class="form-group form-check">
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="IsCurrentlyLiving" /> @Html.DisplayNameFor(model => model.IsCurrentlyLiving)
                 </label>
             </div>
+
             <div class="form-group">
                 <label class="control-label">Name</label>
                 @Html.EditorFor(model => model.Name)
             </div>
+
             <div class="form-group">
                 <label class="control-label">Address</label>
                 @Html.EditorFor(model => model.Address)
             </div>
-            <div class="form-group">
-                <label asp-for="DetailsJson" class="control-label"></label>
-                <input asp-for="DetailsJson" class="form-control" />
-                <span asp-validation-for="DetailsJson" class="text-danger"></span>
-            </div>
+
+            <h5 class="mt-4">Additional Details</h5>
+            <div id="details-container"></div>
+            <button type="button" class="btn btn-sm btn-secondary mt-2" onclick="addDetail()">Add Detail</button>
+            <input type="hidden" id="DetailsJson" name="DetailsJson" value="@Model.DetailsJson" />
+
             <div class="form-group">
                 <label asp-for="ProfilePicture" class="control-label"></label>
                 <input type="file" name="ProfilePicture" class="form-control" />
@@ -51,6 +54,12 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
+<script>
+    const allServices = @Html.Raw(Json.Serialize(ViewBag.AllServices));
+</script>
+
 @section Scripts {
+    <script src="~/js/editDetails.js" asp-append-version="true"></script>
+    <script src="~/js/editServices.js" asp-append-version="true"></script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
