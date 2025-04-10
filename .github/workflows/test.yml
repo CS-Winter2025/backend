@@ -1,0 +1,35 @@
+# Sample usage of reusable.yml in Test build for backend team
+# This pipeline runs different tests optionally. Change run_tests arguments to true if you want to run the test
+name: Test Pipeline
+
+on:
+  push:
+    branches:
+      - dev
+      - pipeline_integration
+  pull_request:
+    branches:
+      - dev
+      - pipeline_integration
+
+jobs:
+  test:
+    uses: ./.github/workflows/reusable.yml
+    with:
+      configuration: Debug
+      dotnet_version: "9.0.x"
+      project_path: CourseProject/CourseProject.csproj
+      unit_tests_project_path: UnitTests/UnitTests.csproj
+      run_unit_tests: true
+      black_box_tests_project_path: BlackBoxTests/BlackBoxTests.csproj
+      run_black_box_tests: false
+      reliability_tests_project_path: ReliabilityTests/ReliabilityTests.csproj
+      run_reliability_tests: true
+      run_static_analysis: false
+    secrets:
+      APPSETTINGS_JSON: ${{ secrets.APPSETTINGS_JSON }}
+      REGISTRY_NAME: ${{ secrets.REGISTRY_NAME }}
+      REGISTRY_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
+      REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
+      AZURE_WEBAPP_NAME: ${{ secrets.AZURE_WEBAPP_NAME }}
+      AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
