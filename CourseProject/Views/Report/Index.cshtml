@@ -5,6 +5,10 @@
 
 <h2>Resident Report</h2>
 
+<button class="btn btn-primary mb-3" onclick="window.print()">
+    <i class="fa fa-print"></i> Print Report
+</button>
+
 <table class="table table-bordered datatable">
     <thead>
         <tr>
@@ -63,4 +67,5 @@
 
 @section Styles {
     <link rel="stylesheet" href="~/css/datatable.invoices.css" />
+    <link rel="stylesheet" href="~/css/print.css" media="print" />
 }
