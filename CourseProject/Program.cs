@@ -91,7 +91,6 @@ app.MapAreaControllerRoute(
     areaName: "Charges",
     pattern: "{controller=Invoices}/{action=Index}/{id?}")
     .WithStaticAssets();
-
 app.MapAreaControllerRoute(
     name: "Calendar",
     areaName: "Calendar",

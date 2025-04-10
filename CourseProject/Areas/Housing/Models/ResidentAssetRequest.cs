@@ -1,6 +1,4 @@
-﻿
-
-public class ResidentAssetRequest
+﻿public class ResidentAssetRequest
 {
     public int Id { get; set; }
 
@@ -11,4 +9,7 @@ public class ResidentAssetRequest
     public Asset Asset { get; set; }
 
     public DateTime RequestDate { get; set; } = DateTime.Now;
+
+    public DateTime FromDate { get; set; }
+    public DateTime ToDate { get; set; }
 }

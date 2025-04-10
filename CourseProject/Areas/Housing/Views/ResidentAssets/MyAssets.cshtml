@@ -1,0 +1,37 @@
+﻿@model List<ResidentAsset>
+@{
+    ViewData["Title"] = "My Assigned Assets";
+}
+
+<h2>My Assigned Assets</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">You have no assigned units.</div>
+}
+else
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Asset Type</th>
+                <th>From</th>
+                <th>To</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var ra in Model)
+            {
+                <tr>
+                    <td>@ra.Asset.Type</td>
+                    <td>@ra.FromDate.ToShortDateString()</td>
+                    <td>@ra.ToDate.ToShortDateString()</td>
+                    <td>
+                        <a asp-action="EditOccupants" asp-route-id="@ra.Id" class="btn btn-sm btn-secondary">Add/Remove Occupants</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

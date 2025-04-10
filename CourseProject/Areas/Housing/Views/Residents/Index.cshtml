@@ -16,7 +16,7 @@
     <thead>
         <tr>
             <th>Name</th>
-            <th>Is Currently Living</th>
+            <th>Address</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -24,8 +24,9 @@
         @foreach (var resident in currentResidents)
         {
             <tr>
-                <td>@resident.Name</td>
-                <td>@resident.IsCurrentlyLiving</td>
+                <td>@resident.Name.FirstName @resident.Name.LastName</td>
+
+                <td>@resident.Address.Street, @resident.Address.City, @resident.Address.ZipCode</td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@resident.ResidentId">Edit</a> |
                     <a asp-action="Details" asp-route-id="@resident.ResidentId">Details</a> |
@@ -42,7 +43,6 @@
     <thead>
         <tr>
             <th>Name</th>
-            <th>Was Living</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -51,7 +51,6 @@
         {
             <tr>
                 <td>@resident.Name</td>
-                <td>@resident.IsCurrentlyLiving</td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@resident.ResidentId">Edit</a> |
                     <a asp-action="Details" asp-route-id="@resident.ResidentId">Details</a> |
@@ -68,7 +67,6 @@
     <thead>
         <tr>
             <th>Name</th>
-            <th>Is Currently Living</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -77,7 +75,6 @@
         {
             <tr>
                 <td>@resident.Name</td>
-                <td>@resident.IsCurrentlyLiving</td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@resident.ResidentId">Edit</a> |
                     <a asp-action="Details" asp-route-id="@resident.ResidentId">Details</a> |

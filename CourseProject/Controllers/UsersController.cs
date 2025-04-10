@@ -44,6 +44,8 @@ namespace MVCSampleApp.Controllers
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
             if (user != null)
             {
+                HttpContext.Session.SetInt32("UserId", user.Id);
+
                 PasswordHasher hasher = new PasswordHasher();
                 PasswordVerificationResult result = hasher.VerifyHashedPassword(user.Password, password);
                 if (result == PasswordVerificationResult.Failed)

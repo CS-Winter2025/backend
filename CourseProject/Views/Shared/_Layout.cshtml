@@ -73,12 +73,28 @@
 			                </li>
 		                }
 
-						@if (role is "ADMIN" or "RESIDENT" or "HOUSING_MANAGER")
+						@if (role is "ADMIN" or "HOUSING_MANAGER")
 		                {
 			                <li class="nav-item">
 				                <a class="nav-link text-dark headerFont" asp-area="" asp-controller="Residents" asp-action="Index">Residents</a>
 			                </li>
+							<li class="nav-item">
+								<a class="nav-link text-dark headerFont" asp-area="" asp-controller="Assets" asp-action="Index">Assets</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link text-dark headerFont" asp-area="Housing" asp-controller="Invoices" asp-action="MonthlyInvoices">Generate Monthly Invoices</a>
+                            </li>
+
 		                }
+
+                        @if (role is "RESIDENT")
+                        {
+							<a class="nav-link" asp-area="Housing" asp-controller="ResidentAssets" asp-action="Index">Unit Availability</a>
+							<a class="nav-link" asp-area="Housing" asp-controller="ResidentAssets" asp-action="MyAssets">My Units</a>
+							<a class="nav-link" asp-area="Housing" asp-controller="ResidentAssets" asp-action="MyInvoices">My Invoices</a>
+
+
+                        }
 
 						@if (role is "ADMIN" or "SERVICE_MANAGER" or "EMPLOYEE")
 		                {
