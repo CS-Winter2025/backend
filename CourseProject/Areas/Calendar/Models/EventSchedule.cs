@@ -12,4 +12,5 @@ public class EventSchedule : ScheduleBase
     public Resident? Resident { get; set; }
     public int? ServiceID { get; set; } // Foreign Key (Stored in DB)
     public Service Service { get; set; } // Navigation Property (Not stored)
+    public string? Status { get; set; }
 }

@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CourseProject;
 using CourseProject.Models;
+using System.Security.Claims;
+using System.Dynamic;
 
 namespace CourseProject.Areas.Calendar.Controllers
 {
@@ -23,34 +25,52 @@ namespace CourseProject.Areas.Calendar.Controllers
 
         // GET api/events
         [HttpGet]
-        public IActionResult Get(int? personId, bool? isEmployee)
+        public IActionResult Get(int? userId)
         {
+            if (userId == null) 
+            {
+                string? stringId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (stringId == null) return RedirectToAction("NotFound", "Error");
+                userId = Int32.Parse(stringId);
+            }
 
-            //Console.WriteLine("IN GET: " + employeeId);
+            User? user = _context.Users.Find(userId);
+
+            if (user == null || user.Id == null || user.Role == null || user.Role == UserRole.NONE)
+            {
+                return RedirectToAction("NotFound", "Error");
+            }
+
+            if (user.Role == UserRole.EMPLOYEE && user.EmployeeId == null)
+            {
+                return RedirectToAction("NotFound", "Error");
+            }
+
+            if (user.Role == UserRole.RESIDENT && user.ResidentId == null)
+            {
+                return RedirectToAction("NotFound", "Error");
+            }
+
             var fullTable = _context.EventSchedules
             .Include(e => e.Employees) // Ensure Employees are included
             .Include(e => e.Service)
             .Include(e => e.Resident);
 
-            IQueryable<EventSchedule> userTable;
-            if (personId == null || isEmployee == null)
+            IQueryable<EventSchedule> userTable = Enumerable.Empty<EventSchedule>().AsQueryable();
+            if (user.Role == UserRole.ADMIN || user.Role == UserRole.HOUSING_MANAGER || user.Role == UserRole.HR_MANAGER)
             {
                 userTable = fullTable;
-            } 
-            else
-            {
-                if ((bool)isEmployee)
-                {
-                    userTable = fullTable
-                        .Where(e => e.Employees.Any(emp => emp.EmployeeId == personId));
-                }
-                else
-                {
-                    userTable = fullTable
-                        .Where(e => e.ResidentId == personId);
-                }
             }
-            
+            else if (user.Role == UserRole.EMPLOYEE)
+            {
+                userTable = fullTable
+                    .Where(e => e.Employees.Any(emp => emp.EmployeeId == user.EmployeeId));
+            }
+            else if (user.Role == UserRole.RESIDENT)
+            {
+                userTable = fullTable
+                    .Where(e => e.ResidentId == user.ResidentId);
+            }
 
             var data = userTable
             .ToList()
@@ -67,27 +87,41 @@ namespace CourseProject.Areas.Calendar.Controllers
                 deleted = e.Deleted,
                 service_id = e.ServiceID,
                 resident_id = e.ResidentId,
+                status = e.Status,
                 // Convert the list of Employee IDs to a comma-separated string
                 employee_ids = string.Join(",", e.Employees.Select(emp => emp.EmployeeId.ToString()))
             });
 
-            var services = _context.Services
-                .Select(s => new
-                {
-                    value = s.ServiceID,
-                    label = s.Type
-                })
-                .ToList();
+            dynamic collections = new ExpandoObject();
 
-            var residents = _context.Residents
-                .Select(r => new
-                {
-                    value = r.ResidentId,
-                    label = r.Name
-                })
-                .ToList();
+            collections.services = _context.Services
+            .Select(s => new
+            {
+                value = s.ServiceID,
+                label = s.Type
+            })
+            .ToList();
 
-            return Ok(new { data, collections = new { services, residents } });
+            collections.residents = _context.Residents
+            .Select(r => new
+            {
+                value = r.ResidentId,
+                label = r.Name
+            })
+            .ToList();
+
+            collections.employees = _context.Employees
+            .Select(e => new
+            {
+                value = e.EmployeeId,
+                label = e.Name
+            })
+            .ToList();
+
+            collections.role = new List<object> { new { value = 1, label = user.Role.ToString() } };
+
+            //return Ok(new { data, collections = new { services, residents } });
+            return Ok(new { data, collections });
         }
 
         // GET api/events/5
@@ -164,6 +198,9 @@ namespace CourseProject.Areas.Calendar.Controllers
             dbEvent.Employees = updatedEvent.Employees;
             dbEvent.StartDate = updatedEvent.StartDate;
             dbEvent.EndDate = updatedEvent.EndDate;
+            dbEvent.RepeatPattern = updatedEvent.RepeatPattern;
+            dbEvent.RecurringEventId = updatedEvent.RecurringEventId;
+            dbEvent.Status = updatedEvent.Status;
             _context.SaveChanges();
 
             return Ok(new

@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CourseProject;
 using CourseProject.Models;
+using CourseProject.Common;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace CourseProject.Areas.Calendar.Controllers
 {
@@ -21,39 +24,59 @@ namespace CourseProject.Areas.Calendar.Controllers
         }
 
         // GET: Calendar/EventSchedules
-        public async Task<IActionResult> Index(int? personId, bool? isEmployee)
+        [Authorize(Roles =
+            nameof(UserRole.ADMIN) + "," +
+            nameof(UserRole.RESIDENT) + "," +
+            nameof(UserRole.EMPLOYEE) + "," +
+            nameof(UserRole.HOUSING_MANAGER) + "," +
+            nameof(UserRole.HR_MANAGER)
+        )]
+        public async Task<IActionResult> Index(int? userId)
         {
-            if (HttpContext.Session.GetString("Username") == null)
+            if (userId == null)
             {
-                return RedirectToAction("Login", "Users"); // Redirect to login if not logged in
-            }
-            string personName = string.Empty;
-
-            if (personId.HasValue && isEmployee.HasValue)
-            {
-                if ((bool)isEmployee)
-                {
-                    var employee = _context.Employees.FirstOrDefault(e => e.EmployeeId == personId.Value);
-                    if (employee != null)
-                    {
-                        personName = employee.Name.ToString();
-                    }
-                }
-                else
-                {
-                    var resident = _context.Residents.FirstOrDefault(e => e.ResidentId == personId.Value);
-                    if (resident != null)
-                    {
-                        personName = resident.Name.ToString();
-                    }
-                }
-
+                string? stringId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (stringId == null) return RedirectToAction("NotFound", "Error");
+                userId = Int32.Parse(stringId);
             }
 
-            ViewData["PersonID"] = personId;
-            ViewData["PersonName"] = personName;
-            ViewData["IsEmployee"] = isEmployee.ToString();
+            //User? user = _context.Users.Find(userId);
 
+            User? user = await _context.Users.Include(u => u.Resident)
+                                .Include(u => u.Employee)
+                                .FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (user == null || user.Id == null || user.Role == null || user.Role == UserRole.NONE)
+            {
+                return RedirectToAction("NotFound", "Error");
+            }
+
+            if (user.Role == UserRole.EMPLOYEE && user.EmployeeId == null)
+            {
+                return RedirectToAction("NotFound", "Error");
+            }
+
+            if (user.Role == UserRole.RESIDENT && user.ResidentId == null)
+            {
+                return RedirectToAction("NotFound", "Error");
+            }
+
+            string userName;
+            if (user.Role == UserRole.EMPLOYEE) 
+            {
+                userName = user.Employee.Name;
+            } 
+            else if (user.Role == UserRole.RESIDENT)
+            {
+                userName = user.Resident.Name;
+            } 
+            else
+            {
+                userName = user.Role.ToString();
+            }
+
+            ViewData["UserID"] = userId;
+            ViewData["UserName"] = userName;
 
             var databaseContext = _context.EventSchedules.Include(e => e.Employees).Include(e => e.Service);
             return View(await databaseContext.ToListAsync());
