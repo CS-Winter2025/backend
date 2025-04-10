@@ -4,12 +4,11 @@ WORKDIR /app
 
 # Copy csproj and restore as distinct layers
 COPY *.sln .
-COPY CourseProject/*.csproj ./CourseProject/
+COPY *.csproj ./
 RUN dotnet restore
 
 # Copy everything else and build
-COPY CourseProject/. ./CourseProject/
-WORKDIR /app/CourseProject
+COPY . ./
 RUN dotnet publish -c Release -o /app/publish
 
 # Use the ASP.NET runtime image
