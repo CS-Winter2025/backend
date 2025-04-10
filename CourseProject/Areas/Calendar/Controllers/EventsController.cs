@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CourseProject;
 using CourseProject.Models;
+using System.Security.Claims;
+using System.Dynamic;
 
 namespace CourseProject.Areas.Calendar.Controllers
 {
@@ -23,40 +25,84 @@ namespace CourseProject.Areas.Calendar.Controllers
 
         // GET api/events
         [HttpGet]
-        public IActionResult Get(int? personId, bool? isEmployee)
+        public IActionResult Get(int? userId, string? userType)
         {
-
-            //Console.WriteLine("IN GET: " + employeeId);
-            var fullTable = _context.EventSchedules
-            .Include(e => e.Employees) // Ensure Employees are included
-            .Include(e => e.Service)
-            .Include(e => e.Resident);
-
-            IQueryable<EventSchedule> userTable;
-            if (personId == null || isEmployee == null)
+            int? employeeId = null;
+            if (userType == "employee")
             {
-                userTable = fullTable;
-            } 
-            else
+                employeeId = userId;
+            }
+            int? residentId = null;
+            if (userType == "resident")
             {
-                if ((bool)isEmployee)
+                residentId = userId;
+            }
+
+            string? stringId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (stringId == null) return RedirectToAction("NotFound", "Error");
+            userId = Int32.Parse(stringId);
+
+            User? user = _context.Users.Find(userId);
+
+            if (employeeId == null && residentId == null)
+            {
+                if (user == null || user.Id == null || user.Role == null || user.Role == UserRole.NONE)
                 {
-                    userTable = fullTable
-                        .Where(e => e.Employees.Any(emp => emp.EmployeeId == personId));
+                    return RedirectToAction("NotFound", "Error");
                 }
-                else
+
+                if (user.Role == UserRole.EMPLOYEE && user.EmployeeId == null)
                 {
-                    userTable = fullTable
-                        .Where(e => e.ResidentId == personId);
+                    return RedirectToAction("NotFound", "Error");
+                }
+
+                if (user.Role == UserRole.RESIDENT && user.ResidentId == null)
+                {
+                    return RedirectToAction("NotFound", "Error");
                 }
             }
-            
 
-            var data = userTable
+            var fullTable = _context.ScheduleBase
+                .OfType<EventSchedule>()
+                .Include(e => e.Employees) // Ensure Employees are included
+                .Include(e => e.Service)
+                .Include(e => e.Resident);
+
+            IQueryable<EventSchedule> userTable = Enumerable.Empty<EventSchedule>().AsQueryable();
+            if (userType == null)
+            {
+                if (user.Role == UserRole.ADMIN || user.Role == UserRole.HOUSING_MANAGER || user.Role == UserRole.HR_MANAGER)
+                {
+                    userTable = fullTable;
+                }
+                else if (user.Role == UserRole.EMPLOYEE)
+                {
+                    userTable = fullTable
+                        .Where(e => e.Employees.Any(emp => emp.EmployeeId == user.EmployeeId));
+                }
+                else if (user.Role == UserRole.RESIDENT)
+                {
+                    userTable = fullTable
+                        .Where(e => e.ResidentId == user.ResidentId);
+                }
+            }
+            else if (userType == "employee")
+            {
+                userTable = fullTable
+                        .Where(e => e.Employees.Any(emp => emp.EmployeeId == employeeId));
+            }
+            else if (userType == "resident")
+            {
+                userTable = fullTable
+                        .Where(e => e.ResidentId == residentId);
+            }
+
+
+                var data = userTable
             .ToList()
             .Select(e => new WebAPIEvent
             {
-                id = e.EventScheduleId,
+                id = e.ScheduleBaseId,
                 text = e.Service.Type,
                 start_date = e.StartDate.ToString("yyyy-MM-dd HH:mm"),
                 end_date = e.EndDate.ToString("yyyy-MM-dd HH:mm"),
@@ -67,11 +113,14 @@ namespace CourseProject.Areas.Calendar.Controllers
                 deleted = e.Deleted,
                 service_id = e.ServiceID,
                 resident_id = e.ResidentId,
+                status = e.Status,
                 // Convert the list of Employee IDs to a comma-separated string
                 employee_ids = string.Join(",", e.Employees.Select(emp => emp.EmployeeId.ToString()))
             });
 
-            var services = _context.Services
+            dynamic collections = new ExpandoObject();
+
+            collections.services = _context.Services
                 .Select(s => new
                 {
                     value = s.ServiceID,
@@ -79,15 +128,27 @@ namespace CourseProject.Areas.Calendar.Controllers
                 })
                 .ToList();
 
-            var residents = _context.Residents
+            collections.residents = _context.Residents
+                .AsNoTracking()
                 .Select(r => new
                 {
                     value = r.ResidentId,
-                    label = r.Name
+                    label = r.Name.ToString()
                 })
                 .ToList();
 
-            return Ok(new { data, collections = new { services, residents } });
+            collections.employees = _context.Employees
+                .AsNoTracking()
+                .Select(e => new
+                {
+                    value = e.EmployeeId,
+                    label = e.Name.ToString()
+                })
+                .ToList();
+            
+            collections.role = new List<object> { new { value = 1, label = user.Role.ToString() } };
+
+            return Ok(new { data, collections });
         }
 
         // GET api/events/5
@@ -124,7 +185,7 @@ namespace CourseProject.Areas.Calendar.Controllers
 
             return Ok(new
             {
-                tid = newEvent.EventScheduleId,
+                tid = newEvent.ScheduleBaseId,
                 action = "inserted"
             });
         }
@@ -148,7 +209,7 @@ namespace CourseProject.Areas.Calendar.Controllers
             var updatedEvent = (EventSchedule)apiEvent;
             //updatedEvent.EmployeeID = validEmployeeId;
             updatedEvent.Employees = employees;
-            var dbEvent = _context.EventSchedules.Include(e => e.Employees).FirstOrDefault(e => e.EventScheduleId == id);
+            var dbEvent = _context.EventSchedules.Include(e => e.Employees).FirstOrDefault(e => e.ScheduleBaseId == id);
             if (dbEvent == null)
             {
                 return null;
@@ -164,6 +225,9 @@ namespace CourseProject.Areas.Calendar.Controllers
             dbEvent.Employees = updatedEvent.Employees;
             dbEvent.StartDate = updatedEvent.StartDate;
             dbEvent.EndDate = updatedEvent.EndDate;
+            dbEvent.RepeatPattern = updatedEvent.RepeatPattern;
+            dbEvent.RecurringEventId = updatedEvent.RecurringEventId;
+            dbEvent.Status = updatedEvent.Status;
             _context.SaveChanges();
 
             return Ok(new

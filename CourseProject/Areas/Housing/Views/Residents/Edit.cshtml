@@ -14,11 +14,17 @@
         <form asp-action="Edit" asp-route-id="@Model.ResidentId" method="post" enctype="multipart/form-data" onsubmit="return serializeDetails();">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="ResidentId" />
-            <div class="form-group">
-                <label asp-for="ServiceSubscriptionIds" class="control-label"></label>
-                <input asp-for="ServiceSubscriptionIds" class="form-control" />
-                <span asp-validation-for="ServiceSubscriptionIds" class="text-danger"></span>
+            <label class="control-label">Subscribed Services</label>
+            <div id="services-container" class="form-group">
+                @for(int i = 0; i < Model.Services.Count; i++)
+                {
+                    <div class="form-group d-flex gap-2">
+                        <select class="form-control" asp-items="ViewBag.AllServices[@i]" name="ServiceSubscriptionIds[@i]"></select>
+                        <button type="button" class="btn btn-sm btn-secondary mt-2" onclick="removeService(this)">Remove Service</button>
+                    </div>
+                }
             </div>
+            <button type="button" class="btn btn-sm btn-secondary mt-2" onclick="addService()">Add Service</button>
             <div class="form-group form-check">
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="IsCurrentlyLiving" /> @Html.DisplayNameFor(model => model.IsCurrentlyLiving)
@@ -39,6 +45,7 @@
                     <div class="form-group d-flex gap-2">
                         <input type="text" class="form-control detail-key mb-2" placeholder="Key" value="@pair.Key" />
                         <input type="text" class="form-control detail-value mb-2" placeholder="Value" value="@pair.Value" />
+                        <button type="button" class="btn btn-sm btn-secondary mt-2" onclick="removeDetail(this)">Remove</button>
                     </div>
                 }
             </div>
@@ -69,7 +76,12 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
-@section Scripts {
-    <script src="~/js/residentEdit.js" asp-append-version="true"></script>
+<script>
+    const allServices = @Html.Raw(Json.Serialize(ViewBag.AllServices[0]));    
+</script>
+
+@section Scripts {   
+    <script src="~/js/editDetails.js" asp-append-version="true"></script>
+    <script src="~/js/editServices.js" asp-append-version="true"></script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

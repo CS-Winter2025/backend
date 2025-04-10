@@ -1,12 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using CourseProject.Models;
 using System.Security.Claims;
 using CourseProject.Common;
+using CourseProject.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace CourseProject.Areas.Housing.Controllers
@@ -56,9 +53,17 @@ namespace CourseProject.Areas.Housing.Controllers
                 .Where(r => !assignedNowIds.Contains(r.ResidentId))
                 .ToListAsync();
 
+            var allResidents = currentResidents.Concat(pastResidents).Concat(unassignedResidents).DistinctBy(r => r.ResidentId).ToList();
+
+            var parsedDetails = allResidents.ToDictionary(
+                r => r.ResidentId,
+                r => Util.ParseJson(r.DetailsJson ?? string.Empty) ?? new Dictionary<string, string>()
+            );
+
             ViewBag.CurrentResidents = currentResidents;
             ViewBag.PastResidents = pastResidents;
             ViewBag.UnassignedResidents = unassignedResidents;
+            ViewBag.ParsedDetails = parsedDetails;
 
             return View();
         }
@@ -73,6 +78,14 @@ namespace CourseProject.Areas.Housing.Controllers
             User? user = await _context.Users.Include(u => u.Resident)
                                 .ThenInclude(r => r.Services)
                                 .FirstOrDefaultAsync(u => u.Id == id);
+
+            user.Resident.Services = await _context.Services
+                                .Where(s => user.Resident.ServiceSubscriptionIds.Contains(s.ServiceID))
+                                .ToListAsync();
+
+            ViewBag.Details = user.Resident.DetailsJson != null
+                ? Util.ParseJson(user.Resident.DetailsJson)
+                : new Dictionary<string, string>();
 
             if (user == null) return RedirectToAction("NotFound", "Error");
             return View(user);
@@ -95,18 +108,28 @@ namespace CourseProject.Areas.Housing.Controllers
                 return NotFound();
             }
 
+            resident.Services = await _context.Services
+                            .Where(s => resident.ServiceSubscriptionIds.Contains(s.ServiceID))
+                            .ToListAsync();
+
+            ViewBag.Details = resident.DetailsJson != null
+                ? Util.ParseJson(resident.DetailsJson)
+                : new Dictionary<string, string>();
+
             return View(resident);
         }
 
         // GET: Residents/Create
         [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             var resident = new Resident
             {
                 Name = new FullName(),
                 Address = new FullAddress()
             };
+            var allServices = await _context.Services.ToListAsync();
+            ViewBag.AllServices = new SelectList(allServices, nameof(Service.ServiceID), nameof(Service.Type));
             return View(resident);
         }
 
@@ -150,7 +173,21 @@ namespace CourseProject.Areas.Housing.Controllers
             {
                 return NotFound();
             }
-
+            var allServices = await _context.Services.ToListAsync();
+            if (resident.ServiceSubscriptionIds.Count > 0)
+            {
+                resident.Services = await _context.Services
+                                         .Where(s => resident.ServiceSubscriptionIds.Contains(s.ServiceID))
+                                         .ToListAsync();
+                ViewBag.AllServices = resident.Services
+                                         .Select(s => new SelectList(allServices, nameof(s.ServiceID), nameof(s.Type), s.ServiceID))
+                                         .ToList();
+            }
+            else
+            {
+                // List of one element because Edit.cshtml expects a list
+                ViewBag.AllServices = new List<SelectList>() { new SelectList(allServices, nameof(Service.ServiceID), nameof(Service.Type)) };
+            }
             ViewBag.Details = resident.DetailsJson != null
                 ? Util.ParseJson(resident.DetailsJson)
                 : new Dictionary<string, string>();
@@ -166,16 +203,11 @@ namespace CourseProject.Areas.Housing.Controllers
         [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> Edit(int id, [Bind("ResidentId,ServiceSubscriptionIds,Name,Address,DetailsJson")] Resident resident, IFormFile ProfilePicture)
         {
-            //if (id != resident.ResidentId)
-            //{
-            //    return NotFound();
-            //}
-
             if (!ModelState.IsValid)
             {
                 try
                 {
-                    var existingResident= await _context.Residents.FindAsync(id);
+                    var existingResident = await _context.Residents.FindAsync(id);
 
                     if (existingResident == null)
                     {
@@ -231,6 +263,14 @@ namespace CourseProject.Areas.Housing.Controllers
                 return NotFound();
             }
 
+            resident.Services = await _context.Services
+                                .Where(s => resident.ServiceSubscriptionIds.Contains(s.ServiceID))
+                                .ToListAsync();
+
+            ViewBag.Details = resident.DetailsJson != null
+                ? Util.ParseJson(resident.DetailsJson)
+                : new Dictionary<string, string>();
+
             return View(resident);
         }
 
@@ -244,9 +284,9 @@ namespace CourseProject.Areas.Housing.Controllers
             }
 
             var assignments = await _context.ResidentAssets
-     .Include(ra => ra.Asset)
-     .Where(ra => ra.ResidentId == id)
-     .ToListAsync();
+                                    .Include(ra => ra.Asset)
+                                    .Where(ra => ra.ResidentId == id)
+                                    .ToListAsync();
 
             ViewBag.ResidentName = resident.Name;
             return View(assignments);
