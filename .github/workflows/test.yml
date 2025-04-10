@@ -26,3 +26,10 @@ jobs:
       reliability_tests_project_path: ReliabilityTests/ReliabilityTests.csproj
       run_reliability_tests: false
       run_static_analysis: false
+    secrets:
+      APPSETTINGS_JSON: ${{ secrets.APPSETTINGS_JSON }}
+      REGISTRY_NAME: ${{ secrets.REGISTRY_NAME }}
+      REGISTRY_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
+      REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
+      AZURE_WEBAPP_NAME: ${{ secrets.AZURE_WEBAPP_NAME }}
+      AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
