@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using CourseProject.Common;
 using CourseProject.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -44,6 +45,24 @@ namespace CourseProject.Areas.Employees.Controllers
             ViewBag.Details = Util.ParseJson(employee.DetailsJson);
             return View(employee);
         }
+
+        [Authorize(Roles = nameof(UserRole.EMPLOYEE) + "," + nameof(UserRole.ADMIN))]
+        public async Task<IActionResult> Me()
+        {
+            string? stringId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (stringId == null) return RedirectToAction("Forbidden", "Error");
+
+            int id = Int32.Parse(stringId);
+            User? user = await _context.Users
+                .Include(u => u.Employee)
+                .ThenInclude(e => e.Services)
+                .Include(u => u.Employee.Organization)
+                .FirstOrDefaultAsync(u => u.Id == id);
+
+            if (user == null) return RedirectToAction("NotFound", "Error");
+            return View("Me", user);
+        }
+
 
         // GET: Employees/Employees/Create
         [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HR_MANAGER) + "," + nameof(UserRole.HOUSING_MANAGER))]
