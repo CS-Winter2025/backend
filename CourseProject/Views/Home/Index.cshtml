@@ -1,31 +1,13 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
-
-    var mockData = new List<dynamic>
-{
-    new { ID = 1, FirstName = "John", LastName = "Doe", Age = 30, Email = "john.doe@example.com" },
-    new { ID = 2, FirstName = "Jane", LastName = "Smith", Age = 28, Email = "jane.smith@example.com" },
-    new { ID = 3, FirstName = "Alice", LastName = "Johnson", Age = 35, Email = "alice.johnson@example.com" },
-    new { ID = 4, FirstName = "Bob", LastName = "Brown", Age = 40, Email = "bob.brown@example.com" },
-    new { ID = 5, FirstName = "Charlie", LastName = "Miller", Age = 26, Email = "charlie.miller@example.com" },
-    new { ID = 6, FirstName = "Emily", LastName = "Davis", Age = 33, Email = "emily.davis@example.com" },
-    new { ID = 7, FirstName = "Frank", LastName = "Wilson", Age = 29, Email = "frank.wilson@example.com" },
-    new { ID = 8, FirstName = "Grace", LastName = "Taylor", Age = 31, Email = "grace.taylor@example.com" },
-    new { ID = 9, FirstName = "Hannah", LastName = "Anderson", Age = 27, Email = "hannah.anderson@example.com" },
-    new { ID = 10, FirstName = "Isaac", LastName = "Thomas", Age = 36, Email = "isaac.thomas@example.com" },
-    new { ID = 11, FirstName = "Julia", LastName = "Moore", Age = 32, Email = "julia.moore@example.com" },
-    new { ID = 12, FirstName = "Kevin", LastName = "Martin", Age = 38, Email = "kevin.martin@example.com" },
-    new { ID = 13, FirstName = "Laura", LastName = "Lee", Age = 25, Email = "laura.lee@example.com" },
-    new { ID = 14, FirstName = "Mike", LastName = "Walker", Age = 39, Email = "mike.walker@example.com" },
-    new { ID = 15, FirstName = "Nina", LastName = "Hall", Age = 34, Email = "nina.hall@example.com" }
-};
 }
 
 
-<h2 class="text-center title titleFont">Mock User Table</h2>
-
-<data-table items="@mockData"></data-table>
+<div class="hero-container">
+	<img src="/images/happy-old-man.png" alt="Banner" class="fullscreen-banner" />
+	<h2 class="hero-text titleFont">Welcome</h2>
+</div>
 
 @section Styles {
-    <link rel="stylesheet" href="~/css/index.css" asp-append-version="true" />
+	<link rel="stylesheet" href="~/css/home.css" />
 }

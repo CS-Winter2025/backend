@@ -43,7 +43,7 @@ namespace CourseProject.Areas.Housing.Controllers
         public async Task<IActionResult> Request(int id)
         {
             var userName = User.Identity.Name;
-            var resident = await _context.Residents.FirstOrDefaultAsync(r => r.Name == userName);
+            var resident = await _context.Residents.FirstOrDefaultAsync(r => r.Name.ToString() == userName);
 
             if (resident == null)
                 return NotFound("Resident not found");

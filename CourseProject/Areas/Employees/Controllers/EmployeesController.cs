@@ -23,6 +23,10 @@ namespace CourseProject.Areas.Employees.Controllers
         // GET: Employees/Employees
         public async Task<IActionResult> Index()
         {
+            if (HttpContext.Session.GetString("Username") == null)
+            {
+                return RedirectToAction("Login", "Users"); // Redirect to login if not logged in
+            }
             var databaseContext = _context.Employees.Include(e => e.Manager).Include(e => e.Organization);
             return View(await databaseContext.ToListAsync());
         }
@@ -50,9 +54,15 @@ namespace CourseProject.Areas.Employees.Controllers
         // GET: Employees/Employees/Create
         public IActionResult Create()
         {
+            var employee = new Employee
+            {
+                Name = new FullName(),         
+                Address = new FullAddress()    
+            };
+
             ViewBag.ManagerId = new SelectList(_context.Employees, "EmployeeId", "EmployeeId");
             ViewBag.OrganizationId = new SelectList(_context.Organizations, "OrganizationId", "OrganizationId");
-            return View();
+            return View(employee);
         }
 
 
@@ -61,10 +71,19 @@ namespace CourseProject.Areas.Employees.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("EmployeeId,ManagerId,JobTitle,EmploymentType,PayRate,Availability,HoursWorked,Certifications,OrganizationId,Name,DetailsJson")] Employee employee, string Certifications)
+        public async Task<IActionResult> Create([Bind("EmployeeId,ManagerId,JobTitle,EmploymentType,PayRate,Availability,HoursWorked,Certifications,OrganizationId,Name,Address,DetailsJson,ProfilePicture")] Employee employee, string Certifications, IFormFile ProfilePicture)
         {
             if (!ModelState.IsValid)
             {
+
+                if (ProfilePicture != null && ProfilePicture.Length > 0)
+                {
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await ProfilePicture.CopyToAsync(memoryStream);
+                        employee.ProfilePicture = memoryStream.ToArray();  // Convert the file to byte array
+                    }
+                }
                 // Convert the string input into a list
                 employee.Certifications = Certifications?.Split(',').Select(c => c.Trim()).ToList() ?? new List<string>();
 
@@ -111,7 +130,7 @@ namespace CourseProject.Areas.Employees.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("EmployeeId,ManagerId,JobTitle,EmploymentType,PayRate,Availability,HoursWorked,Certifications,OrganizationId,Name,DetailsJson")] Employee employee)
+        public async Task<IActionResult> Edit(int id, [Bind("EmployeeId,ManagerId,JobTitle,EmploymentType,PayRate,Availability,HoursWorked,Certifications,OrganizationId,Name,Address,DetailsJson")] Employee employee, IFormFile ProfilePicture)
         {
             //if (id != employee.EmployeeId)
             //{
@@ -122,7 +141,36 @@ namespace CourseProject.Areas.Employees.Controllers
             {
                 try
                 {
-                    _context.Update(employee);
+                    var existingEmployee = await _context.Employees.FindAsync(id);
+
+                    if (existingEmployee == null)
+                    {
+                        return NotFound();
+                    }
+
+                    if (ProfilePicture != null && ProfilePicture.Length > 0)
+                    {
+                        using (var memoryStream = new MemoryStream())
+                        {
+                            await ProfilePicture.CopyToAsync(memoryStream);
+                            existingEmployee.ProfilePicture = memoryStream.ToArray();
+                        }
+                    }
+                    existingEmployee.EmployeeId = employee.EmployeeId;
+                    existingEmployee.ManagerId = employee.ManagerId;
+                    existingEmployee.JobTitle = employee.JobTitle;
+                    existingEmployee.EmploymentType = employee.EmploymentType;
+                    existingEmployee.PayRate = employee.PayRate;
+                    existingEmployee.Availability = employee.Availability;
+                    existingEmployee.HoursWorked = employee.HoursWorked;
+                    existingEmployee.Certifications = employee.Certifications;
+                    existingEmployee.OrganizationId = employee.OrganizationId;
+                    existingEmployee.Name = employee.Name;
+                    existingEmployee.Address = employee.Address;
+                    existingEmployee.DetailsJson = employee.DetailsJson;
+
+                    _context.Update(existingEmployee);
+
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CourseProject;
 using CourseProject.Models;
+using CourseProject.Common;
 
 namespace CourseProject.Areas.Charges.Controllers
 {
@@ -23,13 +24,20 @@ namespace CourseProject.Areas.Charges.Controllers
         // GET: Charges/Invoices
         public async Task<IActionResult> Index()
         {
-            var databaseContext = _context.Invoices.Include(i => i.Resident);
-            return View(await databaseContext.ToListAsync());
+            if (Util.HasAccess(HttpContext, UserRole.ADMIN, UserRole.HOUSING_MANAGER, UserRole.EMPLOYEE))
+            {
+                var databaseContext = _context.Invoices.Include(i => i.Resident);
+                return View(await databaseContext.ToListAsync());
+            }
+            return RedirectToAction("Forbidden", "Error");
         }
 
         // GET: Charges/Invoices/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            if (!Util.HasAccess(HttpContext, UserRole.ADMIN, UserRole.HOUSING_MANAGER, UserRole.EMPLOYEE))
+                return RedirectToAction("Forbidden", "Error");
+
             if (id == null)
             {
                 return NotFound();
@@ -49,6 +57,9 @@ namespace CourseProject.Areas.Charges.Controllers
         // GET: Charges/Invoices/Create
         public IActionResult Create()
         {
+            if (!Util.HasAccess(HttpContext, UserRole.ADMIN, UserRole.HOUSING_MANAGER, UserRole.EMPLOYEE))
+                return RedirectToAction("Forbidden", "Error");
+
             ViewData["ResidentID"] = new SelectList(_context.Residents, "ResidentId", "ResidentId");
             return View();
         }
@@ -60,6 +71,9 @@ namespace CourseProject.Areas.Charges.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("InvoiceID,ResidentID,Date,AmountDue,AmountPaid")] Invoice invoice)
         {
+            if (!Util.HasAccess(HttpContext, UserRole.ADMIN, UserRole.HOUSING_MANAGER, UserRole.EMPLOYEE))
+                return RedirectToAction("Forbidden", "Error");
+
             Resident? resident = await _context.Residents.FindAsync(invoice.ResidentID);
             if (resident == null) return View(invoice);
             else ModelState.SetModelValue("Resident", resident, null);
@@ -79,6 +93,9 @@ namespace CourseProject.Areas.Charges.Controllers
         // GET: Charges/Invoices/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            if (!Util.HasAccess(HttpContext, UserRole.ADMIN, UserRole.HOUSING_MANAGER, UserRole.EMPLOYEE))
+                return RedirectToAction("Forbidden", "Error");
+
             if (id == null)
             {
                 return NotFound();
@@ -100,6 +117,9 @@ namespace CourseProject.Areas.Charges.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([Bind(Prefix = "InvoiceID")] int id, [Bind("InvoiceID,ResidentID,Date,AmountDue,AmountPaid")] Invoice invoice)
         {
+            if (!Util.HasAccess(HttpContext, UserRole.ADMIN, UserRole.HOUSING_MANAGER, UserRole.EMPLOYEE))
+                return RedirectToAction("Forbidden", "Error");
+
             if (id != invoice.InvoiceID)
             {
                 return NotFound();
@@ -138,6 +158,9 @@ namespace CourseProject.Areas.Charges.Controllers
         // GET: Charges/Invoices/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            if (!Util.HasAccess(HttpContext, UserRole.ADMIN, UserRole.HOUSING_MANAGER, UserRole.EMPLOYEE))
+                return RedirectToAction("Forbidden", "Error");
+
             if (id == null)
             {
                 return NotFound();
@@ -159,6 +182,9 @@ namespace CourseProject.Areas.Charges.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed([Bind(Prefix = "InvoiceID")] int id)
         {
+            if (!Util.HasAccess(HttpContext, UserRole.ADMIN, UserRole.HOUSING_MANAGER, UserRole.EMPLOYEE))
+                return RedirectToAction("Forbidden", "Error");
+
             Console.WriteLine(id);
             var invoice = await _context.Invoices.FindAsync(id);
             if (invoice != null)

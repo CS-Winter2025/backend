@@ -21,21 +21,38 @@ namespace CourseProject.Areas.Calendar.Controllers
         }
 
         // GET: Calendar/EventSchedules
-        public async Task<IActionResult> Index(int? employeeId)
+        public async Task<IActionResult> Index(int? personId, bool? isEmployee)
         {
-            string employeeName = string.Empty;
-
-            if (employeeId.HasValue)
+            if (HttpContext.Session.GetString("Username") == null)
             {
-                var employee = _context.Employees.FirstOrDefault(e => e.EmployeeId == employeeId.Value);
-                if (employee != null)
+                return RedirectToAction("Login", "Users"); // Redirect to login if not logged in
+            }
+            string personName = string.Empty;
+
+            if (personId.HasValue && isEmployee.HasValue)
+            {
+                if ((bool)isEmployee)
                 {
-                    employeeName = employee.Name;  // or whatever property you want to display
+                    var employee = _context.Employees.FirstOrDefault(e => e.EmployeeId == personId.Value);
+                    if (employee != null)
+                    {
+                        personName = employee.Name.ToString();
+                    }
                 }
+                else
+                {
+                    var resident = _context.Residents.FirstOrDefault(e => e.ResidentId == personId.Value);
+                    if (resident != null)
+                    {
+                        personName = resident.Name.ToString();
+                    }
+                }
+
             }
 
-            ViewData["EmployeeID"] = employeeId;
-            ViewData["EmployeeName"] = employeeName;
+            ViewData["PersonID"] = personId;
+            ViewData["PersonName"] = personName;
+            ViewData["IsEmployee"] = isEmployee.ToString();
 
 
             var databaseContext = _context.EventSchedules.Include(e => e.Employees).Include(e => e.Service);

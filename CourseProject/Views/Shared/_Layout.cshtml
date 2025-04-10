@@ -14,9 +14,14 @@
     <link rel="stylesheet" href="~/CourseProject.styles.css" asp-append-version="true" />
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.bootstrap5.min.css" />
+    <link rel="stylesheet" href="~/css/datatable.css" asp-append-version="true" />
     <!-- Master CSS -->
     <link rel="stylesheet" href="~/css/reset.css" asp-append-version="true" />
     @await RenderSectionAsync("Styles", required: false)
+
+    <link rel="stylesheet" href="~/css/care.css"/>
+    <link rel="stylesheet" href="~/css/housing.css" />
+    <link rel="stylesheet" href="~/css/HR.css" />
 </head>
 <body>
     <header>
@@ -29,38 +34,83 @@
                 </button>
                 <popover content='Helpful info.' title='Need help?' />
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark headerFont" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark headerFont" asp-area="" asp-controller="Home"
-                                asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark headerFont" asp-area="Services" asp-controller="Services"
-                               asp-action="Index">Services</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark headerFont" asp-area="Charges" asp-controller="Invoices"
-                               asp-action="Index">Charges</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark headerFont" asp-area="Employees" asp-controller="Employees"
-                               asp-action="Index">Employees</a>
-                        </li>
-                            <a class="nav-link text-dark headerFont" asp-area="" asp-controller="Residents"
-                               asp-action="Index">Residents</a>
-                        </li>
-                    </ul>
+	                @{
+		                var role = Context.Session.GetString("Role") ?? "NONE";
+	                }
+	                <ul class="navbar-nav flex-grow-1">
+		                <li class="nav-item">
+			                <a class="nav-link text-dark headerFont" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+		                </li>
+		                <li class="nav-item">
+			                <a class="nav-link text-dark headerFont" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+		                </li>
+
+		                @if (role is "ADMIN" or "HOUSING_MANAGER" or "EMPLOYEE")
+		                {
+			                <li class="nav-item">
+				                <a class="nav-link text-dark headerFont" asp-area="Charges" asp-controller="Invoices" asp-action="Index">Charges</a>
+			                </li>
+		                }
+
+						@if (role is "ADMIN" or "RESIDENT" or "HOUSING_MANAGER")
+		                {
+			                <li class="nav-item">
+				                <a class="nav-link text-dark headerFont" asp-area="" asp-controller="Residents" asp-action="Index">Residents</a>
+			                </li>
+		                }
+
+						@if (role is "ADMIN" or "SERVICE_MANAGER" or "EMPLOYEE")
+		                {
+			                <li class="nav-item">
+				                <a class="nav-link text-dark headerFont" asp-area="Services" asp-controller="Services" asp-action="Index">Services</a>
+			                </li>
+		                }
+
+						@if (role is "ADMIN" or "HR_MANAGER")
+		                {
+			                <li class="nav-item">
+				                <a class="nav-link text-dark headerFont" asp-area="Employees" asp-controller="Employees" asp-action="Index">Employees</a>
+			                </li>
+		                }
+
+						@if (role == "ADMIN")
+		                {
+			                <li class="nav-item">
+				                <a class="nav-link text-dark headerFont" asp-area="" asp-controller="Users" asp-action="Index">Users</a>
+			                </li>
+		                }
+	                </ul>
+	                <!-- Login/Logout Section -->
+	                <ul class="navbar-nav">
+		                @if (Context.Session.GetString("Username") != null)
+		                {
+			                <li class="nav-item">
+				                <span class="nav-link text-dark">Welcome, @Context.Session.GetString("Username")!</span>
+			                </li>
+			                <li class="nav-item">
+				                <a class="nav-link text-danger" asp-controller="Users" asp-action="Logout">Logout</a>
+			                </li>
+		                }
+		                else
+		                {
+			                <li class="nav-item">
+				                <a class="nav-link text-dark" asp-controller="Users" asp-action="Login">Login</a>
+			                </li>
+			                <li class="nav-item">
+				                <a class="nav-link text-dark" asp-controller="Users" asp-action="Register">Sign Up</a>
+			                </li>
+		                }
+	                </ul>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+    <div class="d-flex justify-content-center">
+        <div class="container-fluid">
+        <main role="main">
             @RenderBody()
         </main>
+    </div>
     </div>
     <footer class="border-top footer text-muted">
         <div class="container fs-6">

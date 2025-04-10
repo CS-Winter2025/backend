@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CourseProject.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -76,7 +77,12 @@ namespace CourseProject.Areas.Housing.Controllers
         // GET: Residents/Create
         public IActionResult Create()
         {
-            return View();
+            var resident = new Resident
+            {
+                Name = new FullName(),
+                Address = new FullAddress()
+            };
+            return View(resident);
         }
 
         // POST: Residents/Create
@@ -84,10 +90,19 @@ namespace CourseProject.Areas.Housing.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ResidentId,ServiceSubscriptionIds,Name,DetailsJson")] Resident resident)
+        public async Task<IActionResult> Create([Bind("ResidentId,ServiceSubscriptionIds,Name,Address,DetailsJson,ProfilePicture")] Resident resident, IFormFile ProfilePicture)
         {
             if (ModelState.IsValid)
             {
+                if (ProfilePicture != null && ProfilePicture.Length > 0)
+                {
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await ProfilePicture.CopyToAsync(memoryStream);
+                        resident.ProfilePicture = memoryStream.ToArray();  // Convert the file to byte array
+                    }
+                }
+
                 _context.Add(resident);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -116,18 +131,38 @@ namespace CourseProject.Areas.Housing.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ResidentId,ServiceSubscriptionIds,Name,DetailsJson")] Resident resident)
+        public async Task<IActionResult> Edit(int id, [Bind("ResidentId,ServiceSubscriptionIds,Name,Address,DetailsJson")] Resident resident, IFormFile ProfilePicture)
         {
-            if (id != resident.ResidentId)
-            {
-                return NotFound();
-            }
+            //if (id != resident.ResidentId)
+            //{
+            //    return NotFound();
+            //}
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(resident);
+                    var existingResident= await _context.Residents.FindAsync(id);
+
+                    if (existingResident == null)
+                    {
+                        return NotFound();
+                    }
+
+                    if (ProfilePicture != null && ProfilePicture.Length > 0)
+                    {
+                        using (var memoryStream = new MemoryStream())
+                        {
+                            await ProfilePicture.CopyToAsync(memoryStream);
+                            existingResident.ProfilePicture = memoryStream.ToArray();
+                        }
+                    }
+                    existingResident.ResidentId = resident.ResidentId;
+                    existingResident.ServiceSubscriptionIds = resident.ServiceSubscriptionIds;
+                    existingResident.Name = resident.Name;
+                    existingResident.Address = resident.Address;
+                    existingResident.DetailsJson = resident.DetailsJson;
+                    _context.Update(existingResident);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
