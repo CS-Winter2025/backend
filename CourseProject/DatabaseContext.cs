@@ -139,11 +139,6 @@ namespace CourseProject
                 new Organization { OrganizationId = 2 }
             );
 
-            var hoursWorked = new List<int>();
-            hoursWorked.Add( 222 );
-            var certs = new List<string>();
-            certs.Add( "First-aid" );
-
             modelBuilder.Entity<Employee>().HasData(
                 new Employee
                 {
@@ -158,14 +153,11 @@ namespace CourseProject
                 {
                     EmployeeId = 2,
                     JobTitle = "Developer",
-                    EmploymentType = "Part-Time",
+                    EmploymentType = "Full-Time",
                     PayRate = 50000,
                     OrganizationId = 1,
                     ManagerId = 1,
-                    ProfilePicture = null,
-                    HoursWorked = hoursWorked,
-                    Certifications = certs,
-                    DetailsJson = "details"
+                    ProfilePicture = null
                 }
             );
 
@@ -201,16 +193,13 @@ namespace CourseProject
                 new { ResidentId = 2, Street = "101 Pine St", City = "San Francisco", State = "CA", Country = "USA", ZipCode = "94101" }
             );
 
-            var req = new List<string>();
-            req.Add("The cleaning requirements");
             modelBuilder.Entity<Service>().HasData(
-                new Service { ServiceID = 1, Type = "Cleaning", Rate = 50, Requirements = req},
+                new Service { ServiceID = 1, Type = "Cleaning", Rate = 50 },
                 new Service { ServiceID = 2, Type = "Security", Rate = 100 }
             );
 
             modelBuilder.Entity<Invoice>().HasData(
-                new Invoice { InvoiceID = 1, ResidentID = 1, Date = DateTime.UtcNow, AmountDue = 200, AmountPaid = 100 },
-                new Invoice { InvoiceID = 2, ResidentID = 2, Date = new DateTime(2025, 2, 21, 14, 0, 0, DateTimeKind.Utc), AmountDue = 300, AmountPaid = 150 }
+                new Invoice { InvoiceID = 1, ResidentID = 1, Date = DateTime.UtcNow, AmountDue = 200, AmountPaid = 100 }
             );
 
             modelBuilder.Entity<User>().HasData(

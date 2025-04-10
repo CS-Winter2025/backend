@@ -75,26 +75,9 @@ app.MapAreaControllerRoute(
     areaName: "Charges",
     pattern: "{controller=Invoices}/{action=Index}/{id?}")
     .WithStaticAssets();
-
 app.MapAreaControllerRoute(
     name: "Calendar",
     areaName: "Calendar",
     pattern: "Calendar/{controller=EventSchedules}/{action=Index}/{id?}");
-
-app.MapAreaControllerRoute(
-    name: "Employees",
-    areaName: "Employees",
-    pattern: "Employees/{action=Index}/{id?}",
-    defaults: new { controller = "Employees" });
-app.MapAreaControllerRoute(
-    name: "Services",
-    areaName: "Services",
-    pattern: "{controller=Services}/{action=Index}/{id?}")
-    .WithStaticAssets();
-app.MapAreaControllerRoute(
-    name: "Charges",
-    areaName: "Charges",
-    pattern: "{controller=Invoices}/{action=Index}/{id?}")
-    .WithStaticAssets();
 
 app.Run();
