@@ -7,6 +7,15 @@
 <script src="https://cdn.dhtmlx.com/scheduler/edge/dhtmlxscheduler.js"></script>
 <link href="https://cdn.dhtmlx.com/scheduler/edge/dhtmlxscheduler.css"
       rel="stylesheet" type="text/css" charset="utf-8">
+<style type="text/css">
+    .event_requested {
+        --dhx-scheduler-event-background: #D4B431;
+    }
+
+    .event_review {
+        --dhx-scheduler-event-background: #D47E31;
+    } 
+</style>
 
 <h2>Calendar for: @ViewData["PersonName"]</h2>
 
@@ -40,10 +49,19 @@
     ]
 
     const statusList = [
-        {key: 1, label: "Requested"},
-        {key: 2, label: "Requires Review"},
-        {key: 3, label: "Approved"}
+        {key: 'requested', label: "Requested"},
+        {key: 'review', label: "Review Required"},
+        {key: 'approved', label: "Approved"}
     ]
+
+    scheduler.templates.event_class=function(start, end, event){
+        var css = "";
+
+        if(event.status) // if event has status property then special class should be assigned
+            css += "event_"+event.status;
+
+        return css; // default return
+    };
 
     scheduler.config.lightbox.sections = [
         { name: "Service", map_to: "service_id", type: "select", options: scheduler.serverList("services") },
