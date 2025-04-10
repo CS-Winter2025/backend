@@ -48,7 +48,7 @@ namespace CourseProject.Areas.Charges.Controllers
         [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public IActionResult Create()
         {
-            ViewData["ResidentID"] = new SelectList(_context.Residents, "ResidentId", "ResidentId");
+            ViewData["ResidentId"] = new SelectList(_context.Residents, "ResidentId", "ResidentId");
             return View();
         }
 
@@ -56,9 +56,9 @@ namespace CourseProject.Areas.Charges.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
-        public async Task<IActionResult> Create([Bind("InvoiceID,ResidentID,Date,AmountDue,AmountPaid")] Invoice invoice)
+        public async Task<IActionResult> Create([Bind("InvoiceID,ResidentId,Date,AmountDue,AmountPaid")] Invoice invoice)
         {
-            Resident? resident = await _context.Residents.FindAsync(invoice.ResidentID);
+            Resident? resident = await _context.Residents.FindAsync(invoice.ResidentId);
             if (resident == null) return View(invoice);
             else ModelState.SetModelValue("Resident", resident, null);
 
@@ -70,7 +70,7 @@ namespace CourseProject.Areas.Charges.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ResidentID"] = new SelectList(_context.Residents, "ResidentId", "ResidentId", invoice.ResidentID);
+            ViewData["ResidentId"] = new SelectList(_context.Residents, "ResidentId", "ResidentId", invoice.ResidentId);
             return View(invoice);
         }
 
@@ -88,7 +88,7 @@ namespace CourseProject.Areas.Charges.Controllers
             {
                 return NotFound();
             }
-            ViewData["ResidentID"] = new SelectList(_context.Residents, "ResidentId", "ResidentId", invoice.ResidentID);
+            ViewData["ResidentId"] = new SelectList(_context.Residents, "ResidentId", "ResidentId", invoice.ResidentId);
             return View(invoice);
         }
 
@@ -96,14 +96,14 @@ namespace CourseProject.Areas.Charges.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
-        public async Task<IActionResult> Edit([Bind(Prefix = "InvoiceID")] int id, [Bind("InvoiceID,ResidentID,Date,AmountDue,AmountPaid")] Invoice invoice)
+        public async Task<IActionResult> Edit([Bind(Prefix = "InvoiceID")] int id, [Bind("InvoiceID,ResidentId,Date,AmountDue,AmountPaid")] Invoice invoice)
         {
             if (id != invoice.InvoiceID)
             {
                 return NotFound();
             }
 
-            Resident? resident = await _context.Residents.FindAsync(invoice.ResidentID);
+            Resident? resident = await _context.Residents.FindAsync(invoice.ResidentId);
             if (resident == null) return View(invoice);
             else ModelState.SetModelValue("Resident", resident, null);
 
@@ -129,7 +129,7 @@ namespace CourseProject.Areas.Charges.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ResidentID"] = new SelectList(_context.Residents, "ResidentId", "ResidentId", invoice.ResidentID);
+            ViewData["ResidentId"] = new SelectList(_context.Residents, "ResidentId", "ResidentId", invoice.ResidentId);
             return View(invoice);
         }
 
