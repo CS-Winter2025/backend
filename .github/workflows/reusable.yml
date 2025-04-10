@@ -73,7 +73,7 @@ jobs:
 
       - name: Create appsettings.json from secret
         run: |
-          printf '%s' "${{ secrets.APPSETTINGS_JSON }}" > ./CourseProject/appsettings.json
+          echo "${{ secrets.APPSETTINGS_JSON }}" | base64 -d > ./CourseProject/appsettings.json
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4
