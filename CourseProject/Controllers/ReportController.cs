@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
+using CourseProject.Common;
 
 namespace CourseProject.Controllers
 {
@@ -20,16 +20,12 @@ namespace CourseProject.Controllers
                 .Include(r => r.Services)
                 .ToListAsync();
 
-            ViewBag.ParsedDetails = ParseResidentDetails(residents);
+            ViewBag.ParsedDetails = residents.ToDictionary(
+                r => r.ResidentId,
+                r => Util.ParseJson(r.DetailsJson ?? string.Empty) ?? new()
+            );
 
             return View(residents);
-        }
-        private static Dictionary<int, Dictionary<string, object>> ParseResidentDetails(IEnumerable<Resident> residents)
-        {
-            return residents.ToDictionary(
-                r => r.ResidentId,
-                r => JsonConvert.DeserializeObject<Dictionary<string, object>>(r.DetailsJson ?? "{}") ?? []
-            );
         }
     }
 }
