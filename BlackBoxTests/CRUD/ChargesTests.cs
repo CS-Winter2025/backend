@@ -1,18 +1,19 @@
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.DevTools.V132.Network;
 using OpenQA.Selenium.Support.UI;
+using BlackBoxTests.Utils;
+using BlackBoxTests.Data;
+using OpenQA.Selenium.Interactions;
 
 namespace BlackBoxTests.CRUD;
 
 public class ChargesTests
 {
     private ChromeDriver _driver;
-    private const string BaseUrl = "http://localhost:5072/"; // Change as needed
-    private const string ChargesUri = "Invoices?area=Charges";
-    
-    private const string AdminLogin = "admin";
-    private const string AdminPassword = "123";
+    private Setup _setup;
+    private Auth _auth;
+    private Navigation _nav;
+    private ElementActions _elementActions;
     
     private const string InvoiceResidentId = "2";
     private const string InvoiceDate = "4012025";
@@ -30,60 +31,44 @@ public class ChargesTests
     private const string NewInvoiceAmountPaid = "24.33";
 
     [OneTimeSetUp]
-    public void Setup()
+    public void TestSetup()
     {
-        _driver = new ChromeDriver();
-        _driver.Manage().Window.Maximize();
-        
-        _driver.Navigate().GoToUrl(BaseUrl);
-        _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
+        _setup = new Setup();
+        _driver = _setup.Driver;
+        _auth = new Auth(_driver);
+        _nav = new Navigation(_driver);
+        _elementActions = new ElementActions(_driver);
 
-        _driver.FindElement(By.XPath("//a[text()='Login']")).Click();
-        
-        // Login with Admin
-        _driver.FindElement(By.Id("Username")).SendKeys(AdminLogin);
-        _driver.FindElement(By.Id("Password")).SendKeys(AdminPassword);
-        _driver.FindElement(By.XPath("//button[text()='Login']")).Click();
-        
-        // Navigate to Charges page
-        _driver.FindElement(By.XPath("//a[text()='Charges']")).Click();
-        Assert.That(_driver.Url, Does.Contain(ChargesUri), "Did not navigate to the Invoices page.");
+        _setup.Initialize();
+        _nav.ToLogin();
+        _auth.LoginAsUser(Users.AdminUsername, Users.AdminPassword);
+
+        _nav.ToCharges();
     }
 
     [Test, Order(1)]
     public void CreateInvoice()
     {
-        // Create New
-        _driver.FindElement(By.LinkText("Create New")).Click();
-        Assert.That(_driver.Url, Does.Contain("/Invoices/Create"), "Did not navigate to the Create page.");
-        
-        // Input Values
-        var residentIdDropdown = _driver.FindElement(By.Id("ResidentID"));
-        var selectedResidentId = new SelectElement(residentIdDropdown);
-        selectedResidentId.SelectByValue(InvoiceResidentId);
-        var dateTimeField = _driver.FindElement(By.Id("Date"));
-        dateTimeField.Clear();
-        dateTimeField.SendKeys(InvoiceDate);
-        dateTimeField.SendKeys(Keys.Tab);
-        dateTimeField.SendKeys(InvoiceDateTime);
-        _driver.FindElement(By.Id("AmountDue")).SendKeys(InvoiceAmountDue);
-        _driver.FindElement(By.Id("AmountPaid")).SendKeys(InvoiceAmountPaid);
-        
-        // Submit Create
-        _driver.FindElement(By.XPath("//Input[@type='submit']")).Click();
-        
-        // Wait till back on Invoice home
-        _driver.FindElement(By.LinkText("Create New"));
-        Assert.That(_driver.Url, Does.Contain("Invoices"), "Did not navigate to the Invoices page.");
-        
-        // Ensure row exists and check values
-        var invoiceRow = _driver.FindElements(By.CssSelector("table tbody tr")).FirstOrDefault(row => row.Text.Contains(InvoiceDateList));
-        Assert.That(invoiceRow, Is.Not.Null, $"Invoice with date: '{InvoiceDateList}' not found in the list.");
+        _nav.ToCreateNew(Uris.ChargesCreate);
 
+        _elementActions.SelectDropdownItem("ResidentId", InvoiceResidentId);
+        _elementActions.FillDateField("Date", InvoiceDate, InvoiceDateTime);
+        _elementActions.FillTextField("AmountDue", InvoiceAmountDue);
+        _elementActions.FillTextField("AmountPaid", InvoiceAmountPaid);
+
+        var submitCreate = _driver.FindElement(By.XPath(XPaths.SubmitBtn));
+        new Actions(_driver)
+            .MoveToElement(submitCreate)
+            .Click()
+            .Perform();
+
+        // Search for date and check values
+        _elementActions.SearchByValue(InvoiceDateList);
+        var invoiceRow = _elementActions.CheckRowContaining(InvoiceDateList);
         var invoiceColumns = invoiceRow.FindElements(By.TagName("td"));
         Assert.Multiple(() =>
         {
-            Assert.That(invoiceColumns[0].Text.Trim(), Is.EqualTo(InvoiceResidentId), "ResidentID mismatch.");
+            Assert.That(invoiceColumns[0].Text.Trim(), Is.EqualTo(InvoiceResidentId), "ResidentId mismatch.");
             Assert.That(invoiceColumns[1].Text.Trim(), Is.EqualTo(InvoiceDateList), "Date mismatch.");
             Assert.That(invoiceColumns[2].Text.Trim(), Is.EqualTo(InvoiceAmountDue), "AmountDue mismatch.");
             Assert.That(invoiceColumns[3].Text.Trim(), Is.EqualTo(InvoiceAmountPaid), "AmountPaid mismatch.");
@@ -93,110 +78,77 @@ public class ChargesTests
     [Test, Order(2)]
     public void ReadInvoice()
     {
-        // Navigate to Charges page
-        _driver.FindElement(By.XPath("//a[text()='Charges']")).Click();
-        Assert.That(_driver.Url, Does.Contain(ChargesUri), "Did not navigate to the Invoices page.");
+        _nav.ToCharges();
 
-        // Ensure row exists
-        var invoiceRow = _driver.FindElements(By.CssSelector("table tbody tr")).FirstOrDefault(row => row.Text.Contains(InvoiceDateList));
-        Assert.That(invoiceRow, Is.Not.Null, $"Invoice with date: '{InvoiceDateList}' not found in the list.");
-        
-        invoiceRow.FindElement(By.XPath(".//a[text()='Details']")).Click();
-        
-        Assert.That(_driver.Url, Does.Contain("/Invoices/Details"), "Did not navigate to the Details page.");
+        var invoiceRow = _elementActions.CheckRowContaining(InvoiceDateList);
 
+        _nav.ToDetails(invoiceRow, Uris.ChargesDetails);
+
+        // Confirm detail values
         var invoiceDetailsTable = _driver.FindElement(By.XPath(".//dl"));
         var invoiceDetails = invoiceDetailsTable.FindElements(By.TagName("dd"));
         
         Assert.Multiple(() =>
         {
-            Assert.That(invoiceDetails[0].Text.Trim(), Is.EqualTo(InvoiceResidentId), "ResidentID mismatch.");
-            Assert.That(invoiceDetails[1].Text.Trim(), Is.EqualTo(InvoiceDateList), "Date mismatch.");
-            Assert.That(invoiceDetails[2].Text.Trim(), Is.EqualTo(InvoiceAmountDue), "AmountDue mismatch.");
-            Assert.That(invoiceDetails[3].Text.Trim(), Is.EqualTo(InvoiceAmountPaid), "AmountPaid mismatch.");
+            Assert.That(invoiceDetails[0].Text.Trim(), Is.EqualTo(InvoiceResidentId), "ResidentId mismatch!");
+            Assert.That(invoiceDetails[1].Text.Trim(), Is.EqualTo(InvoiceDateList), "Date mismatch!");
+            Assert.That(invoiceDetails[2].Text.Trim(), Is.EqualTo(InvoiceAmountDue), "AmountDue mismatch!");
+            Assert.That(invoiceDetails[3].Text.Trim(), Is.EqualTo(InvoiceAmountPaid), "AmountPaid mismatch!");
         });
     }
 
     [Test, Order(3)]
     public void UpdateInvoice()
     {
-        // Navigate to Charges page
-        _driver.FindElement(By.XPath("//a[text()='Charges']")).Click();
-        Assert.That(_driver.Url, Does.Contain(ChargesUri), "Did not navigate to the Invoices page.");
+        _nav.ToCharges();
         
         // Ensure row exists
-        var invoiceRow = _driver.FindElements(By.CssSelector("table tbody tr")).FirstOrDefault(row => row.Text.Contains(InvoiceDateList));
-        Assert.That(invoiceRow, Is.Not.Null, $"Invoice with date: '{InvoiceDateList}' not found in the list.");
-        
-        invoiceRow.FindElement(By.XPath(".//a[text()='Edit']")).Click();
-        
-        Assert.That(_driver.Url, Does.Contain("/Invoices/Edit"), "Did not navigate to the Edit page.");
+        var invoiceRow = _elementActions.CheckRowContaining(InvoiceDateList);
 
-        // Fields
-        var residentIdDropdown = _driver.FindElement(By.Id("ResidentID"));
-        var selectedResidentId = new SelectElement(residentIdDropdown);
-        var selectedElement = new SelectElement(residentIdDropdown);
-        var dateTimeField = _driver.FindElement(By.Id("Date"));
-        var amountDueField = _driver.FindElement(By.Id("AmountDue"));
-        var amountPaidField = _driver.FindElement(By.Id("AmountPaid"));
+        _nav.ToEdit(invoiceRow, Uris.ChargesEdit);
 
-        // Check Edit Fields
-        var currentInvoiceResidentId = selectedElement.SelectedOption.Text.Trim();
-        var currentInvoiceDate = dateTimeField.GetAttribute("value")!.Trim();
-        var currentInvoiceAmountDue = amountDueField.GetAttribute("value")!.Trim();
-        var currentInvoiceAmountPaid = amountPaidField.GetAttribute("value")!.Trim();
+        // Verify fields
+        _elementActions.VerifyDropdownItem("ResidentId", InvoiceResidentId, "ResidentId mismatch!");
+        _elementActions.VerifyDateFieldValue("Date", InvoiceDateCalender);
+        _elementActions.VerifyTextField("AmountDue", InvoiceAmountDue, "AmountDue mismatch!");
+        _elementActions.VerifyTextField("AmountPaid", InvoiceAmountPaid, "AmountPaid mismatch!");
 
-        Assert.Multiple(() =>
-        {
-            Assert.That(currentInvoiceResidentId, Is.EqualTo(InvoiceResidentId), "ResidentID mismatch.");
-            Assert.That(currentInvoiceDate, Is.EqualTo(InvoiceDateCalender), "Date mismatch.");
-            Assert.That(currentInvoiceAmountDue, Is.EqualTo(InvoiceAmountDue), "AmountDue mismatch.");
-            Assert.That(currentInvoiceAmountPaid, Is.EqualTo(InvoiceAmountPaid), "AmountPaid mismatch.");
-        });
-        
         // Input new values
-        selectedResidentId.SelectByValue(NewInvoiceResidentId);
-        dateTimeField.Clear();
-        dateTimeField.SendKeys(NewInvoiceDate);
-        dateTimeField.SendKeys(Keys.Tab);
-        dateTimeField.SendKeys(NewInvoiceDateTime);
-        amountDueField.Clear();
-        amountDueField.SendKeys(NewInvoiceAmountDue);
-        amountPaidField.Clear();
-        amountPaidField.SendKeys(NewInvoiceAmountPaid);
-        
-        // Submit Save
-        _driver.FindElement(By.XPath("//Input[@type='submit']")).Click();
-        Assert.That(_driver.Url, Does.Contain("Invoices"), "Did not navigate to the Invoices page.");
-        
-        // Ensure row exists and check values
-        var updatedInvoiceRow = _driver.FindElements(By.CssSelector("table tbody tr")).FirstOrDefault(row => row.Text.Contains(NewInvoiceDateList));
-        Assert.That(updatedInvoiceRow, Is.Not.Null, $"Invoice with date: '{NewInvoiceDateList}' not found in the list.");
+        _elementActions.SelectDropdownItem("ResidentId", NewInvoiceResidentId);
+        _elementActions.FillDateField("Date", NewInvoiceDate, NewInvoiceDateTime);
+        _elementActions.FillTextField("AmountDue", NewInvoiceAmountDue);
+        _elementActions.FillTextField("AmountPaid", NewInvoiceAmountPaid);
+
+        var submitEdit = _driver.FindElement(By.XPath(XPaths.SubmitBtn));
+        new Actions(_driver)
+            .MoveToElement(submitEdit)
+            .Click()
+            .Perform();
+
+        // Search for date and check values
+        _elementActions.SearchByValue(NewInvoiceDateList);
+        var updatedInvoiceRow = _elementActions.CheckRowContaining(NewInvoiceDateList);
 
         var invoiceDetails = updatedInvoiceRow.FindElements(By.TagName("td"));
         Assert.Multiple(() =>
         {
-            Assert.That(invoiceDetails[0].Text.Trim(), Is.EqualTo(NewInvoiceResidentId), "ResidentID mismatch.");
-            Assert.That(invoiceDetails[1].Text.Trim(), Is.EqualTo(NewInvoiceDateList), "Date mismatch.");
-            Assert.That(invoiceDetails[2].Text.Trim(), Is.EqualTo(NewInvoiceAmountDue), "AmountDue mismatch.");
-            Assert.That(invoiceDetails[3].Text.Trim(), Is.EqualTo(NewInvoiceAmountPaid), "AmountPaid mismatch.");
+            Assert.That(invoiceDetails[0].Text.Trim(), Is.EqualTo(NewInvoiceResidentId), "ResidentId mismatch!");
+            Assert.That(invoiceDetails[1].Text.Trim(), Is.EqualTo(NewInvoiceDateList), "Date mismatch!");
+            Assert.That(invoiceDetails[2].Text.Trim(), Is.EqualTo(NewInvoiceAmountDue), "AmountDue mismatch!");
+            Assert.That(invoiceDetails[3].Text.Trim(), Is.EqualTo(NewInvoiceAmountPaid), "AmountPaid mismatch!");
         });
     }
 
     [Test, Order(4)]
     public void DeleteInvoice()
     {
-        // Navigate to Charges page
-        _driver.FindElement(By.XPath("//a[text()='Charges']")).Click();
-        Assert.That(_driver.Url, Does.Contain(ChargesUri), "Did not navigate to the Invoices page.");
+        _nav.ToCharges();
 
         // Ensure row exists
-        var invoiceRow = _driver.FindElements(By.CssSelector("table tbody tr")).FirstOrDefault(row => row.Text.Contains(NewInvoiceDateList));
-        Assert.That(invoiceRow, Is.Not.Null, $"Invoice with date: '{NewInvoiceDateList}' not found in the list.");
-        
-        invoiceRow.FindElement(By.XPath(".//a[text()='Delete']")).Click();
-        
-        Assert.That(_driver.Url, Does.Contain("/Invoices/Delete"), "Did not navigate to the Delete page.");
+        _elementActions.SearchByValue(NewInvoiceDateList);
+        var invoiceRow = _elementActions.CheckRowContaining(NewInvoiceDateList);
+
+        _nav.ToDelete(invoiceRow, Uris.ChargesDelete);
 
         // Check Delete Details
         var invoiceDetailsTable = _driver.FindElement(By.XPath(".//dl"));
@@ -204,25 +156,33 @@ public class ChargesTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(invoiceDetails[0].Text.Trim(), Is.EqualTo(NewInvoiceResidentId), "ResidentID mismatch.");
-            Assert.That(invoiceDetails[1].Text.Trim(), Is.EqualTo(NewInvoiceDateList), "Date mismatch.");
-            Assert.That(invoiceDetails[2].Text.Trim(), Is.EqualTo(NewInvoiceAmountDue), "AmountDue mismatch.");
-            Assert.That(invoiceDetails[3].Text.Trim(), Is.EqualTo(NewInvoiceAmountPaid), "AmountPaid mismatch.");
+            Assert.That(invoiceDetails[0].Text.Trim(), Is.EqualTo(NewInvoiceResidentId), "ResidentId mismatch!");
+            Assert.That(invoiceDetails[1].Text.Trim(), Is.EqualTo(NewInvoiceDateList), "Date mismatch!");
+            Assert.That(invoiceDetails[2].Text.Trim(), Is.EqualTo(NewInvoiceAmountDue), "AmountDue mismatch!");
+            Assert.That(invoiceDetails[3].Text.Trim(), Is.EqualTo(NewInvoiceAmountPaid), "AmountPaid mismatch!");
         });
 
-        // Delete Entry
-        _driver.FindElement(By.XPath("//Input[@type='submit']")).Click();
-        Assert.That(_driver.Url, Does.Contain("Invoices"), "Did not navigate to the Invoices page.");
-        
-        // Ensure row is gone
-        var deletedInvoiceRow = _driver.FindElements(By.CssSelector("table tbody tr")).FirstOrDefault(row => row.Text.Contains(NewInvoiceDateList));
-        Assert.That(deletedInvoiceRow, Is.Null, $"Invoice with date: '{NewInvoiceDateList}' found in the list.");
+        var submitDelete = _driver.FindElement(By.XPath(XPaths.SubmitBtn));
+        new Actions(_driver)
+            .MoveToElement(submitDelete)
+            .Click()
+            .Perform();
+
+        _elementActions.SearchByValue(NewInvoiceDateList);
+        _elementActions.CheckRowDoesNotExist(NewInvoiceDateList);
     }
     
     [OneTimeTearDown]
     public void TearDown()
     {
-        _driver.Quit();
-        _driver.Dispose();
+        try
+        {
+            _auth.Logout();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Unable to logout: " + ex.Message);
+        }
+        _setup.CleanupChromeDriver();
     }
 }

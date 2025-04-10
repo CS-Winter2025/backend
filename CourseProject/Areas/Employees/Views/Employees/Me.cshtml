@@ -1,0 +1,64 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model User
+
+@{
+    ViewData["Title"] = "My Employee Profile";
+}
+
+<h1>Your Info</h1>
+
+<div>
+    <h4>Account Info</h4>
+    <dl class="row">
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Username)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Username)</dd>
+
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Role)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Role)</dd>
+    </dl>
+
+    <h4>Employee Info</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Employee.JobTitle)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Employee.JobTitle)</dd>
+
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Employee.EmploymentType)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Employee.EmploymentType)</dd>
+
+        <dt class="col-sm-2">Pay Rate</dt>
+        <dd class="col-sm-10">@Model.Employee.PayRate.ToString("C")</dd>
+
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Employee.Name)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Employee.Name)</dd>
+
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Employee.DetailsJson)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Employee.DetailsJson)</dd>
+
+        <dt class="col-sm-2">Organization</dt>
+        <dd class="col-sm-10">@Model.Employee.Organization?.OrganizationId</dd>
+
+        <dt class="col-sm-2">Certifications</dt>
+        <dd class="col-sm-10">
+            @string.Join(", ", Model.Employee.Certifications)
+        </dd>
+
+        <dt class="col-sm-2">Availability</dt>
+        <dd class="col-sm-10">
+            @string.Join(", ", Model.Employee.Availability)
+        </dd>
+
+        <dt class="col-sm-2">Hours Worked</dt>
+        <dd class="col-sm-10">
+            @string.Join(", ", Model.Employee.HoursWorked)
+        </dd>
+    </dl>
+</div>
+
+<div>
+    <a asp-action="Index" asp-controller="Home">Home</a>
+</div>

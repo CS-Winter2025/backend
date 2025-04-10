@@ -1,17 +1,19 @@
-﻿using OpenQA.Selenium;
+﻿using BlackBoxTests.Data;
+using BlackBoxTests.Utils;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Interactions;
 
 namespace BlackBoxTests.CRUD;
 
 public class ServicesTests
 {
     private ChromeDriver _driver;
-    private const string BaseUrl = "http://localhost:5072/"; // Change as needed
-    private const string ServiceUri = "Services?area=Services";
+    private Setup _setup;
+    private Auth _auth;
+    private Navigation _nav;
+    private ElementActions _elementActions;
 
-    private const string AdminLogin = "admin";
-    private const string AdminPassword = "123";
-    
     private const string ServiceType = "Coaching";
     private const string ServiceRate = "95.00";
     private const string ServiceRequirements = "None";
@@ -23,174 +25,138 @@ public class ServicesTests
     [OneTimeSetUp]
     public void Setup()
     {
-        _driver = new ChromeDriver();
-        _driver.Manage().Window.Maximize();
-        
-        _driver.Navigate().GoToUrl(BaseUrl);
-        _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
-        
-        _driver.FindElement(By.XPath("//a[text()='Login']")).Click();
-        
-        // Login with Admin
-        _driver.FindElement(By.Id("Username")).SendKeys(AdminLogin);
-        _driver.FindElement(By.Id("Password")).SendKeys(AdminPassword);
-        _driver.FindElement(By.XPath("//button[text()='Login']")).Click();
-        
-        // Navigate to Services page
-        _driver.FindElement(By.XPath("//a[text()='Services']")).Click();
-        Assert.That(_driver.Url, Does.Contain(ServiceUri), "Did not navigate to the Services page.");
+        _setup = new Setup();
+        _driver = _setup.Driver;
+        _auth = new Auth(_driver);
+        _nav = new Navigation(_driver);
+        _elementActions = new ElementActions(_driver);
+
+        _setup.Initialize();
+        _nav.ToLogin();
+        _auth.LoginAsUser(Users.AdminUsername, Users.AdminPassword);
+
+        _nav.ToServices();
     }
 
     [Test, Order(1)]
     public void CreateService()
     {
-        // Create New
-        _driver.FindElement(By.LinkText("Create New")).Click();
-        Assert.That(_driver.Url, Does.Contain("/Services/Create"), "Did not navigate to the Create page.");
-        
+        _nav.ToCreateNew(Uris.ServicesCreate);
+
         // Input Values
-        _driver.FindElement(By.Id("Type")).SendKeys(ServiceType);
-        _driver.FindElement(By.Id("Rate")).SendKeys(ServiceRate);
-        _driver.FindElement(By.Id("Requirements")).SendKeys(ServiceRequirements);
-        
-        // Submit Create
-        _driver.FindElement(By.XPath("//Input[@type='submit']")).Click();
-        
-        // Wait till back on Services home
-        _driver.FindElement(By.LinkText("Create New"));
-        
+        _elementActions.FillTextField("Type", ServiceType);
+        _elementActions.FillTextField("Rate", ServiceRate);
+        _elementActions.FillTextField("Requirements", ServiceRequirements);
+
+        var submitCreate = _driver.FindElement(By.XPath(XPaths.SubmitBtn));
+        new Actions(_driver)
+            .MoveToElement(submitCreate)
+            .Click()
+            .Perform();
+
         // Ensure row exists and check values
-        var serviceRow = _driver.FindElements(By.CssSelector("table tbody tr")).FirstOrDefault(row => row.Text.Contains(ServiceType));
-        Assert.That(serviceRow, Is.Not.Null, $"Service '{ServiceType}' not found in the list.");
+        _elementActions.SearchByValue(ServiceType);
+        var serviceRow = _elementActions.CheckRowContaining(ServiceType);
 
         var serviceColumns = serviceRow.FindElements(By.TagName("td"));
         Assert.Multiple(() =>
         {
-            Assert.That(serviceColumns[0].Text.Trim(), Is.EqualTo(ServiceType), "Service type mismatch.");
-            Assert.That(serviceColumns[1].Text.Trim(), Is.EqualTo(ServiceRate), "Service rate mismatch.");
-            Assert.That(serviceColumns[2].Text.Trim(), Is.EqualTo(ServiceRequirements), "Service requirements mismatch.");
+            Assert.That(serviceColumns[0].Text.Trim(), Is.EqualTo(ServiceType), "Service type mismatch!");
+            Assert.That(serviceColumns[1].Text.Trim(), Is.EqualTo(ServiceRate), "Service rate mismatch!");
+            Assert.That(serviceColumns[2].Text.Trim(), Is.EqualTo(ServiceRequirements), "Service requirements mismatch!");
         });
     }
     
     [Test, Order(2)]
     public void ReadService()
     {
-        // Navigate to Services page
-        _driver.FindElement(By.XPath("//a[text()='Services']")).Click();
-        Assert.That(_driver.Url, Does.Contain(ServiceUri), "Did not navigate to the Services page.");
-        
-        _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
-        _driver.FindElement(By.LinkText("Create New"));
-        
+        _nav.ToServices();
+
         // Ensure row exists
-        var serviceRow = _driver.FindElements(By.CssSelector("table tbody tr")).FirstOrDefault(row => row.Text.Contains(ServiceType));
-        Assert.That(serviceRow, Is.Not.Null, $"Service '{ServiceType}' not found in the list.");
-        
-        // Navigate to Details
-        serviceRow.FindElement(By.XPath(".//a[text()='Details']")).Click();
-        Assert.That(_driver.Url, Does.Contain("/Services/Details"), "Did not navigate to the Details page.");
+        _elementActions.SearchByValue(ServiceType);
+        var serviceRow = _elementActions.CheckRowContaining(ServiceType);
+        _nav.ToDetails(serviceRow, Uris.ServicesDetails);
 
         var serviceDetailsTable = _driver.FindElement(By.XPath(".//dl"));
         var serviceDetails = serviceDetailsTable.FindElements(By.TagName("dd"));
         
         Assert.Multiple(() =>
         {
-            Assert.That(serviceDetails[0].Text.Trim(), Is.EqualTo(ServiceType), "Service type mismatch.");
-            Assert.That(serviceDetails[1].Text.Trim(), Is.EqualTo(ServiceRate), "Service rate mismatch.");
-            Assert.That(serviceDetails[2].Text.Trim(), Is.EqualTo(ServiceRequirements), "Service requirements mismatch.");
+            Assert.That(serviceDetails[0].Text.Trim(), Is.EqualTo(ServiceType), "Service type mismatch!");
+            Assert.That(serviceDetails[1].Text.Trim(), Is.EqualTo(ServiceRate), "Service rate mismatch!");
+            Assert.That(serviceDetails[2].Text.Trim(), Is.EqualTo(ServiceRequirements), "Service requirements mismatch!");
         });
     }
 
     [Test, Order(3)]
     public void UpdateService()
     {
-        // Navigate to Services page
-        _driver.FindElement(By.XPath("//a[text()='Services']")).Click();
-        Assert.That(_driver.Url, Does.Contain(ServiceUri), "Did not navigate to the Services page.");
+        _nav.ToServices();
 
         // Ensure row exists
-        var serviceRow = _driver.FindElements(By.CssSelector("table tbody tr")).FirstOrDefault(row => row.Text.Contains(ServiceType));
-        Assert.That(serviceRow, Is.Not.Null, $"Service '{ServiceType}' not found in the list.");
-        
-        // Navigate to Edit
-        serviceRow.FindElement(By.XPath(".//a[text()='Edit']")).Click();
-        Assert.That(_driver.Url, Does.Contain("/Services/Edit"), "Did not navigate to the Edit page.");
+        _elementActions.SearchByValue(ServiceType);
+        var serviceRow = _elementActions.CheckRowContaining(ServiceType);
 
-        // Fields
-        var serviceTypeField = _driver.FindElement(By.Id("Type"));
-        var serviceRateField = _driver.FindElement(By.Id("Rate"));
-        var serviceRequirementsField = _driver.FindElement(By.Id("Requirements"));
+        _nav.ToEdit(serviceRow, Uris.ServicesEdit);
 
-        // Check Edit Fields
+        _elementActions.VerifyTextField("Type", ServiceType, "Sevice type mismatch!");
+        _elementActions.VerifyTextField("Rate", ServiceRate, "Sevice rate mismatch!");
         // NOTE currently not working as Requirements field returns: System.Collections.Generic.List`1[System.String]
-        var currentServiceType = serviceTypeField.GetAttribute("value")!.Trim();
-        var currentServiceRate = serviceRateField.GetAttribute("value")!.Trim();
-        // var currentServiceRequirements = _driver.FindElement(By.Id("Requirements")).GetAttribute("value")!.Trim(); // Bug found
-        Assert.Multiple(() =>
-        {
-            Assert.That(currentServiceType, Is.EqualTo(ServiceType), "Service type mismatch.");
-            Assert.That(currentServiceRate, Is.EqualTo(ServiceRate), "Service rate mismatch.");
-            // Assert.That(currentServiceRequirements, Is.EqualTo(ServiceRequirements), "Service requirements mismatch.");
-        });
+        //_elementActions.VerifyTextField("Requirements", ServiceRequirements, "Sevice requirements mismatch!");
 
-        serviceTypeField.Clear();
-        serviceTypeField.SendKeys(NewServiceType);
-        serviceRateField.Clear();
-        serviceRateField.SendKeys(NewServiceRate);
-        serviceRequirementsField.Clear();
-        serviceRequirementsField.SendKeys(NewServiceRequirements);
-        
-        // Submit Save
-        _driver.FindElement(By.XPath("//Input[@type='submit']")).Click();
-        
-        _driver.FindElement(By.LinkText("Create New"));
-        
+        // Input new values
+        _elementActions.FillTextField("Type", NewServiceType);
+        _elementActions.FillTextField("Rate", NewServiceRate);
+        _elementActions.FillTextField("Requirements", NewServiceRequirements);
+
+        var submitEdit = _driver.FindElement(By.XPath(XPaths.SubmitBtn));
+        new Actions(_driver)
+            .MoveToElement(submitEdit)
+            .Click()
+            .Perform();
+
         // Ensure row exists and check values
-        var updatedServiceRow = _driver.FindElements(By.CssSelector("table tbody tr")).FirstOrDefault(row => row.Text.Contains(NewServiceType));
-        Assert.That(updatedServiceRow, Is.Not.Null, $"Service '{NewServiceType}' not found in the list.");
+        _elementActions.SearchByValue(NewServiceType);
+        var updatedServiceRow = _elementActions.CheckRowContaining(NewServiceType);
 
         var serviceColumns = updatedServiceRow.FindElements(By.TagName("td"));
         Assert.Multiple(() =>
         {
-            Assert.That(serviceColumns[0].Text.Trim(), Is.EqualTo(NewServiceType), "Service type mismatch.");
-            Assert.That(serviceColumns[1].Text.Trim(), Is.EqualTo(NewServiceRate), "Service rate mismatch.");
-            Assert.That(serviceColumns[2].Text.Trim(), Is.EqualTo(NewServiceRequirements), "Service requirements mismatch.");
+            Assert.That(serviceColumns[0].Text.Trim(), Is.EqualTo(NewServiceType), "Service type mismatch!");
+            Assert.That(serviceColumns[1].Text.Trim(), Is.EqualTo(NewServiceRate), "Service rate mismatch!");
+            Assert.That(serviceColumns[2].Text.Trim(), Is.EqualTo(NewServiceRequirements), "Service requirements mismatch!");
         });
     }
 
     [Test, Order(4)]
     public void DeleteService()
     {
-        // Navigate to Services page
-        _driver.FindElement(By.XPath("//a[text()='Services']")).Click();
-        Assert.That(_driver.Url, Does.Contain(ServiceUri), "Did not navigate to the Services page.");
+        _nav.ToServices();
 
         // Ensure row exists
-        var serviceRow = _driver.FindElements(By.CssSelector("table tbody tr")).FirstOrDefault(row => row.Text.Contains(NewServiceType));
-        Assert.That(serviceRow, Is.Not.Null, $"Service '{NewServiceType}' not found in the list.");
-        
-        // Navigate to Delete
-        serviceRow.FindElement(By.XPath(".//a[text()='Delete']")).Click();
-        Assert.That(_driver.Url, Does.Contain("/Services/Delete"), "Did not navigate to the Delete page.");
+        _elementActions.SearchByValue(NewServiceType);
+        var serviceRow = _elementActions.CheckRowContaining(NewServiceType);
+
+        _nav.ToDelete(serviceRow, Uris.ServicesDelete);
 
         var serviceDetailsTable = _driver.FindElement(By.XPath(".//dl"));
         var serviceDetails = serviceDetailsTable.FindElements(By.TagName("dd"));
 
         Assert.Multiple(() =>
         {
-            Assert.That(serviceDetails[0].Text.Trim(), Is.EqualTo(NewServiceType), "Service type mismatch.");
-            Assert.That(serviceDetails[1].Text.Trim(), Is.EqualTo(NewServiceRate), "Service rate mismatch.");
-            Assert.That(serviceDetails[2].Text.Trim(), Is.EqualTo(NewServiceRequirements), "Service requirements mismatch.");
+            Assert.That(serviceDetails[0].Text.Trim(), Is.EqualTo(NewServiceType), "Service type mismatch!");
+            Assert.That(serviceDetails[1].Text.Trim(), Is.EqualTo(NewServiceRate), "Service rate mismatch!");
+            Assert.That(serviceDetails[2].Text.Trim(), Is.EqualTo(NewServiceRequirements), "Service requirements mismatch!");
         });
 
-        // Delete Entry
-        _driver.FindElement(By.XPath("//Input[@type='submit']")).Click();
-        
-        _driver.FindElement(By.LinkText("Create New"));
-        
-        // Ensure row is gone
-        var deletedServiceRow = _driver.FindElements(By.CssSelector("table tbody tr")).FirstOrDefault(row => row.Text.Contains(NewServiceType));
-        Assert.That(deletedServiceRow, Is.Null, $"Service '{NewServiceType}' not found in the list.");
+        var submitDelete = _driver.FindElement(By.XPath(XPaths.SubmitBtn));
+        new Actions(_driver)
+            .MoveToElement(submitDelete)
+            .Click()
+            .Perform();
+
+        _elementActions.SearchByValue(NewServiceType);
+        _elementActions.CheckRowDoesNotExist(NewServiceType);
     }
     
     [OneTimeTearDown]

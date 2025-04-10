@@ -1,0 +1,23 @@
+﻿@model string
+
+@{
+    ViewData["Title"] = "Edit Occupants";
+    var assetInfo = ViewBag.AssetInfo as string;
+    var assignmentId = (int)ViewBag.AssignmentId;
+    var fromDate = ((DateTime)ViewBag.FromDate).ToShortDateString();
+    var toDate = ((DateTime)ViewBag.ToDate).ToShortDateString();
+}
+
+<h2>Edit Occupants for Unit: @assetInfo</h2>
+<p>Assignment Period: @fromDate - @toDate</p>
+
+<form asp-action="EditOccupants" method="post">
+    <input type="hidden" name="id" value="@assignmentId" />
+    <div class="form-group">
+        <label for="newOccupantsJson">Occupants (JSON Format)</label>
+        <textarea name="newOccupantsJson" class="form-control" rows="5">@Model</textarea>
+        <small class="form-text text-muted">Example: [ "Alice", "Bob", "Charlie" ]</small>
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-action="MyAssets" class="btn btn-secondary">Cancel</a>
+</form>

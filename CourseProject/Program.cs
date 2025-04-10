@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using CourseProject;
 using CourseProject.Areas.Calendar.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSession(options =>
@@ -12,6 +13,16 @@ builder.Services.AddSession(options =>
 });
 builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DBContext' not found.")));
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Users/Login"; // Redirect here if not authenticated
+        options.AccessDeniedPath = "/Error/403";
+    });
+
+// Add authorization services
+builder.Services.AddAuthorization();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -40,6 +51,7 @@ app.UseHttpsRedirection();
 app.UseRouting();
 
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();
@@ -55,21 +67,25 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
+
 app.MapAreaControllerRoute(
     name: "Employees",
     areaName: "Employees",
     pattern: "Employees/{action=Index}/{id?}",
     defaults: new { controller = "Employees" });
+
 app.MapAreaControllerRoute(
     name: "Services",
     areaName: "Services",
     pattern: "{controller=Services}/{action=Index}/{id?}")
     .WithStaticAssets();
+
 app.MapAreaControllerRoute(
     name: "Housing",
     areaName: "Housing",
     pattern: "{controller=Housing}/{action=Index}/{id?}")
     .WithStaticAssets();
+
 app.MapAreaControllerRoute(
     name: "Charges",
     areaName: "Charges",

@@ -1,0 +1,44 @@
+﻿@{
+    ViewData["Title"] = "Predicted Invoice";
+    var items = ViewBag.InvoiceItems as List<dynamic>;
+    var total = ViewBag.TotalCost;
+}
+
+<h2>Predicted Invoice</h2>
+
+@if (items == null || items.Count == 0)
+{
+    <div class="alert alert-info">You have no upcoming assignments.</div>
+}
+else
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Asset Type</th>
+                <th>Daily Rate</th>
+                <th>From</th>
+                <th>To</th>
+                <th>Days</th>
+                <th>Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in items)
+            {
+                <tr>
+                    <td>@item.Type</td>
+                    <td>@item.Price.ToString("C")</td>
+                    <td>@item.FromDate.ToShortDateString()</td>
+                    <td>@item.ToDate.ToShortDateString()</td>
+                    <td>@item.Days</td>
+                    <td>@item.Total.ToString("C")</td>
+                </tr>
+            }
+            <tr>
+                <td colspan="5" class="text-end fw-bold">Total</td>
+                <td class="fw-bold">@total.ToString("C")</td>
+            </tr>
+        </tbody>
+    </table>
+}

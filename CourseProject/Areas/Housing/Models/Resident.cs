@@ -6,5 +6,6 @@ public class Resident : Person
     public List<int> ServiceSubscriptionIds { get; set; } = new List<int>(); // Foreign keys for services
     public List<Service> Services { get; set; } = new List<Service>(); // Navigation property for related services
     public bool IsCurrentlyLiving { get; set; } = true;
+    public User User { get; set; }
 
 }

@@ -7,6 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - CourseProject</title>
     <script type="importmap"></script>
+	<!-- Fontawesome CDN -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <!-- Site CSS -->
@@ -25,14 +27,21 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav id="navbar" class="navbar navbar-expand-sm navbar-toggleable-sm border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand titleFont navTitle" asp-area="" asp-controller="Home" asp-action="Index">CourseProject</a>
+                <a class="navbar-brand titleFont navTitle text-dark" asp-area="" asp-controller="Home" asp-action="Index">CourseProject</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
                         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <popover content='Helpful info.' title='Need help?' />
+				<!-- Light - Dark mode toggle -->
+				<div class="nav-item light_dark">
+					<button id="theme-toggle" class="theme-btn">
+						<i id="light-icon" class="fa-solid fa-sun"></i>
+						<i id="dark-icon" class="fa-solid fa-moon" style="display: none;"></i>
+					</button>
+				</div>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
 	                @{
 		                var role = Context.Session.GetString("Role") ?? "NONE";
@@ -44,7 +53,19 @@
 		                <li class="nav-item">
 			                <a class="nav-link text-dark headerFont" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
 		                </li>
+						@if (role is "RESIDENT")
+						{
+							<li class="nav-item">
+								<a class="nav-link text-dark headerFont" asp-area="Housing" asp-controller="Residents" asp-action="Me">My Info</a>
+							</li>
+						}
 
+						@if (role is "EMPLOYEE")
+						{
+							<li class="nav-item">
+								<a class="nav-link text-dark headerFont" asp-area="Employees" asp-controller="Employees" asp-action="Me">My Info</a>
+							</li>
+						}
 		                @if (role is "ADMIN" or "HOUSING_MANAGER" or "EMPLOYEE")
 		                {
 			                <li class="nav-item">
@@ -52,12 +73,28 @@
 			                </li>
 		                }
 
-						@if (role is "ADMIN" or "RESIDENT" or "HOUSING_MANAGER")
+						@if (role is "ADMIN" or "HOUSING_MANAGER")
 		                {
 			                <li class="nav-item">
 				                <a class="nav-link text-dark headerFont" asp-area="" asp-controller="Residents" asp-action="Index">Residents</a>
 			                </li>
+							<li class="nav-item">
+								<a class="nav-link text-dark headerFont" asp-area="" asp-controller="Assets" asp-action="Index">Assets</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link text-dark headerFont" asp-area="Housing" asp-controller="Invoices" asp-action="MonthlyInvoices">Generate Monthly Invoices</a>
+                            </li>
+
 		                }
+
+                        @if (role is "RESIDENT")
+                        {
+							<a class="nav-link" asp-area="Housing" asp-controller="ResidentAssets" asp-action="Index">Unit Availability</a>
+							<a class="nav-link" asp-area="Housing" asp-controller="ResidentAssets" asp-action="MyAssets">My Units</a>
+							<a class="nav-link" asp-area="Housing" asp-controller="ResidentAssets" asp-action="MyInvoices">My Invoices</a>
+
+
+                        }
 
 						@if (role is "ADMIN" or "SERVICE_MANAGER" or "EMPLOYEE")
 		                {
@@ -79,6 +116,12 @@
 				                <a class="nav-link text-dark headerFont" asp-area="" asp-controller="Users" asp-action="Index">Users</a>
 			                </li>
 		                }
+						@if (role == "ADMIN" || role == "EMPLOYEE")
+						{
+							<li class="nav-item">
+								<a class="nav-link text-dark headerFont" asp-controller="Report" asp-action="Index">Reports</a>
+							</li>
+						}
 	                </ul>
 	                <!-- Login/Logout Section -->
 	                <ul class="navbar-nav">
@@ -113,7 +156,7 @@
     </div>
     </div>
     <footer class="border-top footer text-muted">
-        <div class="container fs-6">
+		<div class="container fs-6 text-dark">
             &copy; 2025 - CourseProject - <a class="fs-6" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
@@ -128,6 +171,7 @@
     <script asp-src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
     <!-- App Scripts -->
     <script src="~/js/site.js" asp-append-version="true"></script>
+	<script src="~/js/darkModeToggle.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 

@@ -1,25 +1,71 @@
 ﻿@model List<Asset>
 
+@{
+    ViewData["Title"] = "Available Assets";
+}
+
 <h2>Available Assets</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
 <table class="table">
     <thead>
         <tr>
+            <th>ID</th>
             <th>Type</th>
-            <th>Actions</th>
+            <th>Price (per day)</th>
+            <th>Request</th>
+            <th>Predicted Total</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var asset in Model)
         {
+            var id = $"asset_{asset.AssetID}";
             <tr>
+                <td>@asset.AssetID</td>
                 <td>@asset.Type</td>
+                <td id="@($"{id}_price")">@asset.Price.ToString("C")</td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@asset.AssetID">Details</a> |
-                    <form asp-action="Request" asp-route-id="@asset.AssetID" method="post" style="display:inline;">
-                        <button type="submit" >Request</button>
+                    <form asp-controller="ResidentAssets" asp-action="Request" method="post" style="display:inline;">
+                        <input type="hidden" name="AssetID" value="@asset.AssetID" />
+                        <input type="date" name="FromDate" required id="@($"{id}_from")" onchange="updateTotal('@id')" />
+                        <input type="date" name="ToDate" required id="@($"{id}_to")" onchange="updateTotal('@id')" />
+                        <button type="submit" class="btn btn-sm btn-primary">Request</button>
                     </form>
                 </td>
+                <td id="@($"{id}_total")">-</td>
             </tr>
         }
     </tbody>
 </table>
+
+@section Scripts {
+    <script>
+        function updateTotal(id) {
+            const priceEl = document.getElementById(`${id}_price`);
+            const fromEl = document.getElementById(`${id}_from`);
+            const toEl = document.getElementById(`${id}_to`);
+            const totalEl = document.getElementById(`${id}_total`);
+
+            const dailyRate = parseFloat(priceEl.innerText.replace(/[^0-9.-]+/g,""));
+            const fromDate = new Date(fromEl.value);
+            const toDate = new Date(toEl.value);
+
+            if (fromEl.value && toEl.value && fromDate <= toDate) {
+                const days = Math.floor((toDate - fromDate) / (1000 * 60 * 60 * 24)) + 1;
+                const total = days * dailyRate;
+                totalEl.innerText = total.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+            } else {
+                totalEl.innerText = "-";
+            }
+        }
+    </script>
+}

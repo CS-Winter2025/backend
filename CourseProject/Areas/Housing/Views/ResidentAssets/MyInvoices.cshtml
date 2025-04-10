@@ -1,0 +1,60 @@
+﻿@model ResidentInvoiceViewModel
+
+@{
+    ViewData["Title"] = "My Invoice";
+    var month = ViewBag.Month;
+    var year = ViewBag.Year;
+    var monthName = new DateTime(year, month, 1).ToString("MMMM yyyy");
+}
+
+<h2>Invoice for @monthName</h2>
+
+<form method="get" class="mb-3">
+    <label for="month">Month:</label>
+    <select name="month" id="month" class="form-select d-inline w-auto mx-1">
+        @for (int m = 1; m <= 12; m++)
+        {
+            <option value="@m" selected="@(m == month)">
+                @(new DateTime(year, m, 1).ToString("MMMM"))
+            </option>
+        }
+    </select>
+
+    <label for="year">Year:</label>
+    <input type="number" name="year" value="@year" class="form-control d-inline w-auto mx-1" style="width: 100px;" />
+
+    <button type="submit" class="btn btn-primary">View</button>
+</form>
+
+@if (!Model.Items.Any())
+{
+    <div class="alert alert-info">You had no active units in this month.</div>
+}
+else
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Asset</th>
+                <th>Days</th>
+                <th>Rate</th>
+                <th>Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td>@item.AssetType</td>
+                    <td>@item.Days</td>
+                    <td>@item.DailyRate.ToString("C")</td>
+                    <td>@item.Total.ToString("C")</td>
+                </tr>
+            }
+            <tr>
+                <td colspan="3" class="text-end fw-bold">Total</td>
+                <td class="fw-bold">@Model.TotalDue.ToString("C")</td>
+            </tr>
+        </tbody>
+    </table>
+}

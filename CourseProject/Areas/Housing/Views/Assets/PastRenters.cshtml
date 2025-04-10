@@ -1,0 +1,35 @@
+﻿@model List<ResidentAsset>
+@{
+    ViewData["Title"] = "Past Renters";
+    var asset = ViewBag.Asset as Asset;
+}
+
+<h2>Past Renters for @asset.Type (ID: @asset.AssetID)</h2>
+
+@if (!Model.Any())
+{
+    <p>No past renters found for this asset.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>From</th>
+                <th>To</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var assignment in Model)
+            {
+                <tr>
+                    <td>@assignment.Resident?.Name?.FirstName @assignment.Resident?.Name?.LastName</td>
+                    <td>@assignment.FromDate.ToShortDateString()</td>
+                    <td>@assignment.ToDate.ToShortDateString()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+<a href="@Url.Action("Index", "Assets", new { area = "Housing" })" class="btn btn-secondary">Back to Assets</a>

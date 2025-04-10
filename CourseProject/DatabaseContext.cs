@@ -1,8 +1,8 @@
 using CourseProject.Models;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.AspNet.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace CourseProject
 {
@@ -59,6 +59,18 @@ namespace CourseProject
             modelBuilder.Entity<Employee>()
                 .HasMany(e => e.Services)
                 .WithMany(s => s.Employees);
+
+            modelBuilder.Entity<User>()
+                .HasOne(u => u.Resident)
+                .WithOne(r => r.User)
+                .HasForeignKey<User>(u => u.ResidentId)
+                .IsRequired(false);
+
+            modelBuilder.Entity<User>()
+                .HasOne(u => u.Employee)
+                .WithOne(r => r.User)
+                .HasForeignKey<User>(u => u.EmployeeId)
+                .IsRequired(false);
 
             modelBuilder.Entity<EventSchedule>()
                 .HasMany(es => es.Employees)
@@ -118,7 +130,7 @@ namespace CourseProject
             // Resident-Service many-to-many relationship
             modelBuilder.Entity<Resident>().ToTable("Resident")
                 .HasMany(r => r.Services)
-                .WithMany(s => s.Residents) 
+                .WithMany(s => s.Residents)
                 .UsingEntity(j => j.HasData(
                     new { ResidentsResidentId = 1, ServicesServiceID = 1 },
                     new { ResidentsResidentId = 2, ServicesServiceID = 2 }
@@ -131,18 +143,13 @@ namespace CourseProject
             modelBuilder.Entity<Invoice>().ToTable("Invoice")
                 .HasOne(i => i.Resident)
                 .WithMany()
-                .HasForeignKey(i => i.ResidentID)
+                .HasForeignKey(i => i.ResidentId)
                 .IsRequired();
 
             modelBuilder.Entity<Organization>().ToTable("Organization").HasData(
                 new Organization { OrganizationId = 1 },
                 new Organization { OrganizationId = 2 }
             );
-
-            var hoursWorked = new List<int>();
-            hoursWorked.Add(222);
-            var certs = new List<string>();
-            certs.Add("First-aid");
 
             modelBuilder.Entity<Employee>().HasData(
                 new Employee
@@ -167,62 +174,104 @@ namespace CourseProject
                 new Employee
                 {
                     EmployeeId = 3,
-                    JobTitle = "Quality Assurance",
+                    JobTitle = "Technician",
                     EmploymentType = "Part-Time",
-                    PayRate = 69000,
-                    OrganizationId = 1,
-                    ManagerId = 1,
-                    ProfilePicture = null,
-                    HoursWorked = hoursWorked,
-                    Certifications = certs
+                    PayRate = 40000,
+                    OrganizationId = 2,
+                    ProfilePicture = null
+                },
+                new Employee
+                {
+                    EmployeeId = 4,
+                    JobTitle = "HR Specialist",
+                    EmploymentType = "Full-Time",
+                    PayRate = 55000,
+                    OrganizationId = 2,
+                    ProfilePicture = null
+                },
+                new Employee
+                {
+                    EmployeeId = 5,
+                    JobTitle = "Recruiter",
+                    EmploymentType = "Full-Time",
+                    PayRate = 53000,
+                    OrganizationId = 2,
+                    ProfilePicture = null
                 }
             );
 
             modelBuilder.Entity<Employee>().OwnsOne(e => e.Name).HasData(
                 new { EmployeeId = 1, FirstName = "Alice", LastName = "Smith" },
                 new { EmployeeId = 2, FirstName = "Bob", LastName = "Johnson" },
-                new { EmployeeId = 3, FirstName = "Eve", LastName = "Davis" }
+                new { EmployeeId = 3, FirstName = "Cathy", LastName = "Lee" },
+                new { EmployeeId = 4, FirstName = "James", LastName = "Taylor" },
+                new { EmployeeId = 5, FirstName = "Nina", LastName = "Martinez" }
             );
 
             modelBuilder.Entity<Employee>().OwnsOne(e => e.Address).HasData(
                 new { EmployeeId = 1, Street = "123 Main St", City = "New York", State = "NY", Country = "USA", ZipCode = "10001" },
                 new { EmployeeId = 2, Street = "456 Park Ave", City = "New York", State = "NY", Country = "USA", ZipCode = "10002" },
-                new { EmployeeId = 3, Street = "789 Broadway", City = "New York", State = "NY", Country = "USA", ZipCode = "10003" }
+                new { EmployeeId = 3, Street = "321 Oak St", City = "Dallas", State = "TX", Country = "USA", ZipCode = "75201" },
+                new { EmployeeId = 4, Street = "456 Pine St", City = "Houston", State = "TX", Country = "USA", ZipCode = "77002" },
+                new { EmployeeId = 5, Street = "789 Cedar St", City = "Austin", State = "TX", Country = "USA", ZipCode = "73301" }
             );
-
 
             modelBuilder.Entity<Resident>().HasData(
-                new Resident
-                {
-                    ResidentId = 1,
-                },
-                new Resident
-                {
-                    ResidentId = 2,
-                }
-            );
+               new Resident
+               {
+                   ResidentId = 1,
+                   IsCurrentlyLiving = true,
+                   DetailsJson = @"{""name"": ""Charlie"", ""age"": 45, ""email"": ""charlie@example.com"", ""is_member"": false}"
+               },
+               new Resident
+               {
+                   ResidentId = 2,
+                   IsCurrentlyLiving = true,
+                   DetailsJson = @"{""name"": ""Diana"", ""age"": 38, ""email"": ""diana@example.com"", ""is_member"": true}"
+               },
+               new Resident
+               {
+                   ResidentId = 3,
+                   IsCurrentlyLiving = true,
+                   DetailsJson = @"{""name"": ""Alice"", ""age"": 30, ""email"": ""alice@example.com"", ""is_member"": true}"
+               },
+               new Resident
+               {
+                   ResidentId = 4,
+                   IsCurrentlyLiving = false,
+                   DetailsJson = @"{""name"": ""Leo"", ""age"": 29, ""email"": ""leo@example.com"", ""is_member"": false}"
+               },
+               new Resident
+               {
+                   ResidentId = 5,
+                   IsCurrentlyLiving = true,
+                   DetailsJson = @"{""name"": ""Amira"", ""age"": 32, ""email"": ""amira@example.com"", ""is_member"": true}"
+               }
+           );
 
             modelBuilder.Entity<Resident>().OwnsOne(r => r.Name).HasData(
                 new { ResidentId = 1, FirstName = "Charlie", LastName = "Brown" },
-                new { ResidentId = 2, FirstName = "Diana", LastName = "Prince" }
+                new { ResidentId = 2, FirstName = "Diana", LastName = "Prince" },
+                new { ResidentId = 3, FirstName = "Alice", LastName = "Smith" },
+                new { ResidentId = 4, FirstName = "Leo", LastName = "Johnson" },
+                new { ResidentId = 5, FirstName = "Amira", LastName = "Williams" }
             );
 
             modelBuilder.Entity<Resident>().OwnsOne(r => r.Address).HasData(
                 new { ResidentId = 1, Street = "789 Oak St", City = "Los Angeles", State = "CA", Country = "USA", ZipCode = "90001" },
-                new { ResidentId = 2, Street = "101 Pine St", City = "San Francisco", State = "CA", Country = "USA", ZipCode = "94101" }
+                new { ResidentId = 2, Street = "101 Pine St", City = "San Francisco", State = "CA", Country = "USA", ZipCode = "94101" },
+                new { ResidentId = 3, Street = "456 Elm St", City = "Chicago", State = "IL", Country = "USA", ZipCode = "60601" },
+                new { ResidentId = 4, Street = "789 Maple Ave", City = "Austin", State = "TX", Country = "USA", ZipCode = "73301" },
+                new { ResidentId = 5, Street = "123 Cedar Rd", City = "Seattle", State = "WA", Country = "USA", ZipCode = "98101" }
             );
 
-            var req = new List<string>();
-            req.Add("The maintenance requirements");
             modelBuilder.Entity<Service>().HasData(
                 new Service { ServiceID = 1, Type = "Cleaning", Rate = 50 },
-                new Service { ServiceID = 2, Type = "Security", Rate = 100 },
-                new Service { ServiceID = 3, Type = "Maintenance", Rate = 75 , Requirements = req}
+                new Service { ServiceID = 2, Type = "Security", Rate = 100 }
             );
 
             modelBuilder.Entity<Invoice>().HasData(
-                new Invoice { InvoiceID = 1, ResidentID = 1, Date = DateTime.UtcNow, AmountDue = 200, AmountPaid = 100 },
-                new Invoice { InvoiceID = 2, ResidentID = 2, Date = new DateTime(2025, 2, 21, 14, 0, 0, DateTimeKind.Utc), AmountDue = 300, AmountPaid = 150 }
+                new Invoice { InvoiceID = 1, ResidentId = 1, Date = DateTime.UtcNow, AmountDue = 200, AmountPaid = 100 }
             );
 
             modelBuilder.Entity<User>().HasData(
@@ -236,37 +285,37 @@ namespace CourseProject
                 {
                     Id = 2, Username = "resident", Role = UserRole.RESIDENT,
                     Password = new PasswordHasher().HashPassword("123"),
-                    ResidentID = 1,
+                    ResidentId = 1,
                 },
                 new User
                 {
                     Id = 3, Username = "housing", Role = UserRole.HOUSING_MANAGER,
                     Password = new PasswordHasher().HashPassword("123"),
-                    EmployeeId = 1,
+                    EmployeeId = 2,
                 },
                 new User
                 {
                     Id = 4, Username = "employee", Role = UserRole.EMPLOYEE,
                     Password = new PasswordHasher().HashPassword("123"),
-                    ResidentID = 2,
+                    ResidentId = 2,
                 },
                 new User
                 {
-                    Id = 5, Username = "service", Role = UserRole.SERVICE_MANAGER,
+                    Id = 5, Username = "service", Role = UserRole.EMPLOYEE,
                     Password = new PasswordHasher().HashPassword("123"),
-                    EmployeeId = 1,
+                    EmployeeId = 3,
                 },
                 new User
                 {
                     Id = 6, Username = "hr", Role = UserRole.HR_MANAGER,
                     Password = new PasswordHasher().HashPassword("123"),
-                    EmployeeId = 1,
+                    EmployeeId = 4,
                 },
                 new User
                 {
-                    Id = 7, Username = "hiring", Role = UserRole.HIRING_MANAGER,
+                    Id = 7, Username = "hiring", Role = UserRole.HR_MANAGER,
                     Password = new PasswordHasher().HashPassword("123"),
-                    EmployeeId = 1,
+                    EmployeeId = 5,
                 }
             );
 

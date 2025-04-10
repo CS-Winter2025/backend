@@ -27,7 +27,7 @@ public class SearchBarUtils
         catch (NoSuchElementException)
         {
             driver.Manage().Window.Maximize();
-            driver.Navigate().GoToUrl(url);
+            driver.Navigate().GoToUrl(url + "Users/Login");
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
             driver.FindElement(By.Id("Username")).SendKeys("admin");
             driver.FindElement(By.Id("Password")).SendKeys("123");
