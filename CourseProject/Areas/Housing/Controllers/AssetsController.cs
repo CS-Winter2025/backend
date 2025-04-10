@@ -245,6 +245,7 @@ namespace CourseProject.Areas.Housing.Controllers
         [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            Console.WriteLine("IN CONFIRM");
             var asset = await _context.Assets.FindAsync(id);
             if (asset != null)
             {
