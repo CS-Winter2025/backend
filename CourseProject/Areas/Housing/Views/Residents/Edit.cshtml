@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Edit";
+    var parsedDetails = ViewBag.Details as Dictionary<string, string> ?? new();
 }
 
 <h1>Edit</h1>
@@ -10,7 +11,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" asp-route-id="@Model.ResidentId" onsubmit="return serializeDetails();">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="ResidentId" />
             <div class="form-group">
@@ -28,12 +29,22 @@
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="DetailsJson" class="control-label"></label>
-                <input asp-for="DetailsJson" class="form-control" />
-                <span asp-validation-for="DetailsJson" class="text-danger"></span>
+            <h5 class="mt-4">Additional Details</h5>
+            <div id="details-container">
+                @foreach (var pair in parsedDetails)
+                {
+                    <div class="form-group d-flex gap-2">
+                        <input type="text" class="form-control detail-key mb-2" placeholder="Key" value="@pair.Key" />
+                        <input type="text" class="form-control detail-value mb-2" placeholder="Value" value="@pair.Value" />
+                    </div>
+                }
             </div>
-            <div class="form-group">
+
+            <button type="button" class="btn btn-sm btn-secondary mt-2" onclick="addDetail()">Add Detail</button>
+
+            <input type="hidden" id="DetailsJson" name="DetailsJson" value="@Model.DetailsJson" />
+
+            <div class="form-group mt-3">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
@@ -45,5 +56,6 @@
 </div>
 
 @section Scripts {
+    <script src="~/js/residentEdit.js" asp-append-version="true"></script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

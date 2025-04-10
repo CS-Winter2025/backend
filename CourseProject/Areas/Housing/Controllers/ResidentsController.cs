@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using CourseProject.Common;
 using CourseProject.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -125,6 +126,11 @@ namespace CourseProject.Areas.Housing.Controllers
             {
                 return NotFound();
             }
+
+            ViewBag.Details = resident.DetailsJson != null
+                ? Util.ParseJson(resident.DetailsJson)
+                : new Dictionary<string, string>();
+
             return View(resident);
         }
 
@@ -134,7 +140,7 @@ namespace CourseProject.Areas.Housing.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
-        public async Task<IActionResult> Edit(int id, [Bind("ResidentId,ServiceSubscriptionIds,Name,DetailsJson")] Resident resident)
+        public async Task<IActionResult> Edit(int id, [Bind("ResidentId,ServiceSubscriptionIds,Name,IsCurrentlyLiving,DetailsJson")] Resident resident)
         {
             if (id != resident.ResidentId)
             {
@@ -161,6 +167,7 @@ namespace CourseProject.Areas.Housing.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.Details = Util.ParseJson(resident.DetailsJson ?? "");
             return View(resident);
         }
 

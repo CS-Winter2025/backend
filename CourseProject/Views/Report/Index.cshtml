@@ -1,5 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Resident Report";
+    var parsedDetails = ViewBag.ParsedDetails as Dictionary<int, Dictionary<string, string>>;
 }
 
 <h2>Resident Report</h2>
@@ -12,6 +13,7 @@
             <th>Is Living</th>
             <th>Services</th>
             <th>Event Schedules</th>
+            <th>Details</th>
         </tr>
     </thead>
     <tbody>
@@ -31,6 +33,27 @@
                     @foreach (var schedule in resident.EventSchedules)
                     {
                         <div>Event @schedule.EventScheduleId</div>
+                    }
+                </td>
+                <td>
+                    @{
+                        Dictionary<string, string>? details = null;
+                        var hasDetails = parsedDetails?.TryGetValue(resident.ResidentId, out details) == true
+                        && details?.Count > 0;
+                    }
+
+                    @if (hasDetails)
+                    {
+                        <ul class="list-unstyled m-0">
+                            @foreach (var pair in details!)
+                            {
+                                <li><strong>@pair.Key</strong>: @(pair.Value?.ToString() ?? "N/A")</li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <span class="text-muted">None</span>
                     }
                 </td>
             </tr>
