@@ -29,16 +29,6 @@
     font-size: 20px;
 }
 
-.dark {
-    background-color: #253031;
-    color: #F7F7FF;
-}
-
-.light {
-    background-color: #F7F7FF;
-    color: #253031;
-}
-
 .buttons {
     padding: 15px 30px;
 }
@@ -49,4 +39,50 @@
 
 .text-dark {
     color: #253031;
+}
+
+.text-light {
+    color: #F7F7FF !important; /* White text */
+}
+
+
+/* Dark/Light mode settings */
+
+/* Default Light Mode */
+body {
+    background-color: #F7F7FF;
+    color: #253031;
+}
+
+/* Dark Mode */
+body.dark-mode {
+    background-color: #182223;
+    color: #F7F7FF;
+}
+
+.navbar {
+    background-color: white;
+    color: #253031;
+}
+
+.navbar.nav-dark-mode {
+    background-color: #253031;
+    color: #F7F7FF;
+}
+
+.theme-btn {
+    border: 0;
+    background-color: unset;
+    margin: 0 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#light-icon {
+    color: #FFD700; 
+}
+
+#dark-icon {
+    color: #F7F7FF; /* Moon (white) */
 }

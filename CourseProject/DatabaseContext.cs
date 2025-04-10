@@ -1,8 +1,8 @@
 using CourseProject.Models;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.AspNet.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace CourseProject
 {
@@ -59,6 +59,18 @@ namespace CourseProject
             modelBuilder.Entity<Employee>()
                 .HasMany(e => e.Services)
                 .WithMany(s => s.Employees);
+
+            modelBuilder.Entity<User>()
+                .HasOne(u => u.Resident)
+                .WithOne(r => r.User)
+                .HasForeignKey<User>(u => u.ResidentId)
+                .IsRequired(false);
+
+            modelBuilder.Entity<User>()
+                .HasOne(u => u.Employee)
+                .WithOne(r => r.User)
+                .HasForeignKey<User>(u => u.EmployeeId)
+                .IsRequired(false);
 
             modelBuilder.Entity<EventSchedule>()
                 .HasMany(es => es.Employees)
@@ -118,7 +130,7 @@ namespace CourseProject
             // Resident-Service many-to-many relationship
             modelBuilder.Entity<Resident>().ToTable("Resident")
                 .HasMany(r => r.Services)
-                .WithMany(s => s.Residents) 
+                .WithMany(s => s.Residents)
                 .UsingEntity(j => j.HasData(
                     new { ResidentsResidentId = 1, ServicesServiceID = 1 },
                     new { ResidentsResidentId = 2, ServicesServiceID = 2 }
@@ -171,18 +183,44 @@ namespace CourseProject
                 new { EmployeeId = 2, Street = "456 Park Ave", City = "New York", State = "NY", Country = "USA", ZipCode = "10002" }
             );
 
-
             modelBuilder.Entity<Resident>().HasData(
                 new Resident
                 {
                     ResidentId = 1,
+                    Name = "Charlie",
+                    IsCurrentlyLiving = true,
+                    DetailsJson = @"{""name"": ""Charlie"", ""age"": 45, ""email"": ""charlie@example.com"", ""is_member"": false}"
                 },
                 new Resident
                 {
                     ResidentId = 2,
+                    Name = "Diana",
+                    IsCurrentlyLiving = true,
+                    DetailsJson = @"{""name"": ""Diana"", ""age"": 38, ""email"": ""diana@example.com"", ""is_member"": true}"
+                },
+                new Resident
+                {
+                    ResidentId = 3,
+                    Name = "Alice",
+                    IsCurrentlyLiving = true,
+                    DetailsJson = @"{""name"": ""Alice"", ""age"": 30, ""email"": ""alice@example.com"", ""is_member"": true}"
+                },
+                new Resident
+                {
+                    ResidentId = 4,
+                    Name = "Leo",
+                    IsCurrentlyLiving = false,
+                    DetailsJson = @"{""name"": ""Leo"", ""age"": 29, ""email"": ""leo@example.com"", ""is_member"": false}"
+                },
+                new Resident
+                {
+                    ResidentId = 5,
+                    Name = "Amira",
+                    IsCurrentlyLiving = true,
+                    DetailsJson = @"{""name"": ""Amira"", ""age"": 32, ""email"": ""amira@example.com"", ""is_member"": true}"
                 }
             );
-
+            
             modelBuilder.Entity<Resident>().OwnsOne(r => r.Name).HasData(
                 new { ResidentId = 1, FirstName = "Charlie", LastName = "Brown" },
                 new { ResidentId = 2, FirstName = "Diana", LastName = "Prince" }

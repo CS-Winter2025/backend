@@ -1,7 +1,8 @@
 ﻿@model CourseProject.Models.Employee
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit";    
+    var details = ViewData["Details"] as Dictionary<string, string>;
 }
 
 <h1>Edit</h1>
@@ -58,15 +59,23 @@
             </div>
             <div class="form-group">
                 <label asp-for="OrganizationId" class="control-label"></label>
-                <select asp-for="OrganizationId" class="form-control" asp-items="ViewBag.OrganizationId"></select>
+                <select asp-for="OrganizationId" class="form-control" asp-items="@ViewBag.OrganizationId"></select>
                 <span asp-validation-for="OrganizationId" class="text-danger"></span>
             </div>
-            
-            <div class="form-group">
-                <label asp-for="DetailsJson" class="control-label"></label>
-                <input asp-for="DetailsJson" class="form-control" />
-                <span asp-validation-for="DetailsJson" class="text-danger"></span>
-            </div>
+            @if (details != null)
+            {
+                <div class="form-group">
+                    <label class="control-label">Details</label>                
+                    @foreach(var item in details)
+                    {
+                        <div class="detail">                        
+                            <input type="text" value="@item.Key" />
+                            <input type="text" value="@item.Value" />
+                        </div>
+                    }
+                </div>
+            }
+            <button id="add-details">+</button>
             <div class="form-group">
                 <label asp-for="ProfilePicture" class="control-label"></label>
                 @if (Model.ProfilePicture != null)
