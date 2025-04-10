@@ -1,19 +1,28 @@
-﻿using CourseProject.Models;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+﻿using Newtonsoft.Json;
 
 namespace CourseProject.Common
 {
     public static class Util
     {
-        public static bool HasAccess(HttpContext context, params UserRole[] approvedRoles)
-        {            
-            if (context.Session.GetString("Role") == null) return false;
-            UserRole userRole = (UserRole) Enum.Parse(typeof(UserRole), context.Session.GetString("Role")!);
-            foreach(UserRole role in approvedRoles)
+        public static Dictionary<string, string> ParseJson(string jsonString)
+        {
+            if (jsonString == null) return null;
+            try
             {
-                if (userRole == role) return true;
+                var parsed = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonString) ?? [];
+                return parsed;
+
             }
-            return false;
+            catch (Exception e)
+            {
+                return [];
+            }
+        }
+
+        public static string SerializeJson(Dictionary<string, string> pairs)
+        {
+            var jsonString = JsonConvert.SerializeObject(pairs);
+            return jsonString;
         }
     }
 }

@@ -23,12 +23,23 @@
             @Html.DisplayFor(model => model.Status)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DetailsJson)
+            Occupants
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.DetailsJson)
         </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Price)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Price)
+        </dd>
     </dl>
+
+    <p>
+        <a class="btn btn-info" href="@Url.Action("PastRenters", "Assets", new { area = "Housing", id = Model.AssetID })">View Past Renters</a>
+    </p>
+
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.AssetID">Edit</a> |

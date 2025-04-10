@@ -1,7 +1,8 @@
-﻿@model Resident
+@model Resident
 
 @{
     ViewData["Title"] = "Edit";
+    var parsedDetails = ViewBag.Details as Dictionary<string, string> ?? new();
 }
 
 <h1>Edit</h1>
@@ -10,14 +11,20 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit" asp-route-id="@Model.ResidentId" method="post" enctype="multipart/form-data">
+        <form asp-action="Edit" asp-route-id="@Model.ResidentId" method="post" enctype="multipart/form-data" onsubmit="return serializeDetails();">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="ResidentId" />
-            <div class="form-group">
-                <label asp-for="ServiceSubscriptionIds" class="control-label"></label>
-                <input asp-for="ServiceSubscriptionIds" class="form-control" />
-                <span asp-validation-for="ServiceSubscriptionIds" class="text-danger"></span>
+            <label class="control-label">Subscribed Services</label>
+            <div id="services-container" class="form-group">
+                @for(int i = 0; i < Model.Services.Count; i++)
+                {
+                    <div class="form-group d-flex gap-2">
+                        <select class="form-control" asp-items="ViewBag.AllServices[@i]" name="ServiceSubscriptionIds[@i]"></select>
+                        <button type="button" class="btn btn-sm btn-secondary mt-2" onclick="removeService(this)">Remove Service</button>
+                    </div>
+                }
             </div>
+            <button type="button" class="btn btn-sm btn-secondary mt-2" onclick="addService()">Add Service</button>
             <div class="form-group form-check">
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="IsCurrentlyLiving" /> @Html.DisplayNameFor(model => model.IsCurrentlyLiving)
@@ -31,23 +38,33 @@
                 <label class="control-label">Address</label>
                 @Html.EditorFor(model => model.Address)
             </div>
-            <div class="form-group">
-                <label asp-for="DetailsJson" class="control-label"></label>
-                <input asp-for="DetailsJson" class="form-control" />
-                <span asp-validation-for="DetailsJson" class="text-danger"></span>
+            <h5 class="mt-4">Additional Details</h5>
+            <div id="details-container">
+                @foreach (var pair in parsedDetails)
+                {
+                    <div class="form-group d-flex gap-2">
+                        <input type="text" class="form-control detail-key mb-2" placeholder="Key" value="@pair.Key" />
+                        <input type="text" class="form-control detail-value mb-2" placeholder="Value" value="@pair.Value" />
+                    </div>
+                }
             </div>
-            <div class="form-group">
+
+            <button type="button" class="btn btn-sm btn-secondary mt-2" onclick="addDetail()">Add Detail</button>
+
+            <input type="hidden" id="DetailsJson" name="DetailsJson" value="@Model.DetailsJson" />
+
+            <div class="form-group mt-4">
                 <label asp-for="ProfilePicture" class="control-label"></label>
                 @if (Model.ProfilePicture != null)
                 {
                     <div class="mb-2">
-                        <img src="data:image/jpeg;base64,@Convert.ToBase64String(Model.ProfilePicture)"
-                             alt="Current photo" style="max-width: 200px;" />
+                        <img src="data:image/jpeg;base64,@Convert.ToBase64String(Model.ProfilePicture)" alt="Current photo" style="max-width: 200px;" />
                     </div>
                 }
                 <input type="file" name="profilepicture" class="form-control" accept="image/*" />
             </div>
-            <div class="form-group">
+
+            <div class="form-group mt-3">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
@@ -58,6 +75,12 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
-@section Scripts {
+<script>
+    const allServices = @Html.Raw(Json.Serialize(ViewBag.AllServices[0]));    
+</script>
+
+@section Scripts {   
+    <script src="~/js/editDetails.js" asp-append-version="true"></script>
+    <script src="~/js/editServices.js" asp-append-version="true"></script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

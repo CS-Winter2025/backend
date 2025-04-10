@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using CourseProject.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 
 namespace CourseProject.Controllers
 {
@@ -56,10 +55,6 @@ namespace CourseProject.Controllers
 
         public IActionResult Index()
         {
-            if (HttpContext.Session.GetString("Username") == null)
-            {
-                return RedirectToAction("Login", "Users"); // Redirect to login if not logged in
-            }
             return View();
         }
 

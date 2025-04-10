@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Security.Claims;
+using CourseProject.Common;
 using CourseProject.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +19,7 @@ namespace CourseProject.Areas.Housing.Controllers
         }
 
         // GET: Residents
+        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> Index()
         {
             var now = DateTime.Now;
@@ -43,20 +43,56 @@ namespace CourseProject.Areas.Housing.Controllers
                 .Distinct()
                 .ToListAsync();
 
-            var unassignedResidents = await _context.Residents
-                .Where(r => !allAssignedResidentIds.Contains(r.ResidentId))
+            var assignedNowIds = await _context.ResidentAssets
+                .Where(ra => ra.FromDate <= now && ra.ToDate >= now)
+                .Select(ra => ra.ResidentId)
+                .Distinct()
                 .ToListAsync();
+
+            var unassignedResidents = await _context.Residents
+                .Where(r => !assignedNowIds.Contains(r.ResidentId))
+                .ToListAsync();
+
+            var allResidents = currentResidents.Concat(pastResidents).Concat(unassignedResidents).DistinctBy(r => r.ResidentId).ToList();
+
+            var parsedDetails = allResidents.ToDictionary(
+                r => r.ResidentId,
+                r => Util.ParseJson(r.DetailsJson ?? string.Empty) ?? new Dictionary<string, string>()
+            );
 
             ViewBag.CurrentResidents = currentResidents;
             ViewBag.PastResidents = pastResidents;
             ViewBag.UnassignedResidents = unassignedResidents;
+            ViewBag.ParsedDetails = parsedDetails;
 
             return View();
         }
 
+        [Authorize(Roles = nameof(UserRole.RESIDENT) + "," + nameof(UserRole.ADMIN))]
+        public async Task<IActionResult> Me()
+        {
+            string? stringId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (stringId == null) return RedirectToAction("Forbidden", "Error");
 
+            int id = Int32.Parse(stringId);
+            User? user = await _context.Users.Include(u => u.Resident)
+                                .ThenInclude(r => r.Services)
+                                .FirstOrDefaultAsync(u => u.Id == id);
+
+            user.Resident.Services = await _context.Services
+                                .Where(s => user.Resident.ServiceSubscriptionIds.Contains(s.ServiceID))
+                                .ToListAsync();
+
+            ViewBag.Details = user.Resident.DetailsJson != null
+                ? Util.ParseJson(user.Resident.DetailsJson)
+                : new Dictionary<string, string>();
+
+            if (user == null) return RedirectToAction("NotFound", "Error");
+            return View(user);
+        }
 
         // GET: Residents/Details/5
+        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -65,23 +101,35 @@ namespace CourseProject.Areas.Housing.Controllers
             }
 
             var resident = await _context.Residents
+                .Include(r => r.Services)
                 .FirstOrDefaultAsync(m => m.ResidentId == id);
             if (resident == null)
             {
                 return NotFound();
             }
 
+            resident.Services = await _context.Services
+                            .Where(s => resident.ServiceSubscriptionIds.Contains(s.ServiceID))
+                            .ToListAsync();
+
+            ViewBag.Details = resident.DetailsJson != null
+                ? Util.ParseJson(resident.DetailsJson)
+                : new Dictionary<string, string>();
+
             return View(resident);
         }
 
         // GET: Residents/Create
-        public IActionResult Create()
+        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
+        public async Task<IActionResult> Create()
         {
             var resident = new Resident
             {
                 Name = new FullName(),
                 Address = new FullAddress()
             };
+            var allServices = await _context.Services.ToListAsync();
+            ViewBag.AllServices = new SelectList(allServices, nameof(Service.ServiceID), nameof(Service.Type));
             return View(resident);
         }
 
@@ -90,6 +138,7 @@ namespace CourseProject.Areas.Housing.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> Create([Bind("ResidentId,ServiceSubscriptionIds,Name,Address,DetailsJson,ProfilePicture")] Resident resident, IFormFile ProfilePicture)
         {
             if (ModelState.IsValid)
@@ -111,6 +160,7 @@ namespace CourseProject.Areas.Housing.Controllers
         }
 
         // GET: Residents/Edit/5
+        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -123,6 +173,25 @@ namespace CourseProject.Areas.Housing.Controllers
             {
                 return NotFound();
             }
+            var allServices = await _context.Services.ToListAsync();
+            if (resident.ServiceSubscriptionIds.Count > 0)
+            {
+                resident.Services = await _context.Services
+                                         .Where(s => resident.ServiceSubscriptionIds.Contains(s.ServiceID))
+                                         .ToListAsync();
+                ViewBag.AllServices = resident.Services
+                                         .Select(s => new SelectList(allServices, nameof(s.ServiceID), nameof(s.Type), s.ServiceID))
+                                         .ToList();
+            }
+            else
+            {
+                // List of one element because Edit.cshtml expects a list
+                ViewBag.AllServices = new List<SelectList>() { new SelectList(allServices, nameof(Service.ServiceID), nameof(Service.Type)) };
+            }
+            ViewBag.Details = resident.DetailsJson != null
+                ? Util.ParseJson(resident.DetailsJson)
+                : new Dictionary<string, string>();
+
             return View(resident);
         }
 
@@ -131,18 +200,14 @@ namespace CourseProject.Areas.Housing.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> Edit(int id, [Bind("ResidentId,ServiceSubscriptionIds,Name,Address,DetailsJson")] Resident resident, IFormFile ProfilePicture)
         {
-            //if (id != resident.ResidentId)
-            //{
-            //    return NotFound();
-            //}
-
             if (!ModelState.IsValid)
             {
                 try
                 {
-                    var existingResident= await _context.Residents.FindAsync(id);
+                    var existingResident = await _context.Residents.FindAsync(id);
 
                     if (existingResident == null)
                     {
@@ -178,10 +243,12 @@ namespace CourseProject.Areas.Housing.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.Details = Util.ParseJson(resident.DetailsJson ?? "");
             return View(resident);
         }
 
         // GET: Residents/Delete/5
+        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -196,9 +263,18 @@ namespace CourseProject.Areas.Housing.Controllers
                 return NotFound();
             }
 
+            resident.Services = await _context.Services
+                                .Where(s => resident.ServiceSubscriptionIds.Contains(s.ServiceID))
+                                .ToListAsync();
+
+            ViewBag.Details = resident.DetailsJson != null
+                ? Util.ParseJson(resident.DetailsJson)
+                : new Dictionary<string, string>();
+
             return View(resident);
         }
 
+        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> AssignedAssets(int id)
         {
             var resident = await _context.Residents.FindAsync(id);
@@ -208,9 +284,9 @@ namespace CourseProject.Areas.Housing.Controllers
             }
 
             var assignments = await _context.ResidentAssets
-     .Include(ra => ra.Asset)
-     .Where(ra => ra.ResidentId == id)
-     .ToListAsync();
+                                    .Include(ra => ra.Asset)
+                                    .Where(ra => ra.ResidentId == id)
+                                    .ToListAsync();
 
             ViewBag.ResidentName = resident.Name;
             return View(assignments);
@@ -221,6 +297,7 @@ namespace CourseProject.Areas.Housing.Controllers
         // POST: Residents/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var resident = await _context.Residents.FindAsync(id);
@@ -239,6 +316,7 @@ namespace CourseProject.Areas.Housing.Controllers
         }
 
         // GET: Residents/Current
+        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> Current()
         {
             var currentRenters = await _context.Residents
@@ -248,6 +326,7 @@ namespace CourseProject.Areas.Housing.Controllers
         }
 
         // GET: Residents/Past
+        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> Past()
         {
             var pastRenters = await _context.Residents
@@ -259,6 +338,7 @@ namespace CourseProject.Areas.Housing.Controllers
         // POST: Residents/UpdateOccupants/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> UpdateOccupants(int id, [FromForm] string newOccupantsJson)
         {
             var resident = await _context.Residents.FindAsync(id);
@@ -276,6 +356,7 @@ namespace CourseProject.Areas.Housing.Controllers
         // POST: Residents/MarkVacant/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> MarkVacant(int id)
         {
             var resident = await _context.Residents.FindAsync(id);

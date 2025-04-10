@@ -15,6 +15,8 @@
         <PackageReference Include="NUnit" Version="4.2.2"/>
         <PackageReference Include="NUnit.Analyzers" Version="4.3.0"/>
         <PackageReference Include="NUnit3TestAdapter" Version="4.6.0"/>
+        <PackageReference Include="Moq" Version="4.20.70" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.0" />
     </ItemGroup>
 
     <ItemGroup>
@@ -22,8 +24,12 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Controllers\" />
-      <Folder Include="Models\" />
+        <ProjectReference Include="..\CourseProject\CourseProject.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="Controllers\" />
+        <Folder Include="Models\" />
     </ItemGroup>
 
 </Project>

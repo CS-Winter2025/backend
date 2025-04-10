@@ -20,5 +20,6 @@ public class Employee : Person
     public int OrganizationId { get; set; }  // Foreign Key (Stored in DB)
     public Organization Organization { get; set; }  // Navigation Property (Not stored)
     public List<Service> Services { get; set; } = new List<Service>();    // Navigation property for Services associated with this employee
+    public User? User { get; set; }
 
 }

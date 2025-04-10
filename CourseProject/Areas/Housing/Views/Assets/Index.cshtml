@@ -33,6 +33,7 @@
                     </form>
                 </td>
             </tr>
+
         }
     </tbody>
 </table>
@@ -43,7 +44,6 @@
         <tr>
             <th>ID</th>
             <th>Type</th>
-            <th>Status</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -53,12 +53,13 @@
             <tr>
                 <td>@item.Asset.AssetID</td>
                 <td>@item.Asset.Type</td>
-                <td>@item.Status</td>
                 <td>
                     <a asp-action="Assign" asp-route-id="@item.Asset.AssetID" >Assign</a> |
                     <a asp-action="Edit" asp-route-id="@item.Asset.AssetID">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.Asset.AssetID">Details</a> |
                     <a asp-action="Delete" asp-route-id="@item.Asset.AssetID">Delete</a>
+
+
                 </td>
             </tr>
         }
@@ -72,7 +73,7 @@
         <tr>
             <th>ID</th>
             <th>Type</th>
-            <th>Status</th>
+            <th>Renter name</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -82,12 +83,18 @@
             <tr>
                 <td>@item.Asset.AssetID</td>
                 <td>@item.Asset.Type</td>
-                <td>@item.Status</td>
+                <td>@(item.AssignedResident?.Name?.FirstName) @(item.AssignedResident?.Name?.LastName)</td>
+
+                
+
                 <td>
-                    <a asp-action="Assign" asp-route-id="@item.Asset.AssetID" >Assign</a> |
                     <a asp-action="Edit" asp-route-id="@item.Asset.AssetID">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.Asset.AssetID">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Asset.AssetID">Delete</a>
+                    <a asp-action="Delete" asp-route-id="@item.Asset.AssetID">Delete</a> |
+                    <form asp-action="MarkVacant" asp-controller="Assets" asp-area="Housing" method="post" style="display:inline;">
+                        <input type="hidden" name="id" value="@item.Asset.AssetID" />
+                        <button type="submit" class="btn btn-warning">Mark Vacant</button>
+                    </form>
                 </td>
             </tr>
         }
