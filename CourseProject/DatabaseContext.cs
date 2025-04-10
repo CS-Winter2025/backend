@@ -144,9 +144,42 @@ namespace CourseProject
             );
 
             modelBuilder.Entity<Resident>().HasData(
-                new Resident { ResidentId = 1, Name = "Charlie" },
-                new Resident { ResidentId = 2, Name = "Diana" }
-            );
+    new Resident
+    {
+        ResidentId = 1,
+        Name = "Charlie",
+        IsCurrentlyLiving = true,
+        DetailsJson = "{\"name\": \"Charlie\", \"age\": 45, \"email\": \"charlie@example.com\", \"is_member\": false}"
+    },
+    new Resident
+    {
+        ResidentId = 2,
+        Name = "Diana",
+        IsCurrentlyLiving = true,
+        DetailsJson = "{\"name\": \"Diana\", \"age\": 38, \"email\": \"diana@example.com\", \"is_member\": true}"
+    },
+    new Resident
+    {
+        ResidentId = 3,
+        Name = "Alice",
+        IsCurrentlyLiving = true,
+        DetailsJson = "{\"name\": \"Alice\", \"age\": 30, \"email\": \"alice@example.com\", \"is_member\": true}"
+    },
+    new Resident
+    {
+        ResidentId = 4,
+        Name = "Leo",
+        IsCurrentlyLiving = false,
+        DetailsJson = "{\"name\": \"Leo\", \"age\": 29, \"email\": \"leo@example.com\", \"is_member\": false}"
+    },
+    new Resident
+    {
+        ResidentId = 5,
+        Name = "Amira",
+        IsCurrentlyLiving = true,
+        DetailsJson = "{\"name\": \"Amira\", \"age\": 32, \"email\": \"amira@example.com\", \"is_member\": true}"
+    }
+);
 
             modelBuilder.Entity<Service>().HasData(
                 new Service { ServiceID = 1, Type = "Cleaning", Rate = 50 },

@@ -12,6 +12,7 @@
             <th>Is Living</th>
             <th>Services</th>
             <th>Event Schedules</th>
+            <th>Details</th>
         </tr>
     </thead>
     <tbody>
@@ -31,6 +32,17 @@
                     @foreach (var schedule in resident.EventSchedules)
                     {
                         <div>Event @schedule.EventScheduleId</div>
+                    }
+                </td>
+
+                <td>
+                    @if (!string.IsNullOrWhiteSpace(resident.DetailsJson))
+                    {
+                        @resident.DetailsJson
+                    }
+                    else
+                    {
+                        <span class="text-muted">No data</span>
                     }
                 </td>
             </tr>
