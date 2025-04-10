@@ -1,7 +1,7 @@
 # Use the official .NET 9 SDK image
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
 WORKDIR /app
-EXPOSE 8081
+EXPOSE 8082
 
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src

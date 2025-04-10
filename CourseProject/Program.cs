@@ -30,7 +30,7 @@ builder.Services.AddControllersWithViews();
 
 builder.WebHost.ConfigureKestrel(options =>
 {
-    options.ListenAnyIP(8081);  // Bind to any IP address on port 8080
+    options.ListenAnyIP(8082);  // Bind to any IP address on port 8080
 });
 
 
