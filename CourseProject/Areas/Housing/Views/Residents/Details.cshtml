@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Details";
+    var parsedDetails = ViewBag.Details as Dictionary<string, string> ?? new();
 }
 
 <h1>Details</h1>
@@ -34,12 +35,16 @@
         <dd class="col-sm-10">
             @Model.Address.ToString()
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DetailsJson)
+        <dt class="col-sm-2">
+            Additional Details
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DetailsJson)
-        </dd>
+        @foreach (var pair in parsedDetails)
+        {
+            <div class="form-group d-flex gap-2">
+                <dd class="col-sm-10">@pair.Key</dd>
+                <dd action="col-sm-10">@pair.Value</dd>
+            </div>
+        }
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.ProfilePicture)
         </dt>

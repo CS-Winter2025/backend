@@ -1,10 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using CourseProject.Models;
 using System.Security.Claims;
 using CourseProject.Common;
+using CourseProject.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -74,6 +70,10 @@ namespace CourseProject.Areas.Housing.Controllers
                                 .ThenInclude(r => r.Services)
                                 .FirstOrDefaultAsync(u => u.Id == id);
 
+            ViewBag.Details = user.Resident.DetailsJson != null
+                ? Util.ParseJson(user.Resident.DetailsJson)
+                : new Dictionary<string, string>();
+
             if (user == null) return RedirectToAction("NotFound", "Error");
             return View(user);
         }
@@ -94,6 +94,10 @@ namespace CourseProject.Areas.Housing.Controllers
             {
                 return NotFound();
             }
+
+            ViewBag.Details = resident.DetailsJson != null
+                ? Util.ParseJson(resident.DetailsJson)
+                : new Dictionary<string, string>();
 
             return View(resident);
         }
@@ -166,16 +170,11 @@ namespace CourseProject.Areas.Housing.Controllers
         [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> Edit(int id, [Bind("ResidentId,ServiceSubscriptionIds,Name,Address,DetailsJson")] Resident resident, IFormFile ProfilePicture)
         {
-            //if (id != resident.ResidentId)
-            //{
-            //    return NotFound();
-            //}
-
             if (!ModelState.IsValid)
             {
                 try
                 {
-                    var existingResident= await _context.Residents.FindAsync(id);
+                    var existingResident = await _context.Residents.FindAsync(id);
 
                     if (existingResident == null)
                     {
@@ -231,6 +230,10 @@ namespace CourseProject.Areas.Housing.Controllers
                 return NotFound();
             }
 
+            ViewBag.Details = resident.DetailsJson != null
+                ? Util.ParseJson(resident.DetailsJson)
+                : new Dictionary<string, string>();
+
             return View(resident);
         }
 
@@ -244,9 +247,9 @@ namespace CourseProject.Areas.Housing.Controllers
             }
 
             var assignments = await _context.ResidentAssets
-     .Include(ra => ra.Asset)
-     .Where(ra => ra.ResidentId == id)
-     .ToListAsync();
+                                    .Include(ra => ra.Asset)
+                                    .Where(ra => ra.ResidentId == id)
+                                    .ToListAsync();
 
             ViewBag.ResidentName = resident.Name;
             return View(assignments);

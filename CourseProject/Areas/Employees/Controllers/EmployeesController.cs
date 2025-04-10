@@ -42,7 +42,9 @@ namespace CourseProject.Areas.Employees.Controllers
             {
                 return NotFound();
             }
-            ViewBag.Details = Util.ParseJson(employee.DetailsJson);
+            ViewBag.Details = employee.DetailsJson != null
+                ? Util.ParseJson(employee.DetailsJson)
+                : new Dictionary<string, string>();
             return View(employee);
         }
 
@@ -59,6 +61,10 @@ namespace CourseProject.Areas.Employees.Controllers
                 .Include(u => u.Employee.Organization)
                 .FirstOrDefaultAsync(u => u.Id == id);
 
+            ViewBag.Details = user.Employee.DetailsJson != null
+                ? Util.ParseJson(user.Employee.DetailsJson)
+                : new Dictionary<string, string>();
+
             if (user == null) return RedirectToAction("NotFound", "Error");
             return View("Me", user);
         }
@@ -70,8 +76,8 @@ namespace CourseProject.Areas.Employees.Controllers
         {
             var employee = new Employee
             {
-                Name = new FullName(),         
-                Address = new FullAddress()    
+                Name = new FullName(),
+                Address = new FullAddress()
             };
 
             ViewBag.ManagerId = new SelectList(_context.Employees, "EmployeeId", "EmployeeId");
@@ -128,7 +134,9 @@ namespace CourseProject.Areas.Employees.Controllers
             // Pass the data to the view
             ViewData["ManagerId"] = new SelectList(_context.Employees, "EmployeeId", "EmployeeId", employee.ManagerId);
             ViewData["OrganizationId"] = new SelectList(_context.Organizations, "OrganizationId", "OrganizationId", employee.OrganizationId);
-            ViewData["Details"] = Util.ParseJson(employee.DetailsJson);
+            ViewBag.Details = employee.DetailsJson != null
+                ? Util.ParseJson(employee.DetailsJson)
+                : new Dictionary<string, string>();
 
             ViewBag.Availability = string.Join(", ", employee.Availability);
             ViewBag.Certifications = string.Join(", ", employee.Certifications);
@@ -216,6 +224,9 @@ namespace CourseProject.Areas.Employees.Controllers
             {
                 return NotFound();
             }
+            ViewBag.Details = employee.DetailsJson != null
+                ? Util.ParseJson(employee.DetailsJson)
+                : new Dictionary<string, string>();
 
             return View(employee);
         }

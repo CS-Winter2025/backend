@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Me";
+    var parsedDetails = ViewBag.Details as Dictionary<string, string> ?? new();
 }
 
 <h1>Your Info</h1>
@@ -27,6 +28,19 @@
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Resident.ProfilePicture)
+        </dt>
+        <dd class="col-sm-10">
+            @if (Model.Resident.ProfilePicture != null && Model.Resident.ProfilePicture.Length > 0)
+            {
+                <img src="data:image/jpeg;base64,@Convert.ToBase64String(Model.Resident.ProfilePicture)" alt="Resident Photo" style="max-width: 200px; max-height: 200px;" />
+            }
+            else
+            {
+                <p>No photo available</p>
+            }
+        </dd>
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Resident.ServiceSubscriptionIds)
         </dt>
         <dd class="col-sm-10">
@@ -45,11 +59,15 @@
             @Html.DisplayFor(model => model.Resident.Name)
         </dt>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Resident.DetailsJson)
+            Additional Details
         </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Resident.DetailsJson)
-        </dd>
+        @foreach (var pair in parsedDetails)
+        {
+            <div class="form-group d-flex gap-2">
+                <dd class="col-sm-10">@pair.Key</dd>
+                <dd action="col-sm-10">@pair.Value</dd>
+            </div>
+        }
     </dl>
 </div>
 <div>    
