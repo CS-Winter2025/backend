@@ -29,22 +29,22 @@
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
-            <h5>Additional Details</h5>
+            <h5 class="mt-4">Additional Details</h5>
             <div id="details-container">
                 @foreach (var pair in parsedDetails)
                 {
                     <div class="form-group d-flex gap-2">
-                        <input type="text" class="form-control detail-key" placeholder="Key" value="@pair.Key" />
-                        <input type="text" class="form-control detail-value" placeholder="Value" value="@pair.Value" />
+                        <input type="text" class="form-control detail-key mb-2" placeholder="Key" value="@pair.Key" />
+                        <input type="text" class="form-control detail-value mb-2" placeholder="Value" value="@pair.Value" />
                     </div>
                 }
             </div>
 
-            <button type="button" class="btn btn-sm btn-secondary" onclick="addDetail()">Add Detail</button>
+            <button type="button" class="btn btn-sm btn-secondary mt-2" onclick="addDetail()">Add Detail</button>
 
             <input type="hidden" id="DetailsJson" name="DetailsJson" value="@Model.DetailsJson" />
 
-            <div class="form-group">
+            <div class="form-group mt-3">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
