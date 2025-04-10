@@ -65,8 +65,7 @@ jobs:
 
     strategy:
       matrix:
-        # os: [ubuntu-latest, windows-latest] # To accommodate both Linux and Windows environment
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, windows-latest] # To accommodate both Linux and Windows environment
 
     steps:
       - name: Checkout source code
