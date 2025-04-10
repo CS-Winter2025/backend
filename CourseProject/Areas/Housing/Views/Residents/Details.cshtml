@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "Details";
-    var parsedDetails = ViewBag.Details as Dictionary<string, string> ?? new();
+    var details = CourseProject.Common.Util.ParseJson(Model.DetailsJson);
 }
 
 <h1>Details</h1>
@@ -38,13 +38,21 @@
         <dt class="col-sm-2">
             Additional Details
         </dt>
-        @foreach (var pair in parsedDetails)
-        {
-            <div class="form-group d-flex gap-2">
-                <dd class="col-sm-10">@pair.Key</dd>
-                <dd action="col-sm-10">@pair.Value</dd>
-            </div>
-        }
+        <dd class="col-sm-10">
+            @if (details != null && details.Any())
+            {
+                <div>
+                    @foreach (var pair in details)
+                    {
+                        <div><strong>@pair.Key:</strong> @pair.Value</div>
+                    }
+                </div>
+            }
+            else
+            {
+                <p>No additional details.</p>
+            }
+        </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.ProfilePicture)
         </dt>
