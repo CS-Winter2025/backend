@@ -65,7 +65,8 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest] # To accommodate both Linux and Windows environment
+        # os: [ubuntu-latest, windows-latest] # To accommodate both Linux and Windows environment
+        os: [ubuntu-latest]
 
     steps:
       - name: Checkout source code
@@ -74,6 +75,9 @@ jobs:
       - name: Create appsettings.json from secret
         run: |
           echo "${{ secrets.APPSETTINGS_JSON }}" | base64 -d > ./CourseProject/appsettings.json
+
+      - name: Show contents (for debugging only — remove later)
+        run: cat ./CourseProject/appsettings.json
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4
