@@ -342,9 +342,14 @@ namespace CourseProject
                 }
             );
 
-            //modelBuilder.Entity<EventSchedule>().HasData(
-            //    new EventSchedule { EventScheduleId = 1, ServiceID = 1 }
-            //);
+            modelBuilder.Entity<EventSchedule>().HasData(
+                new EventSchedule
+                {
+                    ScheduleBaseId = 1,
+                    ServiceID = 1,
+                    ResidentId = 1
+                }
+            );
         }
 
     }
