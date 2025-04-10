@@ -31,16 +31,42 @@ namespace CourseProject.Areas.Calendar.Controllers
             nameof(UserRole.HOUSING_MANAGER) + "," +
             nameof(UserRole.HR_MANAGER)
         )]
-        public async Task<IActionResult> Index(int? userId)
+        public async Task<IActionResult> Index(int? userId, string? userType)
         {
+            if (userType == "employee" && userId != null)
+            {
+                var employee = await _context.Employees
+                    .Include(e => e.Name)
+                    .FirstOrDefaultAsync(e => e.EmployeeId == userId);
+
+                ViewData["UserID"] = userId;
+                ViewData["UserType"] = userType;
+                ViewData["UserName"] = employee.Name.ToString();
+
+                var empDatabaseContext = _context.EventSchedules.Include(e => e.Employees).Include(e => e.Service);
+                return View(await empDatabaseContext.ToListAsync());
+            }
+
+            if (userType == "resident" && userId != null)
+            {
+                var resident = await _context.Residents
+                    .Include(r => r.Name)
+                    .FirstOrDefaultAsync(r => r.ResidentId == userId);
+
+                ViewData["UserID"] = userId;
+                ViewData["UserType"] = userType;
+                ViewData["UserName"] = resident.Name.ToString();
+
+                var resDatabaseContext = _context.EventSchedules.Include(e => e.Employees).Include(e => e.Service);
+                return View(await resDatabaseContext.ToListAsync());
+            }
+
             if (userId == null)
             {
                 string? stringId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (stringId == null) return RedirectToAction("NotFound", "Error");
                 userId = Int32.Parse(stringId);
             }
-
-            //User? user = _context.Users.Find(userId);
 
             User? user = await _context.Users.Include(u => u.Resident)
                                 .Include(u => u.Employee)
@@ -64,11 +90,11 @@ namespace CourseProject.Areas.Calendar.Controllers
             string userName;
             if (user.Role == UserRole.EMPLOYEE) 
             {
-                userName = user.Employee.Name;
+                userName = user.Employee.Name.ToString();
             } 
             else if (user.Role == UserRole.RESIDENT)
             {
-                userName = user.Resident.Name;
+                userName = user.Resident.Name.ToString();
             } 
             else
             {
@@ -76,6 +102,7 @@ namespace CourseProject.Areas.Calendar.Controllers
             }
 
             ViewData["UserID"] = userId;
+            ViewData["UserType"] = "";
             ViewData["UserName"] = userName;
 
             var databaseContext = _context.EventSchedules.Include(e => e.Employees).Include(e => e.Service);

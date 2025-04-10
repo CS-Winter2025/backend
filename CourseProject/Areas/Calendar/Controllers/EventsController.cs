@@ -25,30 +25,41 @@ namespace CourseProject.Areas.Calendar.Controllers
 
         // GET api/events
         [HttpGet]
-        public IActionResult Get(int? userId)
+        public IActionResult Get(int? userId, string? userType)
         {
-            if (userId == null) 
+            int? employeeId = null;
+            if (userType == "employee")
             {
-                string? stringId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                if (stringId == null) return RedirectToAction("NotFound", "Error");
-                userId = Int32.Parse(stringId);
+                employeeId = userId;
             }
+            int? residentId = null;
+            if (userType == "resident")
+            {
+                residentId = userId;
+            }
+
+            string? stringId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (stringId == null) return RedirectToAction("NotFound", "Error");
+            userId = Int32.Parse(stringId);
 
             User? user = _context.Users.Find(userId);
 
-            if (user == null || user.Id == null || user.Role == null || user.Role == UserRole.NONE)
+            if (employeeId == null && residentId == null)
             {
-                return RedirectToAction("NotFound", "Error");
-            }
+                if (user == null || user.Id == null || user.Role == null || user.Role == UserRole.NONE)
+                {
+                    return RedirectToAction("NotFound", "Error");
+                }
 
-            if (user.Role == UserRole.EMPLOYEE && user.EmployeeId == null)
-            {
-                return RedirectToAction("NotFound", "Error");
-            }
+                if (user.Role == UserRole.EMPLOYEE && user.EmployeeId == null)
+                {
+                    return RedirectToAction("NotFound", "Error");
+                }
 
-            if (user.Role == UserRole.RESIDENT && user.ResidentId == null)
-            {
-                return RedirectToAction("NotFound", "Error");
+                if (user.Role == UserRole.RESIDENT && user.ResidentId == null)
+                {
+                    return RedirectToAction("NotFound", "Error");
+                }
             }
 
             var fullTable = _context.EventSchedules
@@ -57,22 +68,36 @@ namespace CourseProject.Areas.Calendar.Controllers
             .Include(e => e.Resident);
 
             IQueryable<EventSchedule> userTable = Enumerable.Empty<EventSchedule>().AsQueryable();
-            if (user.Role == UserRole.ADMIN || user.Role == UserRole.HOUSING_MANAGER || user.Role == UserRole.HR_MANAGER)
+            if (userType == null)
             {
-                userTable = fullTable;
+                if (user.Role == UserRole.ADMIN || user.Role == UserRole.HOUSING_MANAGER || user.Role == UserRole.HR_MANAGER)
+                {
+                    userTable = fullTable;
+                }
+                else if (user.Role == UserRole.EMPLOYEE)
+                {
+                    userTable = fullTable
+                        .Where(e => e.Employees.Any(emp => emp.EmployeeId == user.EmployeeId));
+                }
+                else if (user.Role == UserRole.RESIDENT)
+                {
+                    userTable = fullTable
+                        .Where(e => e.ResidentId == user.ResidentId);
+                }
             }
-            else if (user.Role == UserRole.EMPLOYEE)
+            else if (userType == "employee")
             {
                 userTable = fullTable
-                    .Where(e => e.Employees.Any(emp => emp.EmployeeId == user.EmployeeId));
+                        .Where(e => e.Employees.Any(emp => emp.EmployeeId == employeeId));
             }
-            else if (user.Role == UserRole.RESIDENT)
+            else if (userType == "resident")
             {
                 userTable = fullTable
-                    .Where(e => e.ResidentId == user.ResidentId);
+                        .Where(e => e.ResidentId == residentId);
             }
 
-            var data = userTable
+
+                var data = userTable
             .ToList()
             .Select(e => new WebAPIEvent
             {
@@ -95,29 +120,31 @@ namespace CourseProject.Areas.Calendar.Controllers
             dynamic collections = new ExpandoObject();
 
             collections.services = _context.Services
-            .Select(s => new
-            {
-                value = s.ServiceID,
-                label = s.Type
-            })
-            .ToList();
+                .Select(s => new
+                {
+                    value = s.ServiceID,
+                    label = s.Type
+                })
+                .ToList();
 
             collections.residents = _context.Residents
-            .Select(r => new
-            {
-                value = r.ResidentId,
-                label = r.Name
-            })
-            .ToList();
+                .AsNoTracking()
+                .Select(r => new
+                {
+                    value = r.ResidentId,
+                    label = r.Name.ToString()
+                })
+                .ToList();
 
             collections.employees = _context.Employees
-            .Select(e => new
-            {
-                value = e.EmployeeId,
-                label = e.Name
-            })
-            .ToList();
-
+                .AsNoTracking()
+                .Select(e => new
+                {
+                    value = e.EmployeeId,
+                    label = e.Name.ToString()
+                })
+                .ToList();
+            
             collections.role = new List<object> { new { value = 1, label = user.Role.ToString() } };
 
             //return Ok(new { data, collections = new { services, residents } });

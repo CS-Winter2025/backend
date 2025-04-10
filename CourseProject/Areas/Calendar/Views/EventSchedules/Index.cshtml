@@ -134,7 +134,7 @@
     }
 
     // load data from backend
-    scheduler.load("/api/events?userId=" + @ViewData["UserID"])
+    scheduler.load("/api/events?userId=@ViewData["UserID"]&userType=@ViewData["UserType"]");
 
     // connect backend to scheduler
     var dp = scheduler.createDataProcessor({

@@ -122,6 +122,12 @@
 								<a class="nav-link text-dark headerFont" asp-controller="Report" asp-action="Index">Reports</a>
 							</li>
 						}
+						@if (role is "ADMIN" or "SERVICE_MANAGER" or "EMPLOYEE" or "RESIDENT" or "HR_MANAGER" or "HOUSING_MANAGER")
+						{
+							<li class="nav-item">
+								<a class="nav-link text-dark headerFont" asp-controller="Calendar" asp-action="Index">Calendar</a>
+							</li>
+						}
 	                </ul>
 	                <!-- Login/Logout Section -->
 	                <ul class="navbar-nav">
