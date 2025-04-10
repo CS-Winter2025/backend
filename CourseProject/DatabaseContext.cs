@@ -201,6 +201,14 @@ namespace CourseProject
                 }
             );
 
+            modelBuilder.Entity<Service>().HasData(
+                new Service { ServiceID = 1, Type = "Cleaning", Rate = 50 },
+                new Service { ServiceID = 2, Type = "Security", Rate = 100 },
+                new Service { ServiceID = 3, Type = "Dining", Rate = 69 },
+                new Service { ServiceID = 4, Type = "Health Care", Rate = 75 },
+                new Service { ServiceID = 5, Type = "Transportation", Rate = 25 }
+            );
+
             modelBuilder.Entity<Employee>().OwnsOne(e => e.Name).HasData(
                 new { EmployeeId = 1, FirstName = "Alice", LastName = "Smith" },
                 new { EmployeeId = 2, FirstName = "Bob", LastName = "Johnson" },
@@ -217,27 +225,30 @@ namespace CourseProject
                 new { EmployeeId = 5, Street = "789 Cedar St", City = "Austin", State = "TX", Country = "USA", ZipCode = "73301" }
             );
 
-            modelBuilder.Entity<Resident>().HasData(
+            _ = modelBuilder.Entity<Resident>().HasData(
                new Resident
                {
                    ResidentId = 1,
                    IsCurrentlyLiving = true,
                    DetailsJson = @"{""Emergency Contact"": ""Bob"", ""Age"": 69, ""Email"": ""Bob@example.com""}",
-                   ProfilePicture = SamplePictures.Sample2
+                   ProfilePicture = SamplePictures.Sample2,
+                   ServiceSubscriptionIds = [3, 4]
                },
                new Resident
                {
                    ResidentId = 2,
                    IsCurrentlyLiving = true,
                    DetailsJson = @"{""Phone Number"": ""778-555-6942"", ""Age"": 30, ""Email"": ""Test@example.com""}",
-                   ProfilePicture = SamplePictures.Sample3
+                   ProfilePicture = SamplePictures.Sample3,
+                   ServiceSubscriptionIds = [2, 4]
                },
                new Resident
                {
                    ResidentId = 3,
                    IsCurrentlyLiving = true,
                    DetailsJson = @"{""Mobile Number"": ""778-555-2025"", ""Age"": 42, ""Email"": ""Meh@example.com"", ""Phone Number"": ""604-555-2021""}",
-                   ProfilePicture = SamplePictures.Sample4
+                   ProfilePicture = SamplePictures.Sample4,
+                   ServiceSubscriptionIds = [1, 2]
                },
                new Resident
                {
@@ -250,7 +261,8 @@ namespace CourseProject
                    ResidentId = 5,
                    IsCurrentlyLiving = true,
                    DetailsJson = @"{""Age"": 32, ""Email"": ""Amira@example.com""}",
-                   ProfilePicture = SamplePictures.Sample1
+                   ProfilePicture = SamplePictures.Sample1,
+                   ServiceSubscriptionIds = [1, 3, 4, 5]
                }
            );
 
@@ -270,13 +282,9 @@ namespace CourseProject
                 new { ResidentId = 5, Street = "123 Cedar Rd", City = "Seattle", State = "WA", Country = "USA", ZipCode = "98101" }
             );
 
-            modelBuilder.Entity<Service>().HasData(
-                new Service { ServiceID = 1, Type = "Cleaning", Rate = 50 },
-                new Service { ServiceID = 2, Type = "Security", Rate = 100 }
-            );
-
             modelBuilder.Entity<Invoice>().HasData(
-                new Invoice { InvoiceID = 1, ResidentId = 1, Date = DateTime.UtcNow, AmountDue = 200, AmountPaid = 100 }
+                new Invoice { InvoiceID = 1, ResidentId = 1, Date = DateTime.UtcNow, AmountDue = 200, AmountPaid = 100 },
+                new Invoice { InvoiceID = 2, ResidentId = 3, Date = DateTime.UtcNow, AmountDue = 420, AmountPaid = 69 }
             );
 
             modelBuilder.Entity<User>().HasData(
