@@ -9,13 +9,13 @@ namespace CourseProject.Common
             if (jsonString == null) return null;
             try
             {
-                var parsed = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonString);
+                var parsed = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonString) ?? [];
                 return parsed;
 
             }
             catch (Exception e)
             {
-                return null;
+                return [];
             }
         }
 

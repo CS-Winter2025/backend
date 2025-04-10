@@ -69,3 +69,8 @@ div.dt-info {
     font-weight: 500;
     font-size: 0.95rem;
 }
+
+.table-wrapper {
+    overflow-x: auto;
+    width: 100%;
+}

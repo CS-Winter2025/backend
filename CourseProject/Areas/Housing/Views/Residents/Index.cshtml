@@ -1,10 +1,9 @@
 ﻿@{
+    ViewData["Title"] = "Residents";
     var currentResidents = ViewBag.CurrentResidents as List<Resident>;
     var pastResidents = ViewBag.PastResidents as List<Resident>;
-}
-
-@{
-    ViewData["Title"] = "Residents";
+    var unassignedResidents = ViewBag.UnassignedResidents as List<Resident>;
+    var parsedDetails = ViewBag.ParsedDetails as Dictionary<int, Dictionary<string, string>>;
 }
 
 <h1 class="title titleFont text-center">Residents</h1>
@@ -17,6 +16,8 @@
         <tr>
             <th>Name</th>
             <th>Address</th>
+            <th>Photo</th>
+            <th>Details</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -25,8 +26,13 @@
         {
             <tr>
                 <td>@resident.Name.FirstName @resident.Name.LastName</td>
-
                 <td>@resident.Address.Street, @resident.Address.City, @resident.Address.ZipCode</td>
+                <td>
+                    <profile-picture image-data="resident.ProfilePicture ?? Array.Empty<byte>()" alt="Resident Photo" max-width="100" max-height="100" />
+                </td>
+                <td>
+                    <details-json details="@(parsedDetails?[resident.ResidentId])"></details-json>
+                </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@resident.ResidentId">Edit</a> |
                     <a asp-action="Details" asp-route-id="@resident.ResidentId">Details</a> |
@@ -43,6 +49,8 @@
     <thead>
         <tr>
             <th>Name</th>
+            <th>Photo</th>
+            <th>Details</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -51,6 +59,12 @@
         {
             <tr>
                 <td>@resident.Name</td>
+                <td>
+                    <profile-picture image-data="resident.ProfilePicture ?? Array.Empty<byte>()" alt="Resident Photo" max-width="100" max-height="100" />
+                </td>
+                <td>
+                    <details-json details="@(parsedDetails?[resident.ResidentId])"></details-json>
+                </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@resident.ResidentId">Edit</a> |
                     <a asp-action="Details" asp-route-id="@resident.ResidentId">Details</a> |
@@ -67,14 +81,22 @@
     <thead>
         <tr>
             <th>Name</th>
+            <th>Photo</th>
+            <th>Details</th>
             <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var resident in (ViewBag.UnassignedResidents as List<Resident>))
+        @foreach (var resident in unassignedResidents)
         {
             <tr>
                 <td>@resident.Name</td>
+                <td>
+                    <profile-picture image-data="resident.ProfilePicture ?? Array.Empty<byte>()" alt="Resident Photo" max-width="100" max-height="100" />
+                </td>
+                <td>
+                    <details-json details="@(parsedDetails?[resident.ResidentId])"></details-json>
+                </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@resident.ResidentId">Edit</a> |
                     <a asp-action="Details" asp-route-id="@resident.ResidentId">Details</a> |
