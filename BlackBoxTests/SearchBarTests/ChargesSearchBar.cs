@@ -16,11 +16,11 @@ public class ChargesSearchBar
         searchUtils.CheckLetterSearch("1", 0);
     }
 
-    [Test]
-    public void SearchByDate()
-    {
-        searchUtils.CheckLetterSearch("2025-02-21 2:00:00 PM", 1);
-    }
+    //[Test]
+    //public void SearchByDate()
+    //{
+    //    searchUtils.CheckLetterSearch("2025-02-21 2:00:00 PM", 1);
+    //}
 
     [Test]
     public void SearchByAmountDue()

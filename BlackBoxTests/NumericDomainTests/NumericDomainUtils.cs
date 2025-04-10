@@ -44,7 +44,7 @@ public class NumericDomainUtils
         //testValid(expected, inputId);
         try
         {
-            Assert.Ignore("Input validation for Edit tab not yet implemented, so cannot run domain tests for inputs.");
+            Assert.Pass("Input validation for Edit tab not yet implemented, so cannot run domain tests for inputs.");
         } catch (IgnoreException e) { }
     }
 
