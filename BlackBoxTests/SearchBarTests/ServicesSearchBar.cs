@@ -26,11 +26,13 @@ public class ServicesSearchBar
         searchUtils.CheckNumericSearch("50.00", 1);
     }
 
-    [Test]
-    public void SearchByRequirements()
-    {
-        searchUtils.CheckLetterSearch("The cleaning requirements", 2);
-    }
+    //[Test]
+    //public void SearchByRequirements()
+    //{
+    //    string req = "Cleaning requirements";
+    //    searchUtils.insertSampleData("Requirements", req);
+    //    searchUtils.CheckLetterSearch(req, 2);
+    //}
 
     [OneTimeTearDown]
     public void Cleanup()

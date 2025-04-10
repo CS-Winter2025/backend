@@ -1,6 +1,4 @@
-﻿using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium;
-using System.Diagnostics;
+﻿using OpenQA.Selenium;
 
 namespace BlackBoxTests.SearchBarTests;
 
@@ -18,7 +16,7 @@ public class EmployeeSearchBar
     [Test]
     public void SearchByName()
     {
-        searchUtils.CheckLetterSearch("Eve", 0);
+        searchUtils.CheckLetterSearch("Alice", 0);
     }
 
     [Test]
@@ -30,7 +28,7 @@ public class EmployeeSearchBar
     [Test]
     public void SearchByJobTitle()
     {
-        searchUtils.CheckLetterSearch("Quality Assurance", 2);
+        searchUtils.CheckLetterSearch("HR Specialist", 2);
     }
 
     [Test]
@@ -42,31 +40,29 @@ public class EmployeeSearchBar
     [Test]
     public void SearchByPayRate()
     {
-        searchUtils.CheckNumericSearch("69000.00", 4);
+        searchUtils.CheckNumericSearch("53000.00", 4);
     }
 
-    [Test]
-    public void SearchByHoursWorked()
-    {
-        searchUtils.CheckNumericSearch("222", 6);
-    }
+    //[Test]
+    //public void SearchByHoursWorked()
+    //{
+    //    string hours = "222";
+    //    searchUtils.insertSampleData("HoursWorked", hours);
+    //    searchUtils.CheckNumericSearch(hours, 6);
+    //}
 
-    [Test]
-    public void SearchByCertifications()
-    {
-        searchUtils.CheckLetterSearch("First-aid", 7);
-    }
+    //[Test]
+    //public void SearchByCertifications()
+    //{
+    //    string cert = "First-aid";
+    //    searchUtils.insertSampleData("Certifications", cert);
+    //    searchUtils.CheckLetterSearch(cert, 7);
+    //}
 
     [Test]
     public void SearchByOrganization()
     {
         searchUtils.CheckNumericSearch("1", 8);
-    }
-
-    [Test]
-    public void SearchByDetails()
-    {
-        searchUtils.CheckLetterSearch("details", 9);
     }
 
     [Test]

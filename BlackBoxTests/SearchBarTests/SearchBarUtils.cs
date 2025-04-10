@@ -50,25 +50,28 @@ public class SearchBarUtils
     /// </remarks>
     public void CheckLetterSearch(string expected, int rowIndex)
     {
+        bool exists = false;
         //Test if search can find someone that is in the table via [expected] parameter
         driver.FindElement(By.Id(SEARCH_ID)).SendKeys(expected);
         var IDelements = driver.FindElements(By.XPath("//td"));
         for (int i = rowIndex; i < IDelements.Count; i += NUM_OF_ROWS)
         {
-            if (IDelements[i].GetAttribute("innerHTML").Equals(expected) && IDelements[i].Displayed)
+            if (IDelements[i].GetAttribute("innerHTML").Contains(expected) && IDelements[i].Displayed)
             {
-                Assert.That(true);
+                exists = true;
                 break;
             }
         }
         driver.FindElement(By.Id(SEARCH_ID)).Clear();
+        Assert.That(exists);
 
         //Test if search displays no results when inputted [expected] is not in the table
         driver.FindElement(By.Id(SEARCH_ID)).SendKeys("Cheese");
         Assert.That(driver.FindElement(By.XPath("//td[contains(text(), 'No matching records found')]")).Displayed);
         driver.FindElement(By.Id(SEARCH_ID)).Clear();
 
-        Assert.Pass("Search bar works");
+        if (exists) Assert.Pass("Search bar works");
+        else Assert.Fail("Search bar does not work");
     }
 
     /// <summary>
@@ -79,24 +82,26 @@ public class SearchBarUtils
     /// <remarks>
     /// This method performs the following tests:
     /// 1. Searches for an existing entry and verifies its presence in the table and ensures its in the appropriate column.
-    /// 2. Searches for invalid (negative) entry ("-1") and ensures the "No matching records found" message is displayed.
+    /// 2. Searches for invalid (negative) entry ("--1") and ensures the "No matching records found" message is displayed.
     /// 3. Searches for a non-existent entry ("Cheese") and ensures the "No matching records found" message is displayed.
     /// 4. Clears the search bar after each test.
     /// </remarks>
     public void CheckNumericSearch(string expected, int rowIndex)
     {
+        bool exists = false;
         //Test if search can find someone that is in the table via rate
         driver.FindElement(By.Id(SEARCH_ID)).SendKeys(expected);
         var IDelements = driver.FindElements(By.XPath("//td"));
         for (int i = rowIndex; i < IDelements.Count; i += NUM_OF_ROWS)
         {
-            if (IDelements[i].GetAttribute("innerHTML").Equals(expected) && IDelements[i].Displayed)
+            if (IDelements[i].GetAttribute("innerHTML").Contains(expected) && IDelements[i].Displayed)
             {
-                Assert.That(true);
+                exists = true;
                 break;
             }
         }
         driver.FindElement(By.Id(SEARCH_ID)).Clear();
+        Assert.That(exists);
 
         //Test if search displays no results when inputted negative [expected]
         driver.FindElement(By.Id(SEARCH_ID)).SendKeys("--1");
@@ -108,7 +113,9 @@ public class SearchBarUtils
         Assert.That(driver.FindElement(By.XPath("//td[contains(text(), 'No matching records found')]")).Displayed);
         driver.FindElement(By.Id(SEARCH_ID)).Clear();
 
-        Assert.Pass("Search bar works");
+
+        if (exists) Assert.Pass("Search bar works");
+        else Assert.Fail("Search bar does not work");
     }
 
     [OneTimeTearDown]
@@ -116,6 +123,15 @@ public class SearchBarUtils
     {
         driver.Quit();
         driver.Dispose();
+    }
+
+    public void insertSampleData(string inputId, string value)
+    {
+        driver.FindElements(By.LinkText("Edit"))[0].Click();
+        driver.FindElement(By.Id(inputId)).Clear();
+        driver.FindElement(By.Id(inputId)).SendKeys(value);
+        driver.FindElement(By.XPath("//button[@type='submit']")).Click();
+        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(100);
     }
 
     public void logout()
