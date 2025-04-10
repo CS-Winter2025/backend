@@ -34,7 +34,8 @@
 </div>
 <script>
     scheduler.plugins({
-        recurring: true
+        recurring: true,
+        multiselect: true
     });
     scheduler.config.date_format = "%Y-%m-%d %H:%i";
     scheduler.init("scheduler_here", new Date(2019, 0, 20), "week");
@@ -66,7 +67,7 @@
     scheduler.config.lightbox.sections = [
         { name: "Service", map_to: "service_id", type: "select", options: scheduler.serverList("services") },
         { name: "Resident", map_to: "resident_id", type: "select", options: scheduler.serverList("residents") },
-        { name: "Employees", height: 30, map_to: "employee_ids", type: "textarea" },
+        { name: "Employees", map_to: "employee_ids", type: "multiselect", options: scheduler.serverList("employees") },
         { name: "Status", map_to: "status", type: "select", options: statusList },
         { name: "recurring", type: "recurring", map_to: "rrule" },
         { name: "time", height: 72, type: "time", map_to: "auto" }
