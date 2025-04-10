@@ -22,8 +22,19 @@ namespace CourseProject.Areas.Employees.Controllers
         [Authorize(Roles = nameof(UserRole.ADMIN) + "," + nameof(UserRole.HR_MANAGER) + "," + nameof(UserRole.HOUSING_MANAGER))]
         public async Task<IActionResult> Index()
         {
-            var databaseContext = _context.Employees.Include(e => e.Manager).Include(e => e.Organization);
-            return View(await databaseContext.ToListAsync());
+            var employees = await _context.Employees
+                .Include(e => e.Manager)
+                .Include(e => e.Organization)
+                .ToListAsync();
+
+            var parsedDetails = employees.ToDictionary(
+                e => e.EmployeeId,
+                e => Util.ParseJson(e.DetailsJson ?? string.Empty) ?? new Dictionary<string, string>()
+            );
+
+            ViewBag.ParsedDetails = parsedDetails;
+
+            return View(employees);
         }
 
         // GET: Employees/Employees/Details/5

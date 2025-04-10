@@ -52,9 +52,17 @@ namespace CourseProject.Areas.Housing.Controllers
                 .Where(r => !assignedNowIds.Contains(r.ResidentId))
                 .ToListAsync();
 
+            var allResidents = currentResidents.Concat(pastResidents).Concat(unassignedResidents).DistinctBy(r => r.ResidentId).ToList();
+
+            var parsedDetails = allResidents.ToDictionary(
+                r => r.ResidentId,
+                r => Util.ParseJson(r.DetailsJson ?? string.Empty) ?? new Dictionary<string, string>()
+            );
+
             ViewBag.CurrentResidents = currentResidents;
             ViewBag.PastResidents = pastResidents;
             ViewBag.UnassignedResidents = unassignedResidents;
+            ViewBag.ParsedDetails = parsedDetails;
 
             return View();
         }
