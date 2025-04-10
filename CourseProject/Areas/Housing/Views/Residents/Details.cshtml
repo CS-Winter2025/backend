@@ -11,16 +11,18 @@
     <h4>Resident</h4>
     <hr />
     <dl class="row">
-        <dt class="col-sm-2">
-            Subscribed Services
-        </dt>
-        @foreach (Service service in Model.Services)
-        {
-            <div class="form-group d-flex gap-2">
-                <dd class="col-sm-10">@service.Type</dd>
-                <dd class="col-sm-10">@service.Rate</dd>
+        <dt class="col-sm-2">Subscribed Services</dt>
+        <dd class="col-sm-10">
+            <div>
+                @foreach (Service service in Model.Services)
+                {
+                    <div class="d-flex gap-3">
+                        <span>@service.Type</span>
+                        <span>@service.Rate</span>
+                    </div>
+                }
             </div>
-        }
+        </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.IsCurrentlyLiving)
         </dt>
