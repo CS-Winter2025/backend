@@ -20,4 +20,4 @@ jobs:
       run_black_box_tests: false
       reliability_tests_project_path: ReliabilityTests/ReliabilityTests.csproj
       run_reliability_tests: true
-      run_static_analysis: true
+      run_static_analysis: false

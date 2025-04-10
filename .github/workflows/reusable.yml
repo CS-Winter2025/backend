@@ -108,3 +108,29 @@ jobs:
         with:
           name: app-${{ inputs.configuration }}-${{ matrix.os }}
           path: ./publish-${{ inputs.configuration }}
+
+      # Publish Application
+      - name: Publish application (${{ inputs.configuration }})
+        if: ${{ inputs.configuration == 'Release' }}
+        run: dotnet publish ${{ inputs.project_path }} -c ${{ inputs.configuration }} -o ./publish-${{ inputs.configuration }}
+
+      # Upload Artifact
+      - name: Upload artifact (${{ inputs.configuration }} on ${{ matrix.os }})
+        if: ${{ inputs.configuration == 'Release' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-${{ inputs.configuration }}-${{ matrix.os }}
+          path: ./publish-${{ inputs.configuration }}
+
+  deploy-to-azure:
+    if: ${{ inputs.configuration == 'Release' }}
+    needs: build-and-publish
+    uses: ./.github/workflows/docker-deploy.yml
+    with:
+      configuration: ${{ inputs.configuration }}
+    secrets:
+      REGISTRY_NAME: ${{ secrets.REGISTRY_NAME }}
+      REGISTRY_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
+      REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
+      AZURE_WEBAPP_NAME: ${{ secrets.AZURE_WEBAPP_NAME }}
+      AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
