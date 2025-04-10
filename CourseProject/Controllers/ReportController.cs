@@ -16,9 +16,15 @@ namespace CourseProject.Controllers
         public async Task<IActionResult> Index()
         {
             var residents = await _context.Residents
-                .Include(r => r.EventSchedules)
-                .Include(r => r.Services)
-                .ToListAsync();
+                        .Include(r => r.EventSchedules)
+                        .ToListAsync();
+
+            foreach (var resident in residents)
+            {
+                resident.Services = await _context.Services
+                    .Where(s => resident.ServiceSubscriptionIds.Contains(s.ServiceID))
+                    .ToListAsync();
+            }
 
             ViewBag.ParsedDetails = residents.ToDictionary(
                 r => r.ResidentId,
