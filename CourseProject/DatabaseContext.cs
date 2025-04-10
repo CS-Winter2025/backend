@@ -1,3 +1,4 @@
+using CourseProject.Common;
 using CourseProject.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Identity;
@@ -221,31 +222,35 @@ namespace CourseProject
                {
                    ResidentId = 1,
                    IsCurrentlyLiving = true,
-                   DetailsJson = @"{""name"": ""Charlie"", ""age"": 45, ""email"": ""charlie@example.com"", ""is_member"": false}"
+                   DetailsJson = @"{""Emergency Contact"": ""Bob"", ""Age"": 69, ""Email"": ""Bob@example.com""}",
+                   ProfilePicture = SamplePictures.Sample2
                },
                new Resident
                {
                    ResidentId = 2,
                    IsCurrentlyLiving = true,
-                   DetailsJson = @"{""name"": ""Diana"", ""age"": 38, ""email"": ""diana@example.com"", ""is_member"": true}"
+                   DetailsJson = @"{""Phone Number"": ""778-555-6942"", ""Age"": 30, ""Email"": ""Test@example.com""}",
+                   ProfilePicture = SamplePictures.Sample3
                },
                new Resident
                {
                    ResidentId = 3,
                    IsCurrentlyLiving = true,
-                   DetailsJson = @"{""name"": ""Alice"", ""age"": 30, ""email"": ""alice@example.com"", ""is_member"": true}"
+                   DetailsJson = @"{""Mobile Number"": ""778-555-2025"", ""Age"": 42, ""Email"": ""Meh@example.com"", ""Phone Number"": ""604-555-2021""}",
+                   ProfilePicture = SamplePictures.Sample4
                },
                new Resident
                {
                    ResidentId = 4,
                    IsCurrentlyLiving = false,
-                   DetailsJson = @"{""name"": ""Leo"", ""age"": 29, ""email"": ""leo@example.com"", ""is_member"": false}"
+                   DetailsJson = @"{""Age"": 29}"
                },
                new Resident
                {
                    ResidentId = 5,
                    IsCurrentlyLiving = true,
-                   DetailsJson = @"{""name"": ""Amira"", ""age"": 32, ""email"": ""amira@example.com"", ""is_member"": true}"
+                   DetailsJson = @"{""Age"": 32, ""Email"": ""Amira@example.com""}",
+                   ProfilePicture = SamplePictures.Sample1
                }
            );
 
@@ -277,45 +282,43 @@ namespace CourseProject
             modelBuilder.Entity<User>().HasData(
                 new User
                 {
-                    Id = 1, Username = "admin", Role = UserRole.ADMIN,
+                    Id = 1,
+                    Username = "admin",
+                    Role = UserRole.ADMIN,
                     Password = new PasswordHasher().HashPassword("123"),
                     EmployeeId = 1,
                 },
                 new User
                 {
-                    Id = 2, Username = "resident", Role = UserRole.RESIDENT,
+                    Id = 2,
+                    Username = "resident",
+                    Role = UserRole.RESIDENT,
                     Password = new PasswordHasher().HashPassword("123"),
                     ResidentId = 1,
                 },
                 new User
                 {
-                    Id = 3, Username = "housing", Role = UserRole.HOUSING_MANAGER,
+                    Id = 3,
+                    Username = "housing",
+                    Role = UserRole.HOUSING_MANAGER,
                     Password = new PasswordHasher().HashPassword("123"),
                     EmployeeId = 2,
                 },
                 new User
                 {
-                    Id = 4, Username = "employee", Role = UserRole.EMPLOYEE,
+                    Id = 4,
+                    Username = "employee",
+                    Role = UserRole.EMPLOYEE,
                     Password = new PasswordHasher().HashPassword("123"),
                     ResidentId = 2,
                 },
                 new User
                 {
-                    Id = 5, Username = "service", Role = UserRole.EMPLOYEE,
-                    Password = new PasswordHasher().HashPassword("123"),
-                    EmployeeId = 3,
-                },
-                new User
-                {
-                    Id = 6, Username = "hr", Role = UserRole.HR_MANAGER,
+                    Id = 5,
+                    Username = "hr",
+                    Role = UserRole.HR_MANAGER,
                     Password = new PasswordHasher().HashPassword("123"),
                     EmployeeId = 4,
-                },
-                new User
-                {
-                    Id = 7, Username = "hiring", Role = UserRole.HR_MANAGER,
-                    Password = new PasswordHasher().HashPassword("123"),
-                    EmployeeId = 5,
                 }
             );
 
