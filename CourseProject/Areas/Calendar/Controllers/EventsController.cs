@@ -25,13 +25,16 @@ namespace CourseProject.Areas.Calendar.Controllers
 
         // GET api/events
         [HttpGet]
-        public IActionResult Get(int? personId, bool? isEmployee)
+        public IActionResult Get(int? userId)
         {
-            string? stringId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (stringId == null) return RedirectToAction("NotFound", "Error");
+            if (userId == null) 
+            {
+                string? stringId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (stringId == null) return RedirectToAction("NotFound", "Error");
+                userId = Int32.Parse(stringId);
+            }
 
-            int id = Int32.Parse(stringId);
-            User? user = _context.Users.Find(id);
+            User? user = _context.Users.Find(userId);
 
             if (user == null || user.Id == null || user.Role == null || user.Role == UserRole.NONE)
             {
