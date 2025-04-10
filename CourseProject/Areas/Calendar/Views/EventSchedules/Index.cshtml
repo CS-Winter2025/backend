@@ -89,7 +89,7 @@
         const userPermissions = rolePermissions.find(rp => rp.role == userRole)
         let disableFields
         if (!userPermissions)
-            disableFields = ["Service", "Resident", "Employees", "recurring", "time"]
+            disableFields = ["Service", "Resident", "Employees", "Status", "recurring", "time"]
         else
             disableFields = userPermissions.disabledFields
 
@@ -97,6 +97,10 @@
             const section = scheduler.formSection(field);
             if (field == "recurring" || field == "time") {
                 section.node.querySelectorAll("select").forEach(elem => {
+                    elem.disabled = true
+                })
+            } else if (field == "Employees") {
+                section.node.querySelectorAll("input").forEach(elem => {
                     elem.disabled = true
                 })
             } else {
